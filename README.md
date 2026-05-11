@@ -1,6 +1,3 @@
-# biotic-hardware
-Bio-inspired design framework for sustainable electromagnetic architectures. Modular five-layer model for biotic hardware. DOI: 10.17605/OSF.IO/N3PB7
-
 # Functional Patterns and Electromagnetic Hypotheses in MS 408
 
 This project documents an independent investigation into the morphology of the Voynich Manuscript (MS 408). The study departs from traditional linguistic interpretations to explore structural patterns **as potential inspirations for modular electromagnetic system architectures**. Rather than attempting linguistic decoding, the work examines whether recurring plant structures in the manuscript may correspond to analogous functional elements found in electromagnetic transmission systems.
@@ -59,5 +56,3 @@ This work proposes a **conceptual structural interpretation** of MS 408 illustra
 For direct reference to the manuscript:
 
 MS 408 – [Voynich Manuscript (Beinecke Rare Book & Manuscript Library, Yale University)](https://beinecke.library.yale.edu/collections/highlights/voynich-manuscript)
-
-**Contact:** `santi.lopez.puiggene@gmail.com`
