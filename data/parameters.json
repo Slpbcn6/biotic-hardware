@@ -1,0 +1,35 @@
+# Appendix B: Minimum Executable Case for Computational Simulation
+```json
+{
+  "author": "Santi López Puiggené",
+  "source_document": "Appendix B: Minimum Executable Case for Computational Simulation (HFSS/CST)",
+  "I_simulation_fixed_parameters": {
+    "frequency_hz": 12.5,
+    "magnetic_permeability_ur": 1250000.0,
+    "resistivity_ohm_m": 0.01,
+    "scaling_constant_k": 100,
+    "note": "1 cm schematic = 1 meter hardware"
+  },
+  "II_geometric_instance_planar_fractal_spiral": {
+    "turns_n": 50,
+    "conductor_section_cm2": 1.0,
+    "physical_length_m": 100.0,
+    "note": "l_eff via fractal filling"
+  },
+  "III_derived_electrical_values": {
+    "inductance_h": "0.3 - 1.0",
+    "capacitance_f": "1.5e-4 - 1.7e-4",
+    "capacitance_uf_approx": 162.0,
+    "resonance_match_hz": 12.5,
+    "ohmic_losses_ohm": "100 - 1000"
+  },
+  "IV_network_performance_metrics": {
+    "individual_q_factor": 0.8,
+    "systemic_gain": "Collective Phased Array gain",
+    "synchronization_effect": "Power-summation over high-damping biotic medium"
+  },
+  "V_simulation_benchmarks": [
+    "Quality Factor (Q) impact of substrate",
+    "Beamforming Profile (Rr -> 0 vs Rloss)"
+  ]
+}
