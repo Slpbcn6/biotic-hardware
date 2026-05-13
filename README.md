@@ -16,6 +16,7 @@ The analysis treats MS 408 as a **systematic geometric library**, mapping botani
   - Material preparation (pharmaceutical section as a doping and dielectric layer)
 
 These geometries are presented as a conceptual baseline for future computational validation to test hypothetical behaviors such as NFMI coupling efficiency, signal directionality, and system synchronization.
+Simulation Baseline: [/data/parameters.json](./data/parameters.json) — *Contains fixed parameters and geometric instances for 12.5 Hz resonance modeling.*
 
 ## Objective
 
