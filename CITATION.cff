@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this research, please cite it as follows."
+authors:
+- family-names: "López Puiggené"
+  given-names: "Santi"
+  orcid: "https://orcid.org/0009-0002-9922-1235"
+title: "biotic-hardware"
+abstract: "Design of resonant electromagnetic architectures for 12.5 Hz signal processing and near-field inductive coupling (NFMI )."
+version: 1.0.0
+doi: "10.17605/OSF.IO/N3PB7"
+url: "https://github.com/Slpbcn6/biotic-hardware"
+date-released: 2026-03-12
+keywords:
+  - "12.5 Hz"
+  - "Scale Factor k=100"
+  - "Radiation Resistance Rr -> 0"
+  - "Phased Array"
+  - "NFMI"
