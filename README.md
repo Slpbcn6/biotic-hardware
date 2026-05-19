@@ -1,28 +1,22 @@
-# Functional Patterns and Electromagnetic Hypotheses in MS 408
+# Biotic Hardware Synthesis: A Computational Framework for Bio-Inspired ELF Resonant Architectures
 
-This project documents an independent investigation into the morphology of the Voynich Manuscript (MS 408). The study departs from traditional linguistic interpretations to explore structural patterns **as potential inspirations for modular electromagnetic system architectures**. Rather than attempting linguistic decoding, the work examines whether recurring plant structures in the manuscript may correspond to analogous functional elements found in electromagnetic transmission systems.
+This project establishes a deterministic computational framework for modeling **Biotic Hardware Architectures**. The study evaluates the functional isomorphism between the morphological dataset of the MS 408 (Voynich Manuscript) and electromagnetic transmission requirements, specifically targeting the 12.5 Hz Schumann Resonance. By mapping these morphological motifs to functional blocks of a Near-Field Magnetic Induction (NFMI) system, this framework provides a baseline for designing resilient, low-entropy communication infrastructures.
 
-The analysis treats MS 408 as a **systematic geometric library**, mapping botanical, balneological, astronomical, and pharmaceutical sections to functional blocks of a bio-inspired electromagnetic system, including inductive coupling, signal modulation, phase management, and material optimization.
+The analysis treats MS 408 as a **systematic geometric library**, validating whether its botanical, balneological, astronomical, and pharmaceutical sections function as operational templates for high-Q filtering, inductive coupling, and phased-array synchronization in the ELF spectrum.
 
 ## Key Research Points
 
-- **Perspective:** Application of signal engineering concepts, applied physics, and bioelectronic principles to the visual structure of the manuscript.
-- **Model:** Identification of a modular conceptual architecture inspired by **Near-Field Magnetic Induction (NFMI)** systems, including collective phased arrays and fractal antenna designs.
-- **Methodology:** Structural analysis of botanical illustrations to identify geometric patterns resembling transmission block-diagram elements:
-  - Data/Ground coupling (dense root structures)
-  - Modulation and high-Q filtering (leaf serrations, bilateral symmetries)
-  - Inductive coupling (spiral roots as fractal antennas)
-  - Beamforming and phase modulation (circular aperture radiators, N-PSK constellations)
-  - Material preparation (pharmaceutical section as a doping and dielectric layer)
+- **Perspective:** Application of signal engineering, applied physics, and bioelectronic principles to the deterministic morphological datasets of MS 408.
+- **Model:** Identification of a modular conceptual architecture based on **Near-Field Magnetic Induction (NFMI)**, utilizing collective phased arrays and fractal antenna designs.
+- **Methodology:** Structural analysis of MS 408 geometric patterns to establish a formal mapping between morphological features and electromagnetic transmission elements. These geometries are presented as a conceptual baseline for future computational validation to test hypothetical behaviors such as NFMI coupling efficiency, signal directionality, and system synchronization.
 
-These geometries are presented as a conceptual baseline for future computational validation to test hypothetical behaviors such as NFMI coupling efficiency, signal directionality, and system synchronization.
 Simulation Baseline: [/data/parameters.json](./data/parameters.json) — *Contains fixed parameters and geometric instances for 12.5 Hz resonance modeling.*
 
 ## Objective
 
-- **Technical Hypothesis:** Provide the scientific community with an alternative technical hypothesis for interpreting structural motifs in MS 408 botanical illustrations.
+- **Technical Hypothesis:** Provide the scientific community with a deterministic framework for interpreting MS 408 morphological motifs as functional templates for bio-inspired electromagnetic architectures.
 - **Open Validation:** Share structural mappings to encourage technical critique, computational modeling, and simulation of bio-inspired electromagnetic architectures.
-- **Interdisciplinary Inquiry:** Offer patterns as a line of inquiry connecting historical iconography, plant physiology, and bio-inspired engineering concepts.
+- **Interdisciplinary Inquiry:** Offer a data-driven line of inquiry connecting MS 408 morphological datasets, biophysics, and bio-inspired engineering concepts.
 
 ## Propagation and Signal Flow
 
@@ -32,11 +26,11 @@ The manuscript illustrates a complete system from source to output, modeled conc
 - **Modulation and Filtering:** Leaf serrations and bilateral symmetries define high-Q bandpass structures, minimizing harmonic distortion.
 - **Inductive Coupling:** Spiral roots and fractal branching act as tuned inductors for **ELF signals (~12.5 Hz)**, using fractal antenna geometries.
 - **Phase Synchronization:** Circular sections and floral arrangements encode beamforming and N-PSK phase modulation.
-- **Material Optimization:** Pharmaceutical section ensures proper ionic, ferrimagnetic, and dielectric conditions for functional integrity.
+- **Material Layering:** Pharmaceutical section models the biomineralization process, defining the semi-conductive and dielectric doping required for functional signal propagation.
 
 ## Numerical Validation: Node Frequency Response
 
-To ensure strict engineering validation and eliminate speculation, this repository includes an open-source numerical verification script located at `/data/node_resonance.py`. This script models the core physical specifications defined in **Appendix B** [DOI: 10.17605/OSF.IO/N3PB7] using the deterministic values declared in `/data/parameters.json`.
+To ensure strict engineering validation this repository includes an open-source numerical verification script located at `/data/node_resonance.py`. This script models the core physical specifications defined in **Appendix B** [DOI: 10.17605/OSF.IO/N3PB7] using the deterministic values declared in `/data/parameters.json`.
 
 The script evaluates the tuning and synchronization behavior of an isolated biotic hardware node acting as a series RLC resonator under an Extremely Low Frequency (ELF) electromagnetic sweep (from 1 Hz to 30 Hz).
 
