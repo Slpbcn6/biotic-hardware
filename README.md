@@ -30,7 +30,7 @@ The manuscript illustrates a complete system from source to output, modeled conc
 
 ## Numerical Validation: Node Frequency Response
 
-To ensure strict engineering validation this repository includes an open-source numerical verification script located at `/data/node_resonance.py`. This script models the core physical specifications defined in **Appendix B** [DOI: 10.17605/OSF.IO/N3PB7] using the deterministic values declared in `/data/parameters.json`.
+To ensure strict engineering validation, this repository includes an open-source numerical verification script located at [/data/node_resonance.py](./data/node_resonance.py). This script models the core physical specifications and design constraints defined in "Functional Patterns and Electromagnetic Hypotheses in MS 408" (Appendix B), utilizing the deterministic analytical values declared in `/data/parameters.json`.
 
 The script evaluates the tuning and synchronization behavior of an isolated biotic hardware node acting as a series RLC resonator under an Extremely Low Frequency (ELF) electromagnetic sweep (from 1 Hz to 30 Hz).
 
@@ -46,7 +46,7 @@ $$f_0 = \frac{1}{2\pi \sqrt{LC}} \approx 12.5\text{ Hz}$$
 
 ### Analysis of the Empirical Results
 
-![Node Frequency Response](data/node_frequency_response.png)
+<img src="data/node_frequency_response.png" alt="Node Frequency Response" width="50%"/>
 
 The numerical simulation yields a rigorous baseline diagnostics report for the isolated node:
 
@@ -56,9 +56,9 @@ The numerical simulation yields a rigorous baseline diagnostics report for the i
 
 ## Numerical Validation: Mutual Coupling Tensor (M_ij)
 
-To structuralize the network behavior of the **Collective Phased Array** and establish the mathematical pillars for future multi-port simulations, this repository includes an analytical verification script located at `data/node_coupling.py`. 
+To structuralize the network behavior of the **Collective Phased Array** and establish the mathematical pillars for future multi-port simulations, this repository includes an analytical verification script located at [/data/node_coupling.py](./data/node_coupling.py). 
 
-This script computes the **Mutual Inductance Tensor ($\mathbf{M}_{ij}$)** across a 4-node matrix sub-array, evaluating spatial cross-talk driven by Near-Field Magnetic Induction (NFMI) and deterministic $1/r^3$ dipolar decay equations under the high-permeability regime ($\mu_r = 1,250,000$) defined in `/data/parameters.json` [DOI: 10.17605/OSF.IO/N3PB7].
+This script computes the **Mutual Inductance Tensor ($\mathbf{M}_{ij}$)** across a 4-node matrix sub-array, evaluating spatial cross-talk driven by Near-Field Magnetic Induction (NFMI) and deterministic $1/r^3$ dipolar decay equations under the high-permeability regime ($\mu_r = 1,250,000$) defined in `/data/parameters.json`.
 
 ### Spatial Grid Configuration
 The matrix models an organic square cluster with a physical spacing of $20\text{ cm}$ ($0.2\text{ m}$) between adjacent nodes, structured as follows:
@@ -69,7 +69,7 @@ The matrix models an organic square cluster with a physical spacing of $20\text{
 
 ### Analysis of the Empirical Tensor
 
-![Node Mutual Coupling Matrix](data/node_coupling_matrix.png)
+<img src="data/node_coupling_matrix.png" alt="Node Mutual Coupling Matrix" width="50%"/>
 
 The computational execution yields a symmetric Hermitian-adapted matrix output for spatial interaction verification:
 
