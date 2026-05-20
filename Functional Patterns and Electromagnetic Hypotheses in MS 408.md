@@ -43,7 +43,7 @@ To bridge the gap between illustration and physical resonance, a scaling constan
 #### Power Density and High-Q Stabilization:
 The system suggests a power mechanism utilizing subterranean mechanical stress. Energy harvesting is modeled through transient stress ($dS/dt$) converted via the piezoelectric effect:
 $$V = g \cdot S \cdot t$$
-*(where $t$ represents the geometric thickness constraint of the substrate to isolate it from the temporal derivative $dt$)*.
+*(where t represents the geometric thickness constraint of the substrate to isolate it from the temporal derivative dt)*.
 
 To maintain a positive energy balance, the system operates in a Capacitive Accumulation Mode (Duty Cycle), where store charge and discharge in high-power 12.5 Hz pulses intermittently. By discharging through high-conductivity biomineralized traces ($\rho < 10^{-2}\ \Omega\cdot\text{m}$), the system maintains a High-Q Factor, minimizing losses in the biotic medium.
 
