@@ -1,8 +1,12 @@
 # Biotic Hardware Synthesis: A Computational Framework for Bio-Inspired ELF Resonant Architectures
 
-This repository implements a generative morpho-topological simulation model, not a physical system model. It presents a **computational and exploratory framework** for modeling Biotic Hardware Architectures using lumped-element network representations, in which morphological structures (derived from MS 408 / Voynich Manuscript) are treated as generative inputs for abstract electromagnetic network modeling in Extremely Low Frequency (ELF) regimes and Schumann-resonance-scale dynamics.
+This repository presents a **computational framework for network-based simulation in Extremely Low Frequency (ELF) regimes**, using morphological datasets as structured inputs for abstract graph-based and lumped-element system modeling.
 
-The framework is strictly interpretative: it does **not assume physical implementation of biological electromagnetic systems**, but instead investigates whether complex morphological datasets can function as a **generative structural substrate for network-based simulation models**.
+It implements a generative approach in which morphological structures (derived from MS 408 / Voynich Manuscript) are mapped into simplified electromagnetic analogues, enabling the study of their behavior within coupled-oscillator and network simulation frameworks.
+
+The system is strictly computational and interpretative. It does not represent a physical or biological implementation, but instead explores whether complex morphological patterns can serve as consistent generative structures for abstract network topology construction and simulation.
+
+The framework is intended for exploratory modeling, sensitivity analysis, and structural experimentation in systems inspired by network physics and morphological computation. It further situates these simulations within a computational electromagnetics context, where model consistency and structural validity can be examined through numerical electromagnetic solvers such as HFSS or CST.
 
 ---
 
