@@ -1,11 +1,11 @@
 ### Note on Research Methodology and Transparency
 
-This analysis is a formal independent investigation into the functional isomorphism of MS 408. It departs from linguistic decryption to approach the manuscript’s morphology as a deterministic hardware schematic. The findings establish a modular architecture where geometric motifs are validated as operational templates for Near-Field Magnetic Induction (NFMI) and Galvanic Conduction systems.
+This repository implements a generative morpho-topological simulation framework that maps morphological structures into abstract network representations for exploratory computational modeling. It is strictly confined to structural and topological abstraction and does not model, reconstruct, or validate physical electromagnetic behavior in biological systems.
 
 # Technical Analysis MS 408: The Biotic Inductive Hypothesis
 
 ### I. REVERSE ENGINEERING PREMISE
-This study evaluates the botanical iconography of MS 408 as a conceptual design framework, where recurrent morphological motifs are analyzed as potential templates for electromagnetic structures optimized by bio-inspired geometric constraints. The system's coherence is validated through isomorphism: illustrated elements correspond to functional blocks of a Near-Field Magnetic Induction (NFMI) transmission system. To ensure objectivity, this mapping follows strict geometric criteria—such as bilateral symmetry ratios and spirality indices—that correlate directly to specific electrical parameters.
+This study evaluates the botanical iconography of MS 408 as a conceptual design framework, where recurrent morphological motifs are analyzed as potential templates for electromagnetic structures optimized by bio-inspired geometric constraints. The system’s coherence is evaluated through structural isomorphism, where illustrated elements are mapped to functional analogs of a Near-Field Magnetic Induction (NFMI) transmission architecture. This mapping is purely representational and serves as a parameterization scheme for abstract network simulation.
 
 #### Note on Conceptual Architecture:
 This project utilizes the MS 408 as a systematic geometric library, mapping its sections to a modern transmitter block diagram:
