@@ -172,6 +172,8 @@ Instead, it provides:
 - A structural mapping methodology  
 - A platform for exploratory and interdisciplinary research  
 
+All physical and engineering terminology used in this repository is intended strictly as computational analogy within a simulation framework, and should not be interpreted as empirical, biological, or experimentally validated correspondence.
+
 ---
 
 ## Voynich Manuscript Reference
