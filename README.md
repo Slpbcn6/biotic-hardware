@@ -25,6 +25,21 @@ Simulation baseline:
 
 ---
 
+## Dataset Rationale (MS 408)
+
+MS 408 (Voynich Manuscript) is used in this project as a morphological dataset.
+
+The choice is not based on any assumed historical, physical, or scientific property of the manuscript. Instead, MS 408 is used because it provides a highly complex and ambiguous visual structure that is useful for testing whether abstract morphological patterns can be mapped into computational network representations.
+
+This makes the dataset function as:
+- a high-complexity visual benchmark
+- a non-semantic structured morphology source
+- a stress-test for abstraction and mapping methods
+
+Other datasets with similar structural complexity (e.g. botanical diagrams, synthetic fractals, or procedural geometry) could be used under the same framework.
+
+---
+
 ## Propagation and Signal Flow (Conceptual Model)
 
 The manuscript-inspired structures are interpreted here as a **conceptual mapping layer**, not a historical or physical claim:
