@@ -256,4 +256,12 @@ While the current model achieves internal structural coherence, the transition t
 * **Quality Factor ($Q$):** Impact of substrate and mineralized trace properties on signal purity.
 * **Beamforming Profile:** Analysis of the phase-coherent pattern ($R_r \rightarrow 0$ vs $R_{loss}$).
 
-*License: CC BY 4.0. Original work by Santi López.*
+### Note on Mode Conversion Efficiency:
+The proposed conversion from inductive NFMI flux to Leaky-Wave radiation via synchronized ionic flow remains the most speculative functional block of the architecture. The physical efficiency of this conversion requires further quantification of the biotic waveguides' dielectric properties. Future computational validation via HFSS/CST is essential to determine if the illustrated botanical morphologies can provide the necessary phase-velocity discontinuities required for efficient mode transition.
+
+While this study utilizes the morphologies of MS 408 as a case study, the model serves as a conceptual framework for modular biotic architectures. The objective is to evaluate whether these geometric patterns—regardless of the specific efficiency of the manuscript's historical illustrations—can provide theoretical insights into biomineralization, NFMI coupling, or thermal management for future organic hardware research.
+
+By integrating fractal geometries and phased array dynamics, the model transitions from a material-dependent hypothesis to a system-wide electromagnetic architecture. This ensures the 12.5 Hz resonance is physically achievable within biological constraints, making the framework compatible with modern bio-inspired simulation tools.
+
+### Order-of-Magnitude Constraints and System Viability:
+A primary challenge for the proposed architecture is the efficiency-loss ratio at 12.5 Hz. Given the ultra-subwavelength nature of the biological apertures, the estimated radiation resistance (Rr) is significantly lower than the cumulative ohmic and substrate losses (Rloss), characterized by Rᵣ → 0. This constraint implies a very low individual radiation efficiency, suggesting that signal detectability relies not on single-unit power, but on the massive constructive interference of a synchronized Phased Array. This order-of-magnitude gap serves as a baseline for future computational modeling to determine the minimum array density required for far-field propagation.
