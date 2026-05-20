@@ -1,8 +1,8 @@
 # Biotic Hardware Synthesis: A Computational Framework for Bio-Inspired ELF Resonant Architectures
 
-This project presents a **computational and exploratory framework** for modeling Biotic Hardware Architectures using lumped-element network representations. The system investigates possible functional correspondences between morphological structures (derived from MS 408 / Voynich Manuscript) and abstract electromagnetic network models, with a focus on Extremely Low Frequency (ELF) regimes and Schumann-resonance-scale dynamics.
+This repository implements a generative morpho-topological simulation model, not a physical system model. It presents a **computational and exploratory framework** for modeling Biotic Hardware Architectures using lumped-element network representations, in which morphological structures (derived from MS 408 / Voynich Manuscript) are treated as generative inputs for abstract electromagnetic network modeling in Extremely Low Frequency (ELF) regimes and Schumann-resonance-scale dynamics.
 
-The framework does **not assume physical implementation of biological electromagnetic systems**, but instead explores whether complex morphological datasets can be used as a **generative structural source for network-based simulation models**.
+The framework is strictly interpretative: it does **not assume physical implementation of biological electromagnetic systems**, but instead investigates whether complex morphological datasets can function as a **generative structural substrate for network-based simulation models**.
 
 ---
 
