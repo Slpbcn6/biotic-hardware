@@ -214,8 +214,8 @@ While the current model achieves internal structural coherence, the transition t
   * **Note:** Positioning represents calibrated set-points for system equilibrium.
 
 * **Piezoelectric Supply (Energy Harvesting):**
-  $$V = g \cdot S \cdot t$$
-  *(Note: Mechanical-to-Electrical conversion from subterranean stress ($dS/dt$), where $t$ represents the geometric thickness constraint of the substrate)*.
+  V = g · S · t  
+  *(Note: Mechanical-to-Electrical conversion from subterranean stress (dS/dt), where t represents the geometric thickness constraint of the substrate).*
 
 * **Thermal Management (Heat Transfer):**
   $$\frac{dQ}{dt} = \frac{dm}{dt} \cdot C_p \cdot (T_{out} - T_{in})$$
