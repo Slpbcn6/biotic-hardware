@@ -34,7 +34,7 @@ Dense root structures are analyzed as static memory networks for block data enco
 Structures mimicking bandpass filters isolate a stable carrier wave at 12.5 Hz. Specific leaf serrations and bilateral symmetries indicate a High-Q Factor, minimizing harmonic distortion and ensuring signal purity. This filtering efficiency is supported by the theory of selective biomineralization: the deposition of metallic sediments within the biotic structure to create conductive traces with controlled impedance.
 
 #### Geometric Inductance (Loading Coils):
-The spiral root morphologies are identified as tuned inductors rather than biological anchors. To align with the Schumann Resonance (approx. 12.5 Hz) within a compact physical aperture, the Inductance ($L$) must satisfy:
+The spiral root morphologies are modeled as tuned inductors rather than biological anchors. To align with the Schumann Resonance (approx. 12.5 Hz) within a compact physical aperture, the Inductance ($L$) must satisfy:
 $$L = \frac{\mu_0 \cdot \mu_r \cdot N^2 \cdot A}{l_{eff}}$$
 The resonance at ELF frequencies (12.5 Hz) is achieved through Fractal Inductance. The root morphologies are modeled as Fractal Antennas, where the effective length ($l_{eff}$) is the sum of recursive branching iterations. This geometric complexity allows the system to reach the necessary inductance ($L = \frac{\mu_0 \cdot \mu_r \cdot N^2 \cdot A}{l_{eff}}$) via space-filling factors (e.g., Hilbert or Peano curves), optimizing Near-Field Magnetic Induction (NFMI) coupling within a compact biotic volume.
 
@@ -161,6 +161,18 @@ While the current model achieves internal structural coherence, the transition t
 ---
 
 ### Appendix A: Quantitative Functional Isomorphism Table
+
+### Appendix A: Quantitative Functional Isomorphism Table
+
+#### Theoretical & Simulation Framework
+Before establishing the electrical and structural metrics, the computational execution relies on two foundational boundary parameters defined for stability and phenomenological representation:
+
+* **Computational Coupling Parameter ($K_{\text{DIPOLE}}$):** A numerical scaling parameter used in the mutual inductance model. It defines the global amplitude of the $1/r^3$ interaction kernel and is used to ensure numerical stability and consistent comparative behavior across simulations. It does not represent a physical constant and is not derived from electromagnetic properties of a physical medium.
+* **Modeling Assumptions (Material Parameters):** The effective relative permeability $\mu_r$ is treated as a phenomenological parameter representing combined material and structural amplification effects within the modeled system. It is used as a modeling construct and is not constrained to physically realizable material limits.
+
+---
+
+#### I. Electrical & Inductive Metrics (Core System)
 
 #### I. Electrical & Inductive Metrics (Core System)
 
