@@ -4,13 +4,23 @@ from pathlib import Path
 
 ROOT = Path(__file__).parent
 
-def run_script(relative_path):
-    script_path = ROOT / relative_path
-    subprocess.Popen([sys.executable, str(script_path)])
+
+def run(script):
+    print(f"\nRunning {script}")
+    subprocess.run([sys.executable, str(ROOT / script)], check=True)
+
 
 def main():
-    run_script("data/node_resonance.py")
-    run_script("data/node_coupling.py")
+    print("\n--- NORMALIZED SPATIAL SENSITIVITY PIPELINE ---")
+
+    run("data/node_coupling.py")
+    run("data/plot_sensitivity.py")
+
+    print("\n--- COMPLETE ---")
+    print("Outputs:")
+    print("- simulation_results.csv")
+    print("- sensitivity_analysis.png")
+
 
 if __name__ == "__main__":
     main()

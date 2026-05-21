@@ -1,17 +1,103 @@
 import numpy as np
+import matplotlib.pyplot as plt
+import csv
+import os
 
-L_INDUCTANCE = 1.0              
-C_CAPACITANCE = 162e-6          
-f_resonance = 12.5 
+# Ensure output directory exists
+os.makedirs('data', exist_ok=True)
 
-R_loss_range = np.linspace(100.0, 1000.0, 100)
-R_radiation = 1e-9 
 
-efficiency = R_radiation / (R_radiation + R_loss_range)
+def get_positions(d):
+    """
+    2D square array geometry.
+    Node spacing = d controls physical aperture size.
+    """
+    return np.array([
+        [0.0, 0.0, 0.0],
+        [d,   0.0, 0.0],
+        [0.0, d,   0.0],
+        [d,   d,   0.0]
+    ])
 
-print("--- NODE-LEVEL EFFICIENCY PARAMETRIC ANALYSIS ---")
-print(f"Base Coupling Frequency: {f_resonance} Hz")
-print(f"Theoretical Radiation Resistance (Rr): {R_radiation} Ohms")
-print(f"Maximum individual radiation efficiency: {efficiency[0]:.2e}")
-print(f"Minimum individual radiation efficiency: {efficiency[-1]:.2e}")
-print("Model conclusion: Systemic Array gain is strictly required.")
+
+def compute_array_factor(positions, phases, theta, wavelength):
+    """
+    Array Factor with physically meaningful phase propagation:
+    AF = sum exp(j (k r·u + φ))
+    """
+    k = 2 * np.pi / wavelength
+    af = np.zeros_like(theta, dtype=complex)
+
+    for pos, phi in zip(positions, phases):
+        # Unit direction vector sweep
+        spatial_term = k * (
+            pos[0] * np.cos(theta) +
+            pos[1] * np.sin(theta)
+        )
+        af += np.exp(1j * (spatial_term + phi))
+
+    return np.abs(af) / len(positions)
+
+
+def extract_metrics(af):
+    """
+    Coherence metrics of interference structure.
+    """
+    peak = np.max(af)
+    mean = np.mean(af)
+
+    coherence = peak / mean if mean > 0 else 0.0
+
+    return peak, coherence
+
+
+# -----------------------------
+# Physical sweep parameters
+# -----------------------------
+
+distances_sweep = [0.1, 0.2, 0.3, 0.4]
+
+phases = [0, np.pi/2, np.pi, 3*np.pi/2]
+
+# Effective wavelength (ELF-inspired but now meaningful ratio control)
+frequency = 12.5
+c = 3e8
+wavelength = c / frequency
+
+theta = np.linspace(0, 2*np.pi, 200)
+
+results = []
+
+print("Running physically consistent sensitivity analysis...")
+
+# -----------------------------
+# Sweep execution
+# -----------------------------
+for d in distances_sweep:
+
+    positions = get_positions(d)
+
+    af = compute_array_factor(
+        positions,
+        phases,
+        theta,
+        wavelength
+    )
+
+    peak, coherence = extract_metrics(af)
+
+    results.append([d, peak, coherence])
+
+    print(f"d={d:.2f} | peak={peak:.4f} | coherence={coherence:.4f}")
+
+
+# -----------------------------
+# Export results
+# -----------------------------
+with open('data/simulation_results.csv', 'w', newline='') as f:
+    writer = csv.writer(f)
+    writer.writerow(['Distance', 'Peak_AF', 'Coherence_Ratio'])
+    writer.writerows(results)
+
+print("\nAnalysis complete.")
+print("Results saved to data/simulation_results.csv")

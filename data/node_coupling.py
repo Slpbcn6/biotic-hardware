@@ -1,64 +1,76 @@
 import numpy as np
-import matplotlib.pyplot as plt
+import csv
+import os
 
-L_AUTO = 1.0                
-K_DIPOLE = 0.004            
-frequency = 12.5           
-c = 3e8                     
-wavelength = c / frequency 
-k_wave = 2 * np.pi / wavelength
+os.makedirs("data", exist_ok=True)
 
-node_positions = np.array([
-    [0.0, 0.0, 0.0],
-    [0.2, 0.0, 0.0],
-    [0.0, 0.2, 0.0],
-    [0.2, 0.2, 0.0]
-])
 
-n_nodes = len(node_positions)
+def compute_array_factor(d):
+    """
+    Simplified coherent system model.
+    Returns peak response and coherence ratio.
+    """
 
-M_matrix = np.zeros((n_nodes, n_nodes))
-for i in range(n_nodes):
-    for j in range(n_nodes):
-        if i == j:
-            M_matrix[i, j] = L_AUTO
-        else:
-            r_ij = np.linalg.norm(node_positions[i] - node_positions[j])
-            M_matrix[i, j] = K_DIPOLE / (r_ij**3)
+    theta = np.linspace(0, 2 * np.pi, 200)
 
-phases = np.array([0, np.pi/2, np.pi, 3*np.pi/2]) 
-amplitudes = np.ones(n_nodes)                    
-w = amplitudes * np.exp(1j * phases)              
+    k = 0.004
+    phases = [0, np.pi/2, np.pi, 3*np.pi/2]
 
-theta = np.linspace(-np.pi, np.pi, 360)
-array_factor = np.zeros_like(theta, dtype=complex)
+    # geometry
+    positions = np.array([
+        [0, 0, 0],
+        [d, 0, 0],
+        [0, d, 0],
+        [d, d, 0]
+    ])
 
-for idx, t in enumerate(theta):
-    k_vec = k_wave * np.array([np.sin(t), np.cos(t), 0])
-    phasors = 0.0
-    for n in range(n_nodes):
-        spatial_phase = np.dot(k_vec, node_positions[n])
-        phasors += w[n] * np.exp(1j * spatial_phase)
-    array_factor[idx] = phasors
+    af = np.zeros_like(theta, dtype=complex)
 
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6), dpi=150, constrained_layout=True)
+    for pos, phi in zip(positions, phases):
+        spatial = k * (pos[0] * np.cos(theta) + pos[1] * np.sin(theta))
+        af += np.exp(1j * (spatial + phi))
 
-ax1.scatter(node_positions[:, 0], node_positions[:, 1], color='red', s=200, zorder=3)
-for i, (x, y, _) in enumerate(node_positions):
-    ax1.text(x+0.01, y+0.01, f"N{i+1}\n$\\Phi$={np.degrees(phases[i]):.0f}°", fontsize=9, fontweight='bold')
-ax1.set_title("Network Topology (4 Nodes)")
-ax1.set_xlabel("X Axis (meters)")
-ax1.set_ylabel("Y Axis (meters)")
-ax1.grid(True)
-ax1.set_xlim(-0.1, 0.3)
-ax1.set_ylim(-0.1, 0.3)
+    magnitude = np.abs(af)
 
-ax2.plot(theta, np.abs(array_factor), color='purple', linewidth=2)
-ax2.set_title("Array Factor (AF) - Coherent Interference")
-ax2.set_xlabel("Angle $\\theta$ (radians)")
-ax2.set_ylabel("Resultant Field Magnitude")
-ax2.grid(True)
+    peak = np.max(magnitude)
+    mean = np.mean(magnitude)
 
-fig.suptitle("Computational Modeling of Distributed Phased Array (12.5 Hz)", fontsize=14, fontweight='bold')
-plt.savefig("data/phased_array_output.png")
-plt.show()
+    coherence_ratio = peak / (mean + 1e-12)
+
+    return peak, coherence_ratio
+
+
+def run_sweep():
+    print("Running normalized sensitivity analysis...")
+
+    distances = np.linspace(0.1, 2.0, 30)
+
+    results = []
+
+    for d in distances:
+        peak, coherence = compute_array_factor(d)
+        d_norm = d / np.max(distances)
+        merit = peak * coherence
+
+        print(f"d={d:.2f} | peak={peak:.6f} | coherence={coherence:.6f} | merit={merit:.6e}")
+
+        results.append([d, d_norm, peak, coherence, merit])
+
+    with open("data/simulation_results.csv", "w", newline="") as f:
+        writer = csv.writer(f)
+
+        writer.writerow([
+            "Distance",
+            "d_norm",
+            "Peak_AF",
+            "Coherence_Ratio",
+            "Merit_Function"
+        ])
+
+        writer.writerows(results)
+
+    print("\nSaved: data/simulation_results.csv")
+
+
+if __name__ == "__main__":
+    run_sweep()

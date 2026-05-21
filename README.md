@@ -2,11 +2,19 @@
 
 This repository presents a **computational framework for network-based simulation in Extremely Low Frequency (ELF) regimes**, using morphological datasets as structured inputs for abstract graph-based and lumped-element system modeling.
 
-It implements a generative approach in which morphological structures (derived from MS 408 / Voynich Manuscript) are mapped into simplified electromagnetic analogues, enabling the study of their behavior within coupled-oscillator and network simulation frameworks.
+It implements a generative computational pipeline in which morphological structures (derived from MS 408 / Voynich Manuscript) are mapped into simplified electromagnetic analogues. These mappings enable the study of structural and dynamical properties within coupled-oscillator and network-based simulation frameworks.
 
-The system is strictly computational and interpretative. It does not represent a physical or biological implementation, but instead explores whether complex morphological patterns can serve as consistent generative structures for abstract network topology construction and simulation.
+The system is strictly computational and interpretative. It does not represent a physical or biological implementation. Instead, it provides a structured environment for evaluating whether complex morphological patterns can be encoded as consistent inputs for abstract network topology construction and numerical simulation.
 
-The framework is intended for exploratory modeling, sensitivity analysis, and structural experimentation in systems inspired by network physics and morphological computation. It further situates these simulations within a computational modeling context, where structural consistency can be analyzed using numerical electromagnetic solvers such as HFSS or CST, following an explicit embedding of the abstract network representation into a physically defined geometry and material parameter space.
+The framework is designed for exploratory modeling, parametric sensitivity analysis, and structural experimentation in systems inspired by network physics and morphological computation. It situates these simulations within a computational context where structural consistency is evaluated using numerical electromagnetic models and lumped-element approximations.
+
+---
+
+## Requirements
+
+Install dependencies before running the pipeline:
+
+    pip install -r requirements.txt
 
 ---
 
@@ -16,21 +24,25 @@ To run the full computational simulation pipeline:
 
     python run.py
 
-This command executes the complete workflow in sequence:
+This executes the complete workflow:
 
-- Node-level efficiency parametric analysis ($R_r \rightarrow 0$ limits)
-- Distributed Phased Array simulation (Beamforming and spatial phase switching)
-- Generation of the coherent interference pattern (Array Factor)
+- Node-level efficiency parametric analysis (radiation resistance limit regime $R_r \rightarrow 0$)
+- Distributed Phased Array simulation (coherent field superposition via spatial phase coupling)
+- Parametric sensitivity analysis of system response under geometric scaling
 
-The pipeline automatically outputs strict numerical logs to the console and generates the high-precision spatial interference visualization.
+Outputs:
+
+- Console logs of simulation results
+- `data/simulation_results.csv`
+- `data/sensitivity_analysis.png`
 
 ---
 
 ## Key Research Points
 
-- **Perspective:** Application of signal engineering, applied physics modeling, and bio-inspired computational design to morphological datasets extracted from MS 408.
-- **Model:** Modular conceptual architecture based on Near-Field Magnetic Induction (NFMI) network representations using lumped-element approximations and coupled oscillator models.
-- **Methodology:** Structural mapping of geometric patterns into graph-based electromagnetic analogues, intended for computational simulation and sensitivity analysis rather than direct physical interpretation.
+- **Perspective:** Application of signal processing, electromagnetic modeling, and bio-inspired computational design to morphological datasets extracted from MS 408.
+- **Model:** Network-based representation using Near-Field Magnetic Induction (NFMI) analogies and coupled oscillator systems.
+- **Methodology:** Mapping of morphological geometry into abstract electromagnetic network representations for simulation and parameter exploration.
 
 Simulation baseline:  
 [/data/parameters.json](./data/parameters.json)
@@ -39,36 +51,39 @@ Simulation baseline:
 
 ## Objective
 
-- **Computational Hypothesis:** Explore whether morphological datasets (such as MS 408 illustrations) can serve as structured input for generating consistent electromagnetic network topologies in simulation environments.
-- **Open Exploration:** Provide reproducible computational tools for simulation, critique, and extension by the research community.
-- **Interdisciplinary Inquiry:** Bridge concepts from systems engineering, network physics, and computational morphology for exploratory modeling.
+- Investigate whether morphological datasets can be used as structured inputs for generating consistent electromagnetic network representations.
+- Provide a reproducible computational framework for simulation and sensitivity analysis.
+- Enable systematic comparison of geometric parameterizations under a unified modeling approach.
 
 ---
 
 ## Dataset Rationale (MS 408)
 
-MS 408 (Voynich Manuscript) is used in this project as a morphological dataset.
+MS 408 (Voynich Manuscript) is used as a morphological dataset.
 
-The choice is not based on any assumed historical, physical, or scientific property of the manuscript. Instead, MS 408 is used because it provides a highly complex and ambiguous visual structure that is useful for testing whether abstract morphological patterns can be mapped into computational network representations.
+The dataset is not interpreted in historical or semantic terms. It is used strictly as a high-complexity structural input for testing abstraction and mapping methods.
 
-This makes the dataset function as:
-- a high-complexity visual benchmark
-- a non-semantic structured morphology source
-- a stress-test for abstraction and mapping methods
+Within this framework, MS 408 functions as:
 
-Other datasets with similar structural complexity (e.g. botanical diagrams, synthetic fractals, or procedural geometry) could be used under the same framework.
+- a high-complexity structural benchmark
+- a non-semantic morphological input source
+- a testbed for robustness of network generation methods
+
+Alternative datasets with similar structural properties (synthetic fractals, botanical diagrams, procedural geometries) are compatible with this framework.
 
 ---
 
 ## Propagation and Signal Flow (Conceptual Model)
 
-The manuscript-inspired structures are interpreted here as a **conceptual mapping layer**, not a historical or physical claim:
+Morphological structures are mapped into abstract network components as follows:
 
-- **Source / Grounding Grid:** Abstract representation of baseline node constraints in a network system.
-- **Modulation and Filtering:** Structural symmetries mapped to frequency-selective behavior in lumped-element analogies.
-- **Inductive Coupling:** Spiral and branching geometries modeled as inductive coupling motifs in NFMI-inspired networks.
-- **Phase Synchronization:** Circular and radial structures represented as phase-coupled oscillator arrangements.
-- **Material Layering:** Textural differentiation interpreted as parameter variation in simulation environments (e.g., damping, coupling, or loss factors).
+- **Source / Grounding Grid:** Baseline node constraints in the network model.
+- **Modulation and Filtering:** Structural symmetries mapped to frequency-selective behavior in lumped-element systems.
+- **Inductive Coupling:** Geometric branching interpreted as coupling motifs in NFMI-inspired networks.
+- **Phase Synchronization:** Radial structures represented as phase-coupled oscillators.
+- **Material Layering:** Structural variation mapped to parameter heterogeneity (loss, damping, coupling strength).
+
+These mappings are used strictly for computational simulation.
 
 ---
 
@@ -78,54 +93,121 @@ The repository includes a reproducible numerical model located at:
 
 [/data/node_resonance.py](./data/node_resonance.py)
 
-This script evaluates the physical viability bottleneck defined in the theoretical framework. At an ELF resonance of 12.5 Hz, metric-scale biological apertures operate in an ultra-subwavelength regime, causing radiation resistance to tend toward zero ($R_r \rightarrow 0$).
+This script evaluates the efficiency regime under ELF conditions, where radiation resistance approaches limiting values ($R_r \rightarrow 0$).
 
-### Core Physics & Mathematical Inputs
+### Model Definition
 
-The simulation parametrically evaluates the efficiency equation:
+The efficiency metric is defined as:
 
 $$
 \eta = \frac{R_r}{R_r + R_{loss}}
 $$
 
-With fixed analytical constraints:
-- **Radiation Resistance Limit ($R_r$):** ~1e-9 Ω  
-- **Ohmic & Substrate Losses ($R_{loss}$):** 100 Ω - 1000 Ω  
+Parameters:
 
-**Conclusion of the Model:** The script rigorously outputs that individual radiation efficiency falls strictly between $1.00 \times 10^{-11}$ and $1.00 \times 10^{-12}$. This computational proof validates the core hypothesis: single-unit propagation is physically unviable, making systemic Array gain strictly required.
+- $R_r \approx 1 \times 10^{-9} \ \Omega$
+- $R_{loss} \in [100, 1000] \ \Omega$
+
+### Output
+
+The simulation produces efficiency values in the order of:
+
+- $10^{-11}$ to $10^{-12}$
+
+This characterizes the low-efficiency regime of isolated-node emission under the assumed constraints.
 
 ---
 
 ## Numerical Model: Distributed Phased Array (Beamforming)
 
-To resolve the efficiency limit established by the previous module, the repository implements a spatial phase-coupling model:
+The system is extended into a spatial network model:
 
 [/data/node_coupling.py](./data/node_coupling.py)
 
-This script transitions the system from an isolated node to a **Distributed Phased Array**, computing the coherent superposition of electromagnetic fields (Array Factor) using an N-PSK modular phase distribution.
+This module computes coherent field superposition using a phased array formulation.
 
-### Spatial Configuration & Phase Switching
+### Spatial Configuration
 
-The system is defined on a 2D square grid (0.2 m spacing) with a fixed near-field dipolar coupling constant ($K_{dipole} = 0.004$). Each node is assigned a specific spatial excitation phase:
+Nodes are arranged on a 2D grid with spacing parameter $d \in [0.1, 0.4]$ meters.
+
+Phase assignments:
+
 - Node 1: 0°
 - Node 2: 90°
 - Node 3: 180°
 - Node 4: 270°
 
-### Analysis of the Coherent Interference Pattern
+### Outputs
 
-<img src="data/phased_array_output.png" alt="Phased Array Beamforming Simulation" width="100%"/>
-
-The resulting computational simulation demonstrates:
-
-1. **Constructive Interference:** Instead of isotropic propagation, the phase delays structurally align the vectors, generating coherent radiation lobes.
-2. **Systemic Gain Extraction:** The simulation mathematically proves that massive synchronized arrays can bypass the individual $R_r \rightarrow 0$ bottleneck through spatial sumation, validating the network topology mapped from the MS 408 morphology.
+- Array Factor (AF)
+- Peak field amplitude
+- Mean field distribution
+- Coherence ratio
+- CSV dataset for parametric sweep
 
 ---
 
-## Relevant Literature (Contextual References)
+## Sensitivity Analysis
 
-The following works provide general background for the modeling approaches used in this project:
+A parametric sweep evaluates system response under variation of node spacing $d$.
+
+The analysis computes:
+
+- Peak Array Factor
+- Coherence ratio
+- Derived structural performance metrics
+
+Outputs:
+
+- `data/simulation_results.csv`
+- `data/sensitivity_analysis.png`
+
+---
+
+## Integration: Theory vs Computational Implementation
+
+This repository implements a computational validation of the **coherence and beamforming behavior** defined in the theoretical model.
+
+The associated document [Functional Patterns and Electromagnetic Hypotheses in MS 408.md](./docs/Functional%20Patterns%20and%20Electromagnetic%20Hypotheses%20in%20MS%20408.md) defines a **theoretical parameter space for the full system model**, including structural variables such as permeability coefficients, coupling regimes, and energy-transfer analogues.
+
+The README specifies the implemented computational subset of this space.
+
+The current implementation focuses exclusively on the **network synchronization kernel**, which evaluates:
+
+- phase coherence  
+- distributed coupling stability  
+- emergent beamforming behavior in graph-based oscillator networks  
+
+Modules related to energy conversion (e.g. plasma-like transitions, piezoelectric-like coupling) are treated as **architectural specifications** within the theoretical parameter space and are not instantiated in the current simulation layer.
+
+This separation reflects a **layered abstraction model**, where:
+
+- the theoretical model defines the **full parameterized system space**  
+- the implementation evaluates a **restricted subset of dynamical behaviors** within that space   
+
+---
+
+## Important Clarification
+
+This project is a **computational and conceptual modeling framework**.
+
+It does not claim:
+
+- Historical or physical interpretation of MS 408
+- Biological or physical implementation of proposed systems
+- Experimental validation of electromagnetic behavior in biological structures
+
+It provides:
+
+- A reproducible simulation environment
+- A structural abstraction framework
+- A sensitivity analysis pipeline for exploratory modeling
+
+All terminology is used strictly within a computational and analogical context.
+
+---
+
+## References
 
 - Near-Field Magnetic Induction Communication (NFMI) – A Review  
   https://doi.org/10.1016/j.comnet.2020.107548  
@@ -144,29 +226,3 @@ The following works provide general background for the modeling approaches used 
 
 - Piezoelectric Properties of Cellulose-Based Materials  
   https://doi.org/10.1016/j.carbpol.2025.124667  
-
----
-
-## Important Clarification
-
-This project is a **computational and conceptual modeling framework**.
-
-It does NOT claim:
-- Historical technological interpretation of MS 408  
-- Physical existence of the proposed “biotic hardware systems”  
-- Experimental validation of electromagnetic properties in biological structures  
-
-Instead, it provides:
-- A reproducible simulation environment  
-- A structural mapping methodology  
-- A platform for exploratory and interdisciplinary research  
-
-All physical and engineering terminology used in this repository is intended strictly as computational analogy within a simulation framework, and should not be interpreted as empirical, biological, or experimentally validated correspondence.
-
----
-
-## Voynich Manuscript Reference
-
-MS 408 – Voynich Manuscript  
-Beinecke Rare Book & Manuscript Library, Yale University  
-https://beinecke.library.yale.edu/collections/highlights/voynich-manuscript
