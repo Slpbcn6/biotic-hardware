@@ -6,7 +6,7 @@ It implements a generative approach in which morphological structures (derived f
 
 The system is strictly computational and interpretative. It does not represent a physical or biological implementation, but instead explores whether complex morphological patterns can serve as consistent generative structures for abstract network topology construction and simulation.
 
-The framework is intended for exploratory modeling, sensitivity analysis, and structural experimentation in systems inspired by network physics and morphological computation. It further situates these simulations within a computational electromagnetics context, where model consistency and structural validity can be examined through numerical electromagnetic solvers such as HFSS or CST.
+The framework is intended for exploratory modeling, sensitivity analysis, and structural experimentation in systems inspired by network physics and morphological computation. It further situates these simulations within a computational modeling context, where structural consistency can be analyzed using numerical electromagnetic solvers such as HFSS or CST, following an explicit embedding of the abstract network representation into a physically defined geometry and material parameter space.
 
 ---
 
