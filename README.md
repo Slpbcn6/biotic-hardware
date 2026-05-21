@@ -10,6 +10,22 @@ The framework is intended for exploratory modeling, sensitivity analysis, and st
 
 ---
 
+## Quick Start
+
+To run the full computational simulation pipeline:
+
+    python run.py
+
+This command executes the complete workflow in sequence:
+
+- ELF RLC resonance simulation (node-level frequency response)
+- Coupled network interaction model (mutual inductance tensor)
+- Generation and display of numerical visualizations
+
+Each module runs automatically and opens its corresponding visualization upon execution.
+
+---
+
 ## Key Research Points
 
 - **Perspective:** Application of signal engineering, applied physics modeling, and bio-inspired computational design to morphological datasets extracted from MS 408.
