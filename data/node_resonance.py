@@ -38,4 +38,5 @@ ax2.set_xlim(1.0, 30.0)
 ax2.grid(True)
 
 plt.tight_layout()
+import matplotlib.pyplot as plt
 plt.show()

@@ -40,4 +40,5 @@ cbar = plt.colorbar(im)
 cbar.set_label("Mutual Inductance (Henries)")
 
 plt.tight_layout()
+import matplotlib.pyplot as plt
 plt.show()
