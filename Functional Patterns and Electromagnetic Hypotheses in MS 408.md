@@ -115,15 +115,11 @@ The containers (jars) represent precursors for modulating the Charge Carrier Den
 #### Resistivity ($\rho$) and Solid-State Transition:
 The containers (jars) represent precursors for a mineral replacement of the cellulose matrix. By transitioning from a living cell to a Mineralized Ferrite Scaffold, the target dopant concentration ($n$) between $10^{18}$ and $10^{20}\ \text{atoms/cm}^3$ achieves a resistivity $\rho < 10^{-2}\ \Omega\cdot\text{m}$ without biological rejection. This transforms the botanical schematic into a Solid-State Biotic Hardware.
 
-#### Magnetic Permeability ($\mu_r$) Enhancement:
-The biomineralization process targets the synthesis of high-permeability Manganese-Zinc (MnZn) ferrites within the biotic core.
-* **Mechanism:** By achieving a controlled deposition of ferrimagnetic sediments, the relative permeability ($\mu_r$) is elevated to: $\mu_r \approx 1.25 \times 10^6$.
-* **Function:** This localized magnetic flux concentration, compensating for high dielectric permittivity ($\epsilon_r$), allows the inductive root structures to satisfy the resonance condition at 12.5 Hz within a compact biotic volume.
+#### Magnetic Permeability ($\mu_r$) Constraint:
+To satisfy the 12.5 Hz resonance condition within the modeled 1-meter macroscopic aperture ($k=100$), the computational framework requires an effective relative permeability of $\mu_r \approx 1.25 \times 10^6$. Rather than asserting this as an empirically realizable biomineralization metric, this value is established as a Theoretical Parameter Bound. It defines the extreme material parameter space required to sustain the abstract NFMI network topology. The localized synthesis of high-density Manganese-Zinc (MnZn) ferrites is modeled here strictly as the conceptual proxy to satisfy this mathematical necessity.
 
-#### Physical Basis for Scaling ($k=100$):
-The scaling constant $k=100$ is a direct technical requirement derived from Phase Velocity Reduction ($v_p$) within the doped biotic medium. For this constant to be physically valid, the relative permeability ($\mu_r$) must compensate for the high dielectric permittivity ($\epsilon_r \approx 80$) of the hydrated substrate. By achieving $\mu_r \approx 1.25 \times 10^6$ through high-density MnZn ferrite biomineralization, the effective wavelength ($\lambda_{eff}$) is contracted by a factor of 100:
-$$v_p = \frac{c}{\sqrt{\mu_r \cdot \epsilon_r}}$$
-This allows a 1-meter physical structure to resonate as a 100-meter vacuum aperture at 12.5 Hz.
+#### Parametric Basis for Scaling ($k=100$):
+The scaling constant $k=100$ is introduced as a mathematical requirement derived from the necessary Phase Velocity Reduction ($v_p$) within the modeled biotic medium. For the simulation to maintain internal topological coherence, the phenomenological permeability ($\mu_r$) must compensate for the high dielectric permittivity ($\epsilon_r \approx 80$) of a hydrated substrate. This theoretical compensation allows the computational model to mathematically contract the effective wavelength ($\lambda_{eff}$), enabling the simulated 1-meter structure to process the 12.5 Hz frequency constraint.
 
 #### Wavelength Contraction and Fractal Loading:
 While the phase velocity reduction ($v_p$) via MnZn ferrite doping contracts the effective wavelength ($\lambda_{eff}$) to the scale of kilometers, the final transition to "plant-scale" dimensions is achieved through High-Order Fractal Loading. The recursive branching of the root and foliar schematics acts as a space-filling delay line, increasing the electrical path length by several orders of magnitude within a compact volume.
