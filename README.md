@@ -1,12 +1,14 @@
 # Biotic Hardware Synthesis: A Computational Framework for Bio-Inspired ELF Resonant Architectures
 
-This repository presents a **computational framework for network-based simulation in Extremely Low Frequency (ELF) regimes**, using morphological datasets as structured inputs for abstract graph-based and lumped-element system modeling.
+This repository provides a reproducible computational framework for simulating structured network dynamics inspired by morphological datasets. It implements a full pipeline for parameter-driven simulation of coherence, phased-array behavior, and sensitivity analysis under geometric scaling, producing numerical outputs (CSV) and visualization artifacts (plots) from a single executable workflow.
+
+It operates in Extremely Low Frequency (ELF) regimes using morphological datasets as structured inputs for abstract graph-based and lumped-element system modeling.
 
 It implements a generative computational pipeline in which morphological structures (derived from MS 408 / Voynich Manuscript) are mapped into simplified electromagnetic analogues. These mappings enable the study of structural and dynamical properties within coupled-oscillator and network-based simulation frameworks.
 
-The system is strictly computational and interpretative. It does not represent a physical or biological implementation. Instead, it provides a structured environment for evaluating whether complex morphological patterns can be encoded as consistent inputs for abstract network topology construction and numerical simulation.
-
 The framework is designed for exploratory modeling, parametric sensitivity analysis, and structural experimentation in systems inspired by network physics and morphological computation. It situates these simulations within a computational context where structural consistency is evaluated using numerical electromagnetic models and lumped-element approximations.
+
+The system is strictly computational and interpretative. It does not represent a physical or biological implementation.
 
 ---
 

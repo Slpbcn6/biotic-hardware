@@ -4,19 +4,16 @@ import os
 
 os.makedirs("data", exist_ok=True)
 
-
 def compute_array_factor(d):
     """
     Simplified coherent system model.
     Returns peak response and coherence ratio.
     """
-
     theta = np.linspace(0, 2 * np.pi, 200)
 
     k = 0.004
     phases = [0, np.pi/2, np.pi, 3*np.pi/2]
 
-    # geometry
     positions = np.array([
         [0, 0, 0],
         [d, 0, 0],
@@ -39,24 +36,37 @@ def compute_array_factor(d):
 
     return peak, coherence_ratio
 
-
 def run_sweep():
-    print("Running normalized sensitivity analysis...")
+    print("\n===================================================")
+    print(" NORMALIZED COUPLED ARRAY ANALYSIS")
+    print("===================================================\n")
+
+    print("Initializing spatial parameter sweep...\n")
 
     distances = np.linspace(0.1, 2.0, 30)
 
     results = []
 
-    for d in distances:
+    for i, d in enumerate(distances):
         peak, coherence = compute_array_factor(d)
         d_norm = d / np.max(distances)
         merit = peak * coherence
 
-        print(f"d={d:.2f} | peak={peak:.6f} | coherence={coherence:.6f} | merit={merit:.6e}")
+        print(
+            f"[{i+1:02d}/30] "
+            f"d={d:.2f} | "
+            f"peak={peak:.6f} | "
+            f"coherence={coherence:.6f} | "
+            f"merit={merit:.6e}"
+        )
 
         results.append([d, d_norm, peak, coherence, merit])
 
-    with open("data/simulation_results.csv", "w", newline="") as f:
+    print("\nFinalizing dataset...")
+
+    output_path = "data/simulation_results.csv"
+
+    with open(output_path, "w", newline="") as f:
         writer = csv.writer(f)
 
         writer.writerow([
@@ -69,8 +79,19 @@ def run_sweep():
 
         writer.writerows(results)
 
-    print("\nSaved: data/simulation_results.csv")
+    print("\n===================================================")
+    print(" ANALYSIS COMPLETE")
+    print("===================================================")
 
+    print(f"\nSaved dataset → {output_path}")
+    print("Rows generated:", len(results))
+
+    print("\nSystem status:")
+    print(" ✔ Array factor computation: OK")
+    print(" ✔ Coherence evaluation: OK")
+    print(" ✔ Parameter sweep: COMPLETE")
+
+    print("\n▶ Coupled Array Simulation: SUCCESSFUL EXECUTION")
 
 if __name__ == "__main__":
     run_sweep()

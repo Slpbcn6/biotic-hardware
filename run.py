@@ -6,20 +6,35 @@ ROOT = Path(__file__).parent
 
 
 def run(script):
-    print(f"\nRunning {script}")
+    print(f"\n▶ Running {script}")
     subprocess.run([sys.executable, str(ROOT / script)], check=True)
 
 
 def main():
-    print("\n--- NORMALIZED SPATIAL SENSITIVITY PIPELINE ---")
+    print("\n===================================================")
+    print(" NORMALIZED SPATIAL SENSITIVITY PIPELINE")
+    print("===================================================")
 
+    print("\n[1/2] Executing coupling simulation...")
     run("data/node_coupling.py")
+
+    print("\n[2/2] Generating sensitivity analysis...")
     run("data/plot_sensitivity.py")
 
-    print("\n--- COMPLETE ---")
-    print("Outputs:")
-    print("- simulation_results.csv")
-    print("- sensitivity_analysis.png")
+    print("\n===================================================")
+    print(" SIMULATION COMPLETE")
+    print("===================================================")
+
+    print("\nGenerated artifacts:")
+    print(" - data/simulation_results.csv")
+    print(" - data/sensitivity_analysis.png")
+
+    print("\nSystem status:")
+    print(" ✔ Coupling simulation: OK")
+    print(" ✔ Sensitivity analysis: OK")
+    print(" ✔ Output pipeline: COMPLETE")
+
+    print("\n▶ Biotic Hardware Simulation: SUCCESSFUL EXECUTION")
 
 
 if __name__ == "__main__":

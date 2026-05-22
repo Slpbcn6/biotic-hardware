@@ -2,7 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import csv
 
-
 def load_data():
     d, dn, p, c, m = [], [], [], [], []
 
@@ -22,34 +21,45 @@ def load_data():
 
     return map(list, zip(*sorted(zip(d, dn, p, c, m))))
 
-
 def plot():
     d, dn, p, c, m = load_data()
 
-    fig, ax1 = plt.subplots(figsize=(9, 5))
+    print("\nGenerating sensitivity visualization...")
 
-    ax1.plot(dn, p, label="Peak AF", linewidth=2)
+    fig, ax1 = plt.subplots(figsize=(10, 5))
+
+    ax1.plot(dn, p, label="Peak Array Factor", linewidth=2)
     ax1.plot(dn, m, label="Merit Function (P × C)", linewidth=2)
 
-    ax1.set_xlabel("Normalized spacing d / d_max")
-    ax1.set_ylabel("Amplitude")
+    ax1.set_xlabel("Normalized Spatial Parameter (d / d_max)")
+    ax1.set_ylabel("Amplitude Metrics")
     ax1.grid(True, linestyle="--", alpha=0.5)
 
     ax2 = ax1.twinx()
-    ax2.plot(dn, c, color="red", label="Coherence Ratio")
-    ax2.set_ylabel("Coherence")
+    ax2.plot(dn, c, color="red", label="Coherence Ratio", linewidth=2)
+    ax2.set_ylabel("Coherence Metric")
 
     lines, labels = ax1.get_legend_handles_labels()
     lines2, labels2 = ax2.get_legend_handles_labels()
 
     ax1.legend(lines + lines2, labels + labels2, loc="best")
 
-    plt.title("Normalized Sensitivity Analysis")
+    plt.title("Normalized Sensitivity Analysis of Coupled Spatial Network")
 
     plt.tight_layout()
-    plt.savefig("data/sensitivity_analysis.png", dpi=300, bbox_inches="tight")
-    plt.show()
 
+    output_path = "data/sensitivity_analysis.png"
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
+
+    print("\n===================================================")
+    print(" VISUALIZATION COMPLETE")
+    print("===================================================")
+
+    print(f"Saved figure → {output_path}")
+    print("Resolution: 300 DPI")
+    print("Layout: tight bbox (publication-ready)")
+
+    plt.show()
 
 if __name__ == "__main__":
     plot()
