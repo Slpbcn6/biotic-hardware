@@ -12,13 +12,16 @@ def run(script):
 
 def main():
     print("\n===================================================")
-    print(" NORMALIZED SPATIAL SENSITIVITY PIPELINE")
+    print(" HIERARCHICAL SPATIAL SENSITIVITY PIPELINE")
     print("===================================================")
 
-    print("\n[1/2] Executing coupling simulation...")
+    print("\n[1/3] Executing node resonance model...")
+    run("data/node_resonance.py")
+
+    print("\n[2/3] Executing coupling simulation...")
     run("data/node_coupling.py")
 
-    print("\n[2/2] Generating sensitivity analysis...")
+    print("\n[3/3] Generating sensitivity analysis...")
     run("data/plot_sensitivity.py")
 
     print("\n===================================================")
@@ -26,13 +29,15 @@ def main():
     print("===================================================")
 
     print("\nGenerated artifacts:")
+    print(" - data/resonance_params.json")
     print(" - data/simulation_results.csv")
     print(" - data/sensitivity_analysis.png")
 
     print("\nSystem status:")
+    print(" ✔ Node resonance model: OK")
     print(" ✔ Coupling simulation: OK")
     print(" ✔ Sensitivity analysis: OK")
-    print(" ✔ Output pipeline: COMPLETE")
+    print(" ✔ Hierarchical pipeline: COMPLETE")
 
     print("\n▶ Biotic Hardware Simulation: SUCCESSFUL EXECUTION")
 

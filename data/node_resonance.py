@@ -1,85 +1,51 @@
 import numpy as np
-import matplotlib.pyplot as plt
-import csv
+import json
 import os
 
-os.makedirs('data', exist_ok=True)
+os.makedirs("data", exist_ok=True)
 
-def get_positions(d):
-    """
-    2D square array geometry.
-    Node spacing = d controls physical aperture size.
-    """
-    return np.array([
-        [0.0, 0.0, 0.0],
-        [d,   0.0, 0.0],
-        [0.0, d,   0.0],
-        [d,   d,   0.0]
-    ])
+L = 1.0 
+C = 162e-6
+R = 100.0 
 
-def compute_array_factor(positions, phases, theta, wavelength):
-    """
-    Array Factor with physically meaningful phase propagation:
-    AF = sum exp(j (k r·u + φ))
-    """
-    k = 2 * np.pi / wavelength
-    af = np.zeros_like(theta, dtype=complex)
+omega_0 = 1.0 / np.sqrt(L * C)   
+f_res   = omega_0 / (2 * np.pi)  
+Q       = omega_0 * L / R        
+BW      = f_res / Q              
 
-    for pos, phi in zip(positions, phases):
-        spatial_term = k * (
-            pos[0] * np.cos(theta) +
-            pos[1] * np.sin(theta)
-        )
-        af += np.exp(1j * (spatial_term + phi))
+f     = np.linspace(f_res * 0.01, f_res * 10, 2000)
+omega = 2 * np.pi * f
 
-    return np.abs(af) / len(positions)
+Z = R + 1j * (omega * L - 1.0 / (omega * C))
+H = R / Z                               
 
-def extract_metrics(af):
-    """
-    Coherence metrics of interference structure.
-    """
-    peak = np.max(af)
-    mean = np.mean(af)
+magnitude = np.abs(H)
+peak = np.max(magnitude)
+mean = np.mean(magnitude)
+k_eff = peak / mean
 
-    coherence = peak / mean if mean > 0 else 0.0
+# ── Export ────────────────────────────────────────────────────
+params = {
+    "L_H":            L,
+    "C_F":            C,
+    "R_ohm":          R,
+    "omega_0_rad_s":  round(omega_0, 6),
+    "f_resonance_Hz": round(f_res, 6),
+    "Q_factor":       round(Q, 6),
+    "bandwidth_Hz":   round(BW, 6),
+    "k_eff":          round(k_eff, 6)
+}
 
-    return peak, coherence
+output_path = "data/resonance_params.json"
+with open(output_path, "w") as f_out:
+    json.dump(params, f_out, indent=2)
 
-distances_sweep = [0.1, 0.2, 0.3, 0.4]
-
-phases = [0, np.pi/2, np.pi, 3*np.pi/2]
-
-frequency = 12.5
-c = 3e8
-wavelength = c / frequency
-
-theta = np.linspace(0, 2*np.pi, 200)
-
-results = []
-
-print("Running physically consistent sensitivity analysis...")
-
-for d in distances_sweep:
-
-    positions = get_positions(d)
-
-    af = compute_array_factor(
-        positions,
-        phases,
-        theta,
-        wavelength
-    )
-
-    peak, coherence = extract_metrics(af)
-
-    results.append([d, peak, coherence])
-
-    print(f"d={d:.2f} | peak={peak:.4f} | coherence={coherence:.4f}")
-
-with open('data/simulation_results.csv', 'w', newline='') as f:
-    writer = csv.writer(f)
-    writer.writerow(['Distance', 'Peak_AF', 'Coherence_Ratio'])
-    writer.writerows(results)
-
-print("\nAnalysis complete.")
-print("Results saved to data/simulation_results.csv")
+print("\n===================================================")
+print(" NODE RESONANCE MODEL")
+print("===================================================\n")
+print(f" Resonance frequency : {f_res:.4f} Hz")
+print(f" Quality factor Q    : {Q:.4f}")
+print(f" Bandwidth           : {BW:.4f} Hz")
+print(f" k_eff (peak/mean)   : {k_eff:.4f}")
+print(f"\n✔ Exported → {output_path}")
+print("\n▶ Node Resonance Model: SUCCESSFUL EXECUTION")

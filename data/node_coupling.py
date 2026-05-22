@@ -1,17 +1,22 @@
 import numpy as np
 import csv
 import os
+import json
 
 os.makedirs("data", exist_ok=True)
 
-def compute_array_factor(d):
-    """
-    Simplified coherent system model.
-    Returns peak response and coherence ratio.
-    """
+
+def load_resonance():
+    with open("data/resonance_params.json", "r") as f:
+        return json.load(f)
+
+
+def compute_array_factor(d, Q):
     theta = np.linspace(0, 2 * np.pi, 200)
 
-    k = 0.004
+    k0 = 0.004
+    k = k0 * (1 + 0.15 * (Q - 0.785))
+
     phases = [0, np.pi/2, np.pi, 3*np.pi/2]
 
     positions = np.array([
@@ -32,37 +37,44 @@ def compute_array_factor(d):
     peak = np.max(magnitude)
     mean = np.mean(magnitude)
 
-    coherence_ratio = peak / (mean + 1e-12)
+    coherence = peak / (mean + 1e-12)
 
-    return peak, coherence_ratio
+    return peak, coherence
+
 
 def run_sweep():
-    print("\n===================================================")
-    print(" NORMALIZED COUPLED ARRAY ANALYSIS")
-    print("===================================================\n")
-
-    print("Initializing spatial parameter sweep...\n")
+    resonance = load_resonance()
+    Q0 = float(resonance["Q_factor"])
 
     distances = np.linspace(0.1, 2.0, 30)
+    d_norm = distances / np.max(distances)
 
-    results = []
+    peaks = []
+    coherences = []
+    merits = []
 
-    for i, d in enumerate(distances):
-        peak, coherence = compute_array_factor(d)
-        d_norm = d / np.max(distances)
+    for d in distances:
+        peak, coherence = compute_array_factor(d, Q0)
+
         merit = peak * coherence
 
-        print(
-            f"[{i+1:02d}/30] "
-            f"d={d:.2f} | "
-            f"peak={peak:.6f} | "
-            f"coherence={coherence:.6f} | "
-            f"merit={merit:.6e}"
-        )
+        peaks.append(peak)
+        coherences.append(coherence)
+        merits.append(merit)
 
-        results.append([d, d_norm, peak, coherence, merit])
+    mean_coh = np.mean(coherences)
 
-    print("\nFinalizing dataset...")
+    alpha = 0.6
+    beta = 0.25
+
+    Q_list = [
+        Q0 * (1 + alpha * (c - mean_coh) - beta * dn)
+        for c, dn in zip(coherences, d_norm)
+    ]
+
+    merit_scaled_list = [
+        m * q for m, q in zip(merits, Q_list)
+    ]
 
     output_path = "data/simulation_results.csv"
 
@@ -71,27 +83,23 @@ def run_sweep():
 
         writer.writerow([
             "Distance",
-            "d_norm",
             "Peak_AF",
             "Coherence_Ratio",
-            "Merit_Function"
+            "Merit_Function",
+            "Q_effective",
+            "Merit_Scaled"
         ])
 
-        writer.writerows(results)
+        for i, d in enumerate(distances):
+            writer.writerow([
+                d,
+                peaks[i],
+                coherences[i],
+                merits[i],
+                Q_list[i],
+                merit_scaled_list[i]
+            ])
 
-    print("\n===================================================")
-    print(" ANALYSIS COMPLETE")
-    print("===================================================")
-
-    print(f"\nSaved dataset → {output_path}")
-    print("Rows generated:", len(results))
-
-    print("\nSystem status:")
-    print(" ✔ Array factor computation: OK")
-    print(" ✔ Coherence evaluation: OK")
-    print(" ✔ Parameter sweep: COMPLETE")
-
-    print("\n▶ Coupled Array Simulation: SUCCESSFUL EXECUTION")
 
 if __name__ == "__main__":
     run_sweep()

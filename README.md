@@ -185,7 +185,9 @@ Modules related to energy conversion (e.g. plasma-like transitions, piezoelectri
 This separation reflects a **layered abstraction model**, where:
 
 - the theoretical model defines the **full parameterized system space**  
-- the implementation evaluates a **restricted subset of dynamical behaviors** within that space   
+- the implementation evaluates a **restricted subset of dynamical behaviors** within that space  
+
+The parameter **k** is defined as a **schematic spatial scaling factor** representing the mapping between normalized geometric space and simulation space. It is not derived from electromagnetic wave propagation constants. Consequently, it is not directly coupled to material parameters such as **permeability (μr)**; both operate as independent parameters within the modeling abstraction.
 
 ---
 

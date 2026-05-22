@@ -164,6 +164,8 @@ Before establishing the electrical and structural metrics, the computational exe
 * **Computational Coupling Parameter ($K_{\text{DIPOLE}}$):** A numerical scaling parameter used in the mutual inductance model. It defines the global amplitude of the $1/r^3$ interaction kernel and is used to ensure numerical stability and consistent comparative behavior across simulations. It does not represent a physical constant and is not derived from electromagnetic properties of a physical medium.
 * **Modeling Assumptions (Material Parameters):** The effective relative permeability $\mu_r$ is treated as a phenomenological parameter representing combined material and structural amplification effects within the modeled system. It is used as a modeling construct and is not constrained to physically realizable material limits.
 
+Both parameters operate in separate domains: k defines geometric scaling within the simulation architecture, while μr defines effective material response within the electromagnetic model abstraction. Consequently, μr is not derived from geometric scaling factors such as k, nor is it constrained by spatial mapping assumptions.
+
 #### I. Electrical & Inductive Metrics (Core System)
 
 * **Root Spirals (Fractal Inductance):**
