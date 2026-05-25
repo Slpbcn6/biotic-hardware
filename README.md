@@ -8,6 +8,8 @@ It implements a generative computational pipeline in which morphological structu
 
 The framework is designed for exploratory modeling, parametric sensitivity analysis, and structural experimentation in systems inspired by network physics and morphological computation. It situates these simulations within a computational context where structural consistency is evaluated using numerical electromagnetic models and lumped-element approximations.
 
+Procedural morphology generators (e.g. fractal and botanical structures) are included as experimental extensions and are not enabled in the default simulation pipeline.
+
 The system is strictly computational and interpretative. It does not represent a physical or biological implementation.
 
 ---

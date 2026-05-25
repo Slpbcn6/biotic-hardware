@@ -3,34 +3,33 @@ import csv
 import os
 import json
 
-from input_generator import load_morphology
-
 os.makedirs("data", exist_ok=True)
 
 
-def load_resonance(path="data/resonance_params.json"):
-    with open(path, "r") as f:
+def load_resonance():
+    with open("data/resonance_params.json", "r") as f:
         return json.load(f)
 
 
-def compute_array_factor(d, Q, positions):
-
+def compute_array_factor(d, Q):
     theta = np.linspace(0, 2 * np.pi, 200)
 
     k0 = 0.004
     k = k0 * (1 + 0.15 * (Q - 0.785))
 
-    phases = np.array([0, np.pi / 2, np.pi, 3 * np.pi / 2])
+    phases = [0, np.pi/2, np.pi, 3*np.pi/2]
+
+    positions = np.array([
+        [0, 0, 0],
+        [d, 0, 0],
+        [0, d, 0],
+        [d, d, 0]
+    ])
 
     af = np.zeros_like(theta, dtype=complex)
 
     for pos, phi in zip(positions, phases):
-
-        spatial = k * (
-            pos[0] * np.cos(theta) +
-            pos[1] * np.sin(theta)
-        )
-
+        spatial = k * (pos[0] * np.cos(theta) + pos[1] * np.sin(theta))
         af += np.exp(1j * (spatial + phi))
 
     magnitude = np.abs(af)
@@ -43,8 +42,7 @@ def compute_array_factor(d, Q, positions):
     return peak, coherence
 
 
-def run_sweep(use_generated_morphology=False):
-
+def run_sweep():
     resonance = load_resonance()
     Q0 = float(resonance["Q_factor"])
 
@@ -56,23 +54,7 @@ def run_sweep(use_generated_morphology=False):
     merits = []
 
     for d in distances:
-
-        if use_generated_morphology:
-            base = load_morphology("fractal")
-
-            positions = base[:4].copy()
-            positions[:, 0] *= d
-            positions[:, 1] *= d
-
-        else:
-            positions = np.array([
-                [0, 0, 0],
-                [d, 0, 0],
-                [0, d, 0],
-                [d, d, 0]
-            ])
-
-        peak, coherence = compute_array_factor(d, Q0, positions)
+        peak, coherence = compute_array_factor(d, Q0)
 
         merit = peak * coherence
 
@@ -97,7 +79,6 @@ def run_sweep(use_generated_morphology=False):
     output_path = "data/simulation_results.csv"
 
     with open(output_path, "w", newline="") as f:
-
         writer = csv.writer(f)
 
         writer.writerow([
@@ -110,7 +91,6 @@ def run_sweep(use_generated_morphology=False):
         ])
 
         for i, d in enumerate(distances):
-
             writer.writerow([
                 d,
                 peaks[i],
