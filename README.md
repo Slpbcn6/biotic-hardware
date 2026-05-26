@@ -1,14 +1,16 @@
 # Biotic Hardware Synthesis: A Computational Framework for Bio-Inspired ELF Resonant Architectures
 
-This repository provides a reproducible computational framework for simulating structured network dynamics inspired by morphological datasets. It implements a full pipeline for parameter-driven simulation of coherence, phased-array behavior, and sensitivity analysis under geometric scaling, producing numerical outputs (CSV) and visualization artifacts (plots) from a single executable workflow.
+This repository provides a reproducible computational framework for simulating structured network dynamics inspired by morphological datasets. It implements a full pipeline for parameter-driven simulation of coherence metrics, phased-array-style interference behavior, and sensitivity analysis under parametric variation, producing numerical outputs (CSV) and visualization artifacts (plots) from a single executable workflow.
 
-It operates in Extremely Low Frequency (ELF) regimes using morphological datasets as structured inputs for abstract graph-based and lumped-element system modeling.
+It operates under Extremely Low Frequency (ELF)-inspired parameter regimes using morphological datasets as structured inputs for abstract graph-based and lumped-element system modeling.
 
-It implements a generative computational pipeline in which morphological structures (derived from MS 408 / Voynich Manuscript) are mapped into simplified electromagnetic analogues. These mappings enable the study of structural and dynamical properties within coupled-oscillator and network-based simulation frameworks.
+It implements a generative computational pipeline in which morphological structures (derived from MS 408 / Voynich Manuscript) are mapped into simplified wave-interference and oscillator analogues inspired by abstract electromagnetic-style system analogies. These mappings enable the study of structural and dynamical properties within coupled-oscillator and network-based simulation frameworks.
 
-The framework is designed for exploratory modeling, parametric sensitivity analysis, and structural experimentation in systems inspired by network physics and morphological computation. It situates these simulations within a computational context where structural consistency is evaluated using numerical electromagnetic models and lumped-element approximations.
+The framework is designed for exploratory modeling, parametric sensitivity analysis, and structural experimentation in systems inspired by network physics and morphological computation. It situates these simulations within a computational context where structural consistency is evaluated using numerical wave-interference-inspired models and lumped-parameter abstractions.
 
-Procedural morphology generators (e.g. fractal and botanical structures) are included as experimental extensions and are not enabled in the default simulation pipeline.
+Procedural morphology generators (e.g. fractal and botanical structures) are included as optional experimental modules and are not integrated into the main execution pipeline.
+
+These modules exist as standalone utilities for morphological sampling and are not invoked in the default execution pipeline.
 
 The system is strictly computational and interpretative. It does not represent a physical or biological implementation.
 
@@ -30,8 +32,8 @@ To run the full computational simulation pipeline:
 
 This executes the complete workflow:
 
-- Node-level efficiency parametric analysis (radiation resistance limit regime $R_r \rightarrow 0$)
-- Distributed Phased Array simulation (coherent field superposition via spatial phase coupling)
+- Node-level resonance and normalized response analysis in a lumped-element RLC-inspired system
+- Distributed Phased Array simulation (phase-based interference superposition)
 - Parametric sensitivity analysis of system response under geometric scaling
 
 Outputs:
@@ -44,8 +46,8 @@ Outputs:
 
 ## Key Research Points
 
-- **Perspective:** Application of signal processing, electromagnetic modeling, and bio-inspired computational design to morphological datasets extracted from MS 408.
-- **Model:** Network-based representation using Near-Field Magnetic Induction (NFMI) analogies and coupled oscillator systems.
+- **Perspective:** Application of signal processing, wave-interference modeling, and bio-inspired computational design to morphological datasets extracted from MS 408.
+- **Model**: Network-based representation using coupled oscillator systems, with Near-Field Magnetic Induction (NFMI) used strictly as conceptual and structural inspiration for interaction topology design.
 - **Methodology:** Mapping of morphological geometry into abstract electromagnetic network representations for simulation and parameter exploration.
 
 Simulation baseline:  
@@ -55,7 +57,7 @@ Simulation baseline:
 
 ## Objective
 
-- Investigate whether morphological datasets can be used as structured inputs for generating consistent electromagnetic network representations.
+- Investigate whether morphological datasets can be used as structured inputs for generating consistent abstract network representations inspired by electromagnetic system analogies.
 - Provide a reproducible computational framework for simulation and sensitivity analysis.
 - Enable systematic comparison of geometric parameterizations under a unified modeling approach.
 
@@ -82,7 +84,7 @@ Alternative datasets with similar structural properties (synthetic fractals, bot
 Morphological structures are mapped into abstract network components as follows:
 
 - **Source / Grounding Grid:** Baseline node constraints in the network model.
-- **Modulation and Filtering:** Structural symmetries mapped to frequency-selective behavior in lumped-element systems.
+- **Modulation and Filtering**: Structural symmetries mapped to abstract response modulation within lumped-parameter simulation components.
 - **Inductive Coupling:** Geometric branching interpreted as coupling motifs in NFMI-inspired networks.
 - **Phase Synchronization:** Radial structures represented as phase-coupled oscillators.
 - **Material Layering:** Structural variation mapped to parameter heterogeneity (loss, damping, coupling strength).
@@ -91,34 +93,34 @@ These mappings are used strictly for computational simulation.
 
 ---
 
-## Numerical Validation: Node-Level Efficiency Limits
+## Numerical Validation: Resonance and Response Structure
 
 The repository includes a reproducible numerical model located at:
 
 [/data/node_resonance.py](./data/node_resonance.py)
 
-This script evaluates the efficiency regime under ELF conditions, where radiation resistance approaches limiting values ($R_r \rightarrow 0$).
+This script evaluates resonance behavior and normalized response structure under ELF-inspired parameter regimes using lumped-element approximations.
 
 ### Model Definition
 
-The efficiency metric is defined as:
+The resonance module evaluates normalized response behavior in a lumped-element RLC-inspired model using inductive, capacitive, and resistive parameters extracted from the simulation configuration. These parameters are treated as abstract numerical inputs for a simplified computational representation of oscillatory behavior.
 
-$$
-\eta = \frac{R_r}{R_r + R_{loss}}
-$$
+The implemented metrics include:
 
-Parameters:
+- Resonance frequency ($f_{res}$)
+- Quality factor ($Q$)
+- Bandwidth estimation
+- Peak-to-mean normalized response ratios
 
-- $R_r \approx 1 \times 10^{-9} \ \Omega$
-- $R_{loss} \in [100, 1000] \ \Omega$
+These quantities are used as comparative indicators within the simulation framework and are not interpreted as direct measurements of physical electromagnetic efficiency.
 
 ### Output
 
-The simulation produces efficiency values in the order of:
+The simulation produces normalized response ratios in the order of:
 
 - $10^{-11}$ to $10^{-12}$
 
-This characterizes the low-efficiency regime of isolated-node emission under the assumed constraints.
+These values represent ratio-based efficiency metrics (non-physical normalization of the array factor response) derived from peak-to-mean signal structure.
 
 ---
 
@@ -129,6 +131,8 @@ The system is extended into a spatial network model:
 [/data/node_coupling.py](./data/node_coupling.py)
 
 This module computes coherent field superposition using a phased array formulation.
+
+The coupling model includes phenomenological scaling coefficients used to modulate coherence response, spatial sensitivity, and normalized quality-factor behavior across the parametric sweep. These coefficients are heuristic simulation parameters intended for exploratory system dynamics and do not represent experimentally derived electromagnetic constants.
 
 ### Spatial Configuration
 
@@ -161,6 +165,8 @@ The analysis computes:
 - Coherence ratio
 - Derived structural performance metrics
 
+Derived metrics are computed as heuristic combinations of coherence, array-factor amplitude, and scaling parameters defined within the simulation implementation. These merit functions are simple multiplicative constructs used for comparative evaluation of structural response within the simulation space and are not interpreted as physically meaningful performance measures.
+
 Outputs:
 
 - `data/simulation_results.csv`
@@ -170,26 +176,30 @@ Outputs:
 
 ## Integration: Theory vs Computational Implementation
 
-This repository implements a computational validation of the **coherence and beamforming behavior** defined in the theoretical model.
+This repository implements a computational validation of the coherence and beamforming behavior defined in the theoretical model.
 
-The associated document [Functional Patterns and Electromagnetic Hypotheses in MS 408.md](./docs/Functional%20Patterns%20and%20Electromagnetic%20Hypotheses%20in%20MS%20408.md) defines a **theoretical parameter space for the full system model**, including structural variables such as permeability coefficients, coupling regimes, and energy-transfer analogues.
+The associated document [Functional Patterns and Electromagnetic Hypotheses in MS 408.md](./docs/Functional%20Patterns%20and%20Electromagnetic%20Hypotheses%20in%20MS%20408.md) defines a theoretical parameter space for the full system model, including structural variables such as permeability coefficients, coupling regimes, and energy-transfer analogues.
 
 The README specifies the implemented computational subset of this space.
 
-The current implementation focuses exclusively on the **network synchronization kernel**, which evaluates:
+The current implementation focuses exclusively on the network synchronization kernel, which evaluates:
 
 - phase coherence  
 - distributed coupling stability  
 - emergent beamforming behavior in graph-based oscillator networks  
 
-Modules related to energy conversion (e.g. plasma-like transitions, piezoelectric-like coupling) are treated as **architectural specifications** within the theoretical parameter space and are not instantiated in the current simulation layer.
+Modules related to energy conversion (e.g. plasma-like transitions, piezoelectric-like coupling) are treated as architectural specifications within the theoretical parameter space and are not instantiated in the current simulation layer.
 
-This separation reflects a **layered abstraction model**, where:
+This separation reflects a layered abstraction model, where:
 
-- the theoretical model defines the **full parameterized system space**  
-- the implementation evaluates a **restricted subset of dynamical behaviors** within that space  
+- the theoretical model defines the full parameterized system space  
+- the implementation evaluates a restricted subset of dynamical behaviors within that space  
 
-The parameter **k** is defined as a **schematic spatial scaling factor** representing the mapping between normalized geometric space and simulation space. It is not derived from electromagnetic wave propagation constants. Consequently, it is not directly coupled to material parameters such as **permeability (μr)**; both operate as independent parameters within the modeling abstraction.
+The parameter **k** is defined as a schematic spatial scaling factor representing the mapping between normalized geometric space and simulation space. It is not derived from electromagnetic wave propagation constants. Consequently, it is not directly coupled to material parameters such as permeability (μr); both operate as independent parameters within the modeling abstraction.
+
+The implementation uses a hierarchical set of derived scaling variables (e.g. k0, k, k_eff) that operate at different stages of the simulation pipeline: base scaling initialization, coherence-modulated scaling, and post-response normalization. These variables are computational constructs used for numerical stability and do not represent a physically derived parameter hierarchy.
+
+Within the resonance module, the scaling parameter is used as a direct linear scaling factor applied to the inductance term for numerical convenience within the lumped-element model. This operation is purely computational and does not represent a physically derived transformation.
 
 ---
 
