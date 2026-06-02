@@ -1,16 +1,14 @@
 # Biotic Hardware Synthesis: A Computational Framework for Bio-Inspired ELF Resonant Architectures
 
-This repository provides a reproducible computational framework for simulating structured network dynamics inspired by morphological datasets. It implements a full pipeline for parameter-driven simulation of coherence metrics, phased-array-style interference behavior, and sensitivity analysis under parametric variation, producing numerical outputs (CSV) and visualization artifacts (plots) from a single executable workflow.
+This repository provides a reproducible computational framework for simulating structured network dynamics inspired by morphological datasets. It implements a full pipeline for parameter-driven simulation of coherence metrics, phase-based interference behavior (complex-valued phasor summation), and sensitivity analysis under parametric variation, producing numerical outputs and visualization artifacts from a single executable workflow.
 
-It operates under Extremely Low Frequency (ELF)-inspired parameter regimes using morphological datasets as structured inputs for abstract graph-based and lumped-element system modeling.
+It operates under an Extremely Low Frequency (ELF)-inspired scalar parameterization using morphological datasets as structured inputs for abstract graph-based and lumped-element system modeling.
 
-It implements a generative computational pipeline in which morphological structures (derived from MS 408 / Voynich Manuscript) are mapped into simplified wave-interference and oscillator analogues inspired by abstract electromagnetic-style system analogies. These mappings enable the study of structural and dynamical properties within coupled-oscillator and network-based simulation frameworks.
+It implements a generative computational pipeline in which morphological structures (associated with MS 408 / Voynich Manuscript treated strictly as a non-semantic morphological dataset) are mapped into simplified wave-interference and oscillator analogues inspired by abstract electromagnetic-style system analogies. These mappings enable the study of structural and dynamical properties within coupled-oscillator and network-based simulation frameworks.
 
-The framework is designed for exploratory modeling, parametric sensitivity analysis, and structural experimentation in systems inspired by network physics and morphological computation. It situates these simulations within a computational context where structural consistency is evaluated using numerical wave-interference-inspired models and lumped-parameter abstractions.
+The framework is designed for exploratory modeling, parametric sensitivity analysis, and structural experimentation. It situates these simulations within a computational context where structural consistency is evaluated using numerical wave-interference-inspired mathematical models and lumped-parameter abstractions.
 
-Procedural morphology generators (e.g. fractal and botanical structures) are included as optional experimental modules and are not integrated into the main execution pipeline.
-
-These modules exist as standalone utilities for morphological sampling and are not invoked in the default execution pipeline.
+Procedural morphology generators (e.g., fractal and botanical structures) are structurally integrated into the main execution pipeline. These modules drive the deterministic benchmarking sequence via the `run.py` orchestrator, mapping structural inputs to spatial matrices before computing the array factor.
 
 The system is strictly computational and interpretative. It does not represent a physical or biological implementation.
 
@@ -39,7 +37,8 @@ This executes the complete workflow:
 Outputs:
 
 - Console logs of simulation results
-- `data/simulation_results.csv`
+- `data/simulation_results_fractal.csv` & `data/simulation_results_botanical.csv` (Scalar Benchmark Contract)
+- `data/af_tensors_fractal.npz` & `data/af_tensors_botanical.npz` (Tensor Research Layer)
 - `data/sensitivity_analysis.png`
 
 ---
@@ -107,8 +106,8 @@ The resonance module evaluates normalized response behavior in a lumped-element 
 
 The implemented metrics include:
 
-- Resonance frequency ($f_{res}$)
-- Quality factor ($Q$)
+- Resonance frequency (f_res)
+- Quality factor (Q)
 - Bandwidth estimation
 - Peak-to-mean normalized response ratios
 
@@ -116,11 +115,14 @@ These quantities are used as comparative indicators within the simulation framew
 
 ### Output
 
-The simulation produces normalized response ratios in the order of:
+The simulation produces parametric baseline metrics. Typical numerical outputs include:
 
-- $10^{-11}$ to $10^{-12}$
+- Resonance frequency: **12.99 Hz**
+- Quality factor (Q): **0.81**
+- Bandwidth: **15.91 Hz**
+- Effective transfer (k_eff): **2.92**
 
-These values represent ratio-based efficiency metrics (non-physical normalization of the array factor response) derived from peak-to-mean signal structure.
+These values represent efficiency metrics derived from the simulated signal structure.
 
 ---
 
@@ -136,40 +138,48 @@ The coupling model includes phenomenological scaling coefficients used to modula
 
 ### Spatial Configuration
 
-Nodes are arranged on a 2D grid with spacing parameter $d \in [0.1, 0.4]$ meters.
+Nodes are distributed dynamically based on the selected morphology (fractal or botanical), comprising an array of N = 64 nodes. 
 
-Phase assignments:
+**Geometric Treatment:** The transformation is strictly homotetic. The base topology remains fixed while the global scale is modulated continuously by a spacing parameter d from 0.1 to 2.0 meters (`positions = base_nodes * d`). 
 
-- Node 1: 0°
-- Node 2: 90°
-- Node 3: 180°
-- Node 4: 270°
+Phase assignments are applied cyclically across the N-node array to maintain controlled interference periodicity:
 
-### Outputs
+- Base sequence: **[0°, 90°, 180°, 270°]**
 
-- Array Factor (AF)
-- Peak field amplitude
-- Mean field distribution
-- Coherence ratio
-- CSV dataset for parametric sweep
+### Data Export Architecture (Dual Layer)
+
+To maintain a clean analytical contract while enabling deep research, the system bifurcates the computed data into two explicit layers:
+
+#### 1. Scalar Output (Benchmarking Contract)
+Exported as `data/simulation_results_*.csv`. Contains strictly the reduced variables for the analytical pipeline:
+
+- `Distance` (Spatial scaling parameter)
+- `Peak_AF` (Maximum amplitude of the Array Factor)
+- `Coherence_Ratio` (Peak-to-mean field distribution ratio)
+- `Merit_Function` (Base structural performance)
+- `Q_effective` (Density-dependent dynamic regularization)
+- `Merit_Scaled` (Post-transformation metric)
+
+#### 2. Tensor Output (Research Layer)
+Exported as `data/af_tensors_*.npz`. Contains the preserved latent state of the system for advanced topological analysis:
+
+- `distance`: Full array of scaling steps.
+- `mean`: The raw mean field distribution magnitude per step.
+- `af`: The complete 200-point Array Factor magnitude vector per step.
 
 ---
 
 ## Sensitivity Analysis
 
-A parametric sweep evaluates system response under variation of node spacing $d$.
+A parametric sweep evaluates system response under continuous variation of the global spatial scale d. The visual analysis extracts and normalizes specific variables from the scalar CSV datasets.
 
-The analysis computes:
+The visualization plots:
 
-- Peak Array Factor
-- Coherence ratio
-- Derived structural performance metrics
-
-Derived metrics are computed as heuristic combinations of coherence, array-factor amplitude, and scaling parameters defined within the simulation implementation. These merit functions are simple multiplicative constructs used for comparative evaluation of structural response within the simulation space and are not interpreted as physically meaningful performance measures.
+- Normalized Coherence Ratio (`norm(cf)`)
+- Normalized Merit Scaled (`norm(msf)`)
 
 Outputs:
 
-- `data/simulation_results.csv`
 - `data/sensitivity_analysis.png`
 
 ---
@@ -223,6 +233,26 @@ All terminology is used strictly within a computational and analogical context.
 
 ---
 
+## v1.1 - Morphological Benchmark Pipeline
+
+This version introduces a deterministic benchmarking pipeline for comparing system dynamics under different structural inputs.
+
+### Pipeline Structure & Execution State
+
+- Morphology generation (fractal / botanical)
+- Geometric mapping of node positions
+- Array factor computation
+- Data reduction and tensor persistence
+- Plotting metrics
+
+**Crucial Note on Execution State:** The orchestrator (`run.py`) executes a sequential benchmark by globally mutating the `data/parameters.json` file to switch between morphologies. This means the system acts as a *stateful determinist framework*. Running `data/node_coupling.py` independently outside of `run.py` will yield results exclusively tied to the last preserved configuration state of the JSON file.
+
+### Purpose
+
+This version ensures reproducible comparison of morphological configurations under identical, automated simulation conditions, while preserving the full tensor state for decoupled computational analysis.
+
+---
+
 ## References
 
 - Near-Field Magnetic Induction Communication (NFMI) – A Review  
@@ -241,4 +271,4 @@ All terminology is used strictly within a computational and analogical context.
   https://doi.org/10.1021/acsami.2c21622  
 
 - Piezoelectric Properties of Cellulose-Based Materials  
-  https://doi.org/10.1016/j.carbpol.2025.124667  
+  https://doi.org/10.1016/j.carbpol.2025.124667

@@ -1,46 +1,47 @@
 import subprocess
 import sys
+import json
+import shutil
 from pathlib import Path
 
 ROOT = Path(__file__).parent
 
-
 def run(script):
-    print(f"\n▶ Running {script}")
+    print(f"\n▶ Executing: {script}")
     subprocess.run([sys.executable, str(ROOT / script)], check=True)
 
+def set_morphology(mode):
+    path = ROOT / "data/parameters.json"
+    with open(path, "r") as f:
+        data = json.load(f)
+    data["VI_experimental_sweep_parameters"]["morphology_mode"] = mode
+    with open(path, "w") as f:
+        json.dump(data, f, indent=2)
 
 def main():
     print("\n===================================================")
-    print(" HIERARCHICAL SPATIAL SENSITIVITY PIPELINE")
+    print(" DETERMINISTIC COMPARATIVE MORPHOLOGICAL PIPELINE v1.1")
     print("===================================================")
-
-    print("\n[1/3] Executing node resonance model...")
+    
+    print("\n[1/4] Running node resonance baseline calculation...")
     run("data/node_resonance.py")
-
-    print("\n[2/3] Executing coupling simulation...")
+    
+    print("\n[2/4] Executing Sweep for FRACTAL morphology...")
+    set_morphology("fractal")
     run("data/node_coupling.py")
-
-    print("\n[3/3] Generating sensitivity analysis...")
+    shutil.copy(ROOT / "data/simulation_results.csv", ROOT / "data/simulation_results_fractal.csv")
+    
+    print("\n[3/4] Executing Sweep for BOTANICAL morphology...")
+    set_morphology("botanical")
+    run("data/node_coupling.py")
+    shutil.copy(ROOT / "data/simulation_results.csv", ROOT / "data/simulation_results_botanical.csv")
+    
+    print("\n[4/4] Generating comparative visualization metrics...")
     run("data/plot_sensitivity.py")
-
+    
     print("\n===================================================")
-    print(" SIMULATION COMPLETE")
+    print(" BENCHMARK COMPLETE: SUCCESSFUL EXECUTION")
     print("===================================================")
-
-    print("\nGenerated artifacts:")
-    print(" - data/resonance_params.json")
-    print(" - data/simulation_results.csv")
-    print(" - data/sensitivity_analysis.png")
-
-    print("\nSystem status:")
-    print(" ✔ Node resonance model: OK")
-    print(" ✔ Coupling simulation: OK")
-    print(" ✔ Sensitivity analysis: OK")
-    print(" ✔ Hierarchical pipeline: COMPLETE")
-
-    print("\n▶ Biotic Hardware Simulation: SUCCESSFUL EXECUTION")
-
 
 if __name__ == "__main__":
     main()
