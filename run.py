@@ -1,45 +1,59 @@
 import subprocess
 import sys
+import json
 from pathlib import Path
 
 ROOT = Path(__file__).parent
 
 
 def run(script):
-    print(f"\n▶ Running {script}")
+    print(f"Executing: {script}")
     subprocess.run([sys.executable, str(ROOT / script)], check=True)
 
 
+def set_morphology(mode):
+    path = ROOT / "data/parameters.json"
+
+    with open(path, "r") as f:
+        data = json.load(f)
+
+    data["VI_experimental_sweep_parameters"]["morphology_mode"] = mode
+
+    with open(path, "w") as f:
+        json.dump(data, f, indent=2)
+
+
+def run_coupling(mode, output_file, tensor_file):
+    set_morphology(mode)
+
+    import data.node_coupling as coupling
+    coupling.run_sweep(output_file, tensor_file)
+
+
 def main():
-    print("\n===================================================")
-    print(" HIERARCHICAL SPATIAL SENSITIVITY PIPELINE")
+    print("===================================================")
+    print("DETERMINISTIC COMPARATIVE MORPHOLOGICAL PIPELINE v1.1")
     print("===================================================")
 
-    print("\n[1/3] Executing node resonance model...")
     run("data/node_resonance.py")
 
-    print("\n[2/3] Executing coupling simulation...")
-    run("data/node_coupling.py")
+    run_coupling(
+        "fractal",
+        "data/simulation_results_fractal.csv",
+        "data/af_tensors_fractal.npz"
+    )
 
-    print("\n[3/3] Generating sensitivity analysis...")
+    run_coupling(
+        "botanical",
+        "data/simulation_results_botanical.csv",
+        "data/af_tensors_botanical.npz"
+    )
+
     run("data/plot_sensitivity.py")
 
-    print("\n===================================================")
-    print(" SIMULATION COMPLETE")
     print("===================================================")
-
-    print("\nGenerated artifacts:")
-    print(" - data/resonance_params.json")
-    print(" - data/simulation_results.csv")
-    print(" - data/sensitivity_analysis.png")
-
-    print("\nSystem status:")
-    print(" ✔ Node resonance model: OK")
-    print(" ✔ Coupling simulation: OK")
-    print(" ✔ Sensitivity analysis: OK")
-    print(" ✔ Hierarchical pipeline: COMPLETE")
-
-    print("\n▶ Biotic Hardware Simulation: SUCCESSFUL EXECUTION")
+    print("BENCHMARK COMPLETE: SUCCESSFUL EXECUTION")
+    print("===================================================")
 
 
 if __name__ == "__main__":

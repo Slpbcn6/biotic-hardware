@@ -1,133 +1,54 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import csv
+import os
 
-
-def load_data():
-
-    with open("data/simulation_results.csv", "r") as f:
-
+def load_mode_data(filepath):
+    d, p, c, m, q, ms = [], [], [], [], [], []
+    with open(filepath, "r") as f:
         reader = csv.DictReader(f)
-
-        d, p, c, m = [], [], [], []
-        q, m_scaled = [], []
-
-        fieldnames = reader.fieldnames
-
-        has_q = "Q_effective" in fieldnames
-        has_scaled = "Merit_Scaled" in fieldnames
-
         for r in reader:
-
             d.append(float(r["Distance"]))
             p.append(float(r["Peak_AF"]))
             c.append(float(r["Coherence_Ratio"]))
             m.append(float(r["Merit_Function"]))
-
-            if has_q:
-                q.append(float(r["Q_effective"]))
-
-            if has_scaled:
-                m_scaled.append(float(r["Merit_Scaled"]))
-
-    return d, p, c, m, q, m_scaled, has_q, has_scaled
-
+            q.append(float(r["Q_effective"]))
+            ms.append(float(r["Merit_Scaled"]))
+    return np.array(d), np.array(p), np.array(c), np.array(m), np.array(q), np.array(ms)
 
 def norm(x):
-
-    x = np.array(x)
-
     return (x - x.min()) / (x.max() - x.min() + 1e-12)
 
-
 def plot():
+    f_path = "data/simulation_results_fractal.csv"
+    b_path = "data/simulation_results_botanical.csv"
 
-    d, p, c, m, q, m_scaled, has_q, has_scaled = load_data()
+    if not os.path.exists(f_path) or not os.path.exists(b_path):
+        print("Error: Missing benchmark output datasets.")
+        return
 
-    x = norm(d)
+    df, pf, cf, mf, qf, msf = load_mode_data(f_path)
+    db, pb, cb, mb, qb, msb = load_mode_data(b_path)
 
-    p_norm = norm(p)
-    c_norm = norm(c)
-    m_norm = norm(m)
+    plt.figure(figsize=(12, 6))
 
-    plt.figure(figsize=(10, 5))
+    plt.plot(df, norm(msf), label="Fractal - Merit Scaled (norm)", color="blue", linewidth=2)
+    plt.plot(df, norm(cf), label="Fractal - Coherence (norm)", color="cyan", linestyle="--")
 
-    plt.plot(
-        x,
-        p_norm,
-        label="Peak_AF (norm)",
-        linewidth=2.5,
-        color="blue",
-        zorder=4,
-        alpha=0.9
-    )
+    plt.plot(db, norm(msb), label="Botanical - Merit Scaled (norm)", color="red", linewidth=2)
+    plt.plot(db, norm(cb), label="Botanical - Coherence (norm)", color="orange", linestyle="--")
 
-    plt.plot(
-        x,
-        c_norm,
-        label="Coherence (norm)",
-        linewidth=2.5,
-        color="lime",
-        zorder=3
-    )
-
-    plt.plot(
-        x,
-        m_norm,
-        label="Merit (norm)",
-        linestyle="--",
-        linewidth=2.5,
-        color="gold",
-        zorder=5
-    )
-
-    if has_scaled:
-
-        ms_norm = norm(m_scaled)
-
-        plt.plot(
-            x,
-            ms_norm,
-            label="Merit_Scaled (norm)",
-            linewidth=2.5,
-            color="red",
-            zorder=6
-        )
-
-    if has_q:
-
-        q_norm = norm(q)
-
-        plt.plot(
-            x,
-            q_norm,
-            linestyle=":",
-            linewidth=2.5,
-            color="purple",
-            label="Q_effective (norm)",
-            zorder=2
-        )
-
-    plt.xlabel("Normalized Distance")
-    plt.ylabel("Normalized Response")
-
-    plt.title("Coupled System Response (fully normalized)")
-
-    plt.grid(True, linestyle="--", alpha=0.35)
-
+    plt.xlabel("Distance")
+    plt.ylabel("Normalized Metrics")
+    plt.title("Morphology Benchmark: Fractal vs Botanical (v1.1)")
+    plt.grid(True)
     plt.legend()
 
-    plt.tight_layout()
+    os.makedirs("data", exist_ok=True)
+    plt.savefig("data/sensitivity_analysis.png", dpi=300)
+    plt.close()
 
-    out = "data/sensitivity_analysis.png"
-
-    plt.savefig(out, dpi=300, bbox_inches="tight")
-
-    plt.show()
-
-    print("Visualization complete")
-    print(f"Saved → {out}")
-
+    print("Comparative plot generated successfully: data/sensitivity_analysis.png")
 
 if __name__ == "__main__":
     plot()

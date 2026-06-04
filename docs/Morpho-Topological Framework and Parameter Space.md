@@ -1,4 +1,4 @@
-# Technical Analysis MS 408: The Biotic Inductive Hypothesis
+# Morpho-Topological Framework: Parameter Space and Structural Abstraction in MS 408
 
 ### Note on Research Methodology and Transparency
 

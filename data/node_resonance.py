@@ -4,9 +4,7 @@ import os
 
 os.makedirs("data", exist_ok=True)
 
-
 def load_parameters(path="data/parameters.json"):
-
     with open(path, "r") as f:
         raw = json.load(f)
 
@@ -21,7 +19,6 @@ def load_parameters(path="data/parameters.json"):
         return float(value)
 
     L = float(fixed.get("scaling_constant_k", 1.0)) * 1e-2
-
     C = parse_range(derived.get("capacitance_f", 1.0))
     R = parse_range(derived.get("ohmic_losses_ohm", 100.0))
 
@@ -31,20 +28,17 @@ def load_parameters(path="data/parameters.json"):
         "R_ohm": R
     }
 
-
 params = load_parameters()
 
 L = params["L_H"]
 C = params["C_F"]
 R = params["R_ohm"]
 
-
 omega_0 = 1.0 / np.sqrt(L * C)
 f_res = omega_0 / (2 * np.pi)
 
 Q = omega_0 * L / R
 BW = f_res / (Q + 1e-12)
-
 
 f = np.linspace(f_res * 0.01, f_res * 10, 2000)
 omega = 2 * np.pi * f
@@ -58,7 +52,6 @@ peak = np.max(magnitude)
 mean = np.mean(magnitude)
 
 k_eff = peak / (mean + 1e-12)
-
 
 params_out = {
     "L_H": L,
@@ -76,15 +69,15 @@ output_path = "data/resonance_params.json"
 with open(output_path, "w") as f_out:
     json.dump(params_out, f_out, indent=2)
 
+print("")
+print("NODE RESONANCE MODEL (PARAMETRIC)")
+print("")
 
-print("\n===================================================")
-print(" NODE RESONANCE MODEL (PARAMETRIC)")
-print("===================================================\n")
+print(f"Resonance frequency : {f_res:.4f} Hz")
+print(f"Quality factor Q    : {Q:.4f}")
+print(f"Bandwidth           : {BW:.4f} Hz")
+print(f"k_eff (peak/mean)   : {k_eff:.4f}")
 
-print(f" Resonance frequency : {f_res:.4f} Hz")
-print(f" Quality factor Q    : {Q:.4f}")
-print(f" Bandwidth           : {BW:.4f} Hz")
-print(f" k_eff (peak/mean)   : {k_eff:.4f}")
-
-print(f"\n✔ Exported → {output_path}")
-print("\n▶ Node Resonance Model: SUCCESSFUL EXECUTION")
+print("")
+print("Exported -> data/resonance_params.json")
+print("Node Resonance Model: SUCCESSFUL EXECUTION")

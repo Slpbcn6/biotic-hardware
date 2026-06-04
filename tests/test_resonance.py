@@ -1,12 +1,17 @@
 import json
 
-def test_resonance_file_exists_and_valid():
-
-    with open("data/resonance_params.json") as f:
+def test_resonance_config_integrity():
+    with open("data/parameters.json") as f:
         data = json.load(f)
 
-    assert "Q_factor" in data
-    assert "f_resonance_Hz" in data
+    freq = data["I_simulation_fixed_parameters"]["frequency_hz"]
+    q = data["IV_network_performance_metrics"]["individual_q_factor"]
 
-    assert data["Q_factor"] > 0
-    assert data["f_resonance_Hz"] > 0
+    assert isinstance(freq, (int, float))
+    assert isinstance(q, (int, float))
+
+    assert freq > 0
+    assert q > 0
+
+    assert 0 < q < 100
+    assert 1 < freq < 1e6
