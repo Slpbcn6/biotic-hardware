@@ -39,6 +39,8 @@ The pipeline separates computed metrics into two distinct operational layers:
 
 ## Key Result
 
+The system produces consistent morphological divergence between fractal and botanical configurations under identical parameter constraints.
+
 ![Sensitivity Analysis](./data/sensitivity_analysis.png)
 
 ---

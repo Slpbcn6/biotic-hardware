@@ -6,30 +6,18 @@ authors:
     given-names: "Santi"
     orcid: "https://orcid.org/0009-0002-9922-1235"
 
-<<<<<<< HEAD
-title: "Biotic Hardware"
-=======
 title: "Biotic Hardware Synthesis"
->>>>>>> 095aff2e377e7b34f157569668481023b770e39f
-
-abstract: >
-  Computational framework for deterministic coupled network simulation,
-  incorporating morphological benchmarking, phased-array interference modeling,
-  and dual-layer data architecture (scalar CSV contract and tensor NPZ layer)
-  for analysis of resonant systems in low-frequency regimes.
-
 version: 1.1.0
+date-released: 2026-06-02
 
 doi: "10.17605/OSF.IO/N3PB7"
 
 url: "https://github.com/Slpbcn6/biotic-hardware"
 
-date-released: 2026-06-02
-
 keywords:
-  - "Coupled oscillator networks"
-  - "Morphological benchmarking"
-  - "Deterministic simulation"
-  - "Phased array coupling"
-  - "Low-frequency resonance"
-  - "Computational physics"
+  - Coupled oscillator networks
+  - Morphological benchmarking
+  - Deterministic simulation
+  - Phased array coupling
+  - Low-frequency resonance
+  - Computational physics
