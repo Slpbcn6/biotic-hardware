@@ -6,7 +6,11 @@ authors:
     given-names: "Santi"
     orcid: "https://orcid.org/0009-0002-9922-1235"
 
+<<<<<<< HEAD
 title: "Biotic Hardware"
+=======
+title: "Biotic Hardware Synthesis"
+>>>>>>> 095aff2e377e7b34f157569668481023b770e39f
 
 abstract: >
   Computational framework for deterministic coupled network simulation,

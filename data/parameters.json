@@ -1,5 +1,5 @@
 {
-  "author": "Santi López Puiggené",
+  "author": "Santi L\u00c3\u00b3pez Puiggen\u00c3\u00a9",
   "source_document": "Appendix B: Minimum Executable Case for Computational Simulation (HFSS/CST)",
   "I_simulation_fixed_parameters": {
     "frequency_hz": 12.5,
@@ -29,5 +29,11 @@
   "V_simulation_benchmarks": [
     "Quality Factor (Q) impact of substrate",
     "Beamforming Profile (Rr -> 0 vs Rloss)"
-  ]
+  ],
+  "VI_experimental_sweep_parameters": {
+    "morphology_mode": "botanical",
+    "n_nodes": 64,
+    "seed": 42,
+    "beta_loss_factor": 0.25
+  }
 }
