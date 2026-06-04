@@ -188,7 +188,7 @@ Outputs:
 
 This repository implements a computational validation of the coherence and beamforming behavior defined in the theoretical model.
 
-The associated document [Functional Patterns and Electromagnetic Hypotheses in MS 408.md](./docs/Functional%20Patterns%20and%20Electromagnetic%20Hypotheses%20in%20MS%20408.md) defines a theoretical parameter space for the full system model, including structural variables such as permeability coefficients, coupling regimes, and energy-transfer analogues.
+The associated document [Morpho-Topological Framework and Parameter Space.md](./docs/Morpho-Topological%20Framework%20and%20Parameter%20Space.md) defines a theoretical parameter space for the full system model, including structural variables such as permeability coefficients, coupling regimes, and energy-transfer analogues.
 
 The README specifies the implemented computational subset of this space.
 
