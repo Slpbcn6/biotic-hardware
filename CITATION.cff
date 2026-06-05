@@ -10,9 +10,19 @@ title: "Biotic Hardware Synthesis"
 version: 1.1.2
 date-released: 2026-06-05
 
-doi: "10.17605/OSF.IO/N3PB7"
+identifiers:
+  - type: doi
+    value: "10.17605/OSF.IO/N3PB7"
 
 url: "https://github.com/Slpbcn6/biotic-hardware"
+
+abstract: >
+  A deterministic computational framework for bio-inspired ELF resonant simulation.
+  Evaluates fractal and botanical morphologies against a random control baseline using
+  phased array coupling, coherence analysis, and a composite merit metric.
+  Includes statistical separation testing (Welch's t-test, Cohen's d) across morphology
+  pairs, reproducible benchmarking via pinned dependencies, and a dual-layer output
+  architecture (scalar CSV + tensor NPZ).
 
 keywords:
   - Coupled oscillator networks
