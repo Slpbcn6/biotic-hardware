@@ -237,7 +237,7 @@ All terminology is used strictly within a computational and analogical context.
 
 ---
 
-## v1.1 - Morphological Benchmark Pipeline
+## v1.1.2 - Morphological Benchmark Pipeline
 
 This version introduces a deterministic benchmarking pipeline for comparing system dynamics under different structural inputs.
 
@@ -249,7 +249,7 @@ This version introduces a deterministic benchmarking pipeline for comparing syst
 - Data reduction and tensor persistence
 - Plotting metrics across all three morphologies
 
-**Crucial Note on Execution State:** The orchestrator (`run.py`) executes a sequential benchmark by globally mutating the `data/parameters.json` file to switch between morphologies. This means the system acts as a *stateful determinist framework*. Running `data/node_coupling.py` independently outside of `run.py` will yield results exclusively tied to the last preserved configuration state of the JSON file.
+**Note on Execution State:** The orchestrator (`run.py`) executes a sequential benchmark by injecting morphology modes directly into the coupling solver, ensuring a deterministic and side-effect-free execution. Each sweep is independent; `data/parameters.json` is never mutated at runtime. Running `data/node_coupling.py` independently outside of `run.py` will use the configuration state defined in the JSON file at that moment.
 
 ### Purpose
 

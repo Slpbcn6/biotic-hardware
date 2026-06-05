@@ -1,4 +1,4 @@
-# Overview: Biotic Hardware Synthesis (v1.1)
+# Overview: Biotic Hardware Synthesis (v1.1.2)
 
 This repository provides a Python pipeline for simulating abstract coupled network dynamics, executing a deterministic morphological benchmarking sequence, and generating structured numerical outputs.
 
@@ -6,9 +6,9 @@ This repository provides a Python pipeline for simulating abstract coupled netwo
 
 ## Pipeline
 
-The system executes a stateful deterministic computational workflow for abstract complex-valued interference modeling over the angular domain across multiple structural inputs by mutating configuration parameters:
+The system executes a deterministic computational workflow for abstract complex-valued interference modeling over the angular domain across multiple structural inputs:
 
-1. Parameter initialization and sequential morphology selection (`fractal` / `botanical` / `random`) via `data/parameters.json` mutation.
+1. Parameter initialization and sequential morphology selection (`fractal` / `botanical` / `random`) injected directly into the coupling solver.
 2. Geometric mapping and array factor computation for an array of N = 64 nodes under homotetic scaling.
 3. Dual-layer data separation (Scalar CSV Benchmarking Contract & Tensor NPZ Research Layer).
 4. Random control sweep: uniform random node placement (same N, same seed) as structural baseline.
@@ -62,10 +62,10 @@ It does not model or validate physical systems.
 
 All behavior is confined to an abstract computational simulation space with no physical interpretation.
 
-**Execution State Note:** The orchestrator (`run.py`) manages the benchmark sequentially by mutating `data/parameters.json` between runs. The architecture is stateful; executing `data/node_coupling.py` independently outside of `run.py` will yield results exclusively tied to the last configuration state preserved in the JSON file.
+**Execution State Note:** The orchestrator (`run.py`) manages the benchmark sequentially by injecting morphology modes directly into the coupling solver. Each sweep is independent and side-effect-free; `data/parameters.json` is never mutated at runtime. Executing `data/node_coupling.py` independently outside of `run.py` will use the configuration state defined in the JSON file at that moment.
 
 ---
 
 ## Version
 
-v1.1 introduces the automated Morphological Benchmark Pipeline, the dual-layer data model (CSV/NPZ), and acts as a frozen version for numerical reproducibility. The random control morphology (`generate_random_control`) is added as a structural baseline enabling falsifiable comparison between bio-inspired and unstructured topologies.
+v1.1.2 introduces the automated Morphological Benchmark Pipeline, the dual-layer data model (CSV/NPZ), and acts as a frozen version for numerical reproducibility. The random control morphology (`generate_random_control`) is added as a structural baseline enabling falsifiable comparison between bio-inspired and unstructured topologies.
