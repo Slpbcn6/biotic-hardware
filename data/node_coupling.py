@@ -11,10 +11,9 @@ def load_simulation_parameters():
     with open("data/parameters.json", "r") as f:
         return json.load(f)
 
-def compute_array_factor(positions, Q):
+def compute_array_factor(positions, Q, k0_base, k_mod_coeff, q_ref):
     theta = np.linspace(0, 2 * np.pi, 200)
-    k0 = 0.004
-    k = k0 * (1 + 0.15 * (Q - 0.785))
+    k = k0_base * (1 + k_mod_coeff * (Q - q_ref))
 
     base_phases = [0, np.pi/2, np.pi, 3*np.pi/2]
     phases = np.array([base_phases[i % 4] for i in range(len(positions))])
@@ -37,10 +36,15 @@ def run_sweep(mode, output_file, tensor_file):
 
     Q0 = float(params["IV_network_performance_metrics"]["individual_q_factor"])
     cfg = params["VI_experimental_sweep_parameters"]
+    af_cfg = params["VII_array_factor_parameters"]
 
     n_nodes = int(cfg["n_nodes"])
     seed = int(cfg["seed"])
     beta = float(cfg["beta_loss_factor"])
+
+    k0_base = float(af_cfg["k0_base"])
+    k_mod_coeff = float(af_cfg["k_modulation_coeff"])
+    q_ref = float(af_cfg["q_reference"])
 
     if mode == "fractal":
         base_nodes = input_generator.generate_fractal_morphology(n_nodes=n_nodes, seed=seed)
@@ -73,7 +77,7 @@ def run_sweep(mode, output_file, tensor_file):
 
             Q_eff = Q0 * (1 - beta * (i / len(distances)))
 
-            peak, coherence, mean, magnitude = compute_array_factor(positions, Q_eff)
+            peak, coherence, mean, magnitude = compute_array_factor(positions, Q_eff, k0_base, k_mod_coeff, q_ref)
 
             merit = peak * coherence
             scaled = merit * Q_eff

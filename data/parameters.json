@@ -1,5 +1,5 @@
 {
-  "author": "Santi L\u00c3\u00b3pez Puiggen\u00c3\u00a9",
+  "author": "Santi López Puiggené",
   "source_document": "Appendix B: Minimum Executable Case for Computational Simulation (HFSS/CST)",
   "I_simulation_fixed_parameters": {
     "frequency_hz": 12.5,
@@ -35,5 +35,10 @@
     "n_nodes": 64,
     "seed": 42,
     "beta_loss_factor": 0.25
+  },
+  "VII_array_factor_parameters": {
+    "k0_base": 0.004,
+    "k_modulation_coeff": 0.15,
+    "q_reference": 0.785
   }
 }

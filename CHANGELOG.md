@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.1.2] - 2026-06-05
+
+### Changed
+
+- Fixed double-encoded author field in `data/parameters.json`  
+- Moved hardcoded array factor constants (`k0_base`, `k_modulation_coeff`, `q_reference`) from `node_coupling.py` to `parameters.json` (section `VII_array_factor_parameters`)  
+- Added `if __name__ == "__main__":` guard to `node_resonance.py` — module now importable without side effects  
+- Removed `set_morphology()` from `run.py` — pipeline no longer mutates `parameters.json` during execution  
+- Added per-sweep summary output to `run.py` (Peak AF, Coherence, Merit Scaled at max distance)  
+- Fixed em dash rendering in `plot_sensitivity.py` labels (Windows matplotlib compatibility)  
+- Pinned dependency versions in `requirements.txt`  
+- Added cell `id` fields to `notebook/demo.ipynb` (nbformat 5.1.4+ compliance)  
+
+---
+
 ## [1.1.1] - 2026-06-04
 
 ### Added
@@ -43,4 +58,4 @@ Establishes a falsifiable structural baseline: bio-inspired morphologies (fracta
 - Version 1.1 defines a deterministic and reproducible benchmarking system  
 - The system preserves core resonance equations while enabling deterministic morphological variation in spatial configuration  
 - The system is strictly computational and does not modify underlying model equations  
-- The system remains fully deterministic; the introduction of the random control does not alter simulation equations or internal model behavior  
+- The system remains fully deterministic; the introduction of the random control does not alter simulation equations or internal model behavior

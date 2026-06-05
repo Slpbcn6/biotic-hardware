@@ -40,19 +40,19 @@ def plot():
 
     plt.figure(figsize=(14, 6))
 
-    plt.plot(df, norm(msf), label="Fractal — Merit Scaled", linewidth=2, color="#2196F3")
-    plt.plot(df, norm(cf),  label="Fractal — Coherence",    linestyle="--", color="#2196F3", alpha=0.6)
+    plt.plot(df, norm(msf), label="Fractal - Merit Scaled", linewidth=2, color="#2196F3")
+    plt.plot(df, norm(cf),  label="Fractal - Coherence",    linestyle="--", color="#2196F3", alpha=0.6)
 
-    plt.plot(db, norm(msb), label="Botanical — Merit Scaled", linewidth=2, color="#4CAF50")
-    plt.plot(db, norm(cb),  label="Botanical — Coherence",    linestyle="--", color="#4CAF50", alpha=0.6)
+    plt.plot(db, norm(msb), label="Botanical - Merit Scaled", linewidth=2, color="#4CAF50")
+    plt.plot(db, norm(cb),  label="Botanical - Coherence",    linestyle="--", color="#4CAF50", alpha=0.6)
 
     if has_random:
-        plt.plot(dr, norm(msr), label="Random Control — Merit Scaled", linewidth=2, color="#FF5722")
-        plt.plot(dr, norm(cr),  label="Random Control — Coherence",    linestyle="--", color="#FF5722", alpha=0.6)
+        plt.plot(dr, norm(msr), label="Random Control - Merit Scaled", linewidth=2, color="#FF5722")
+        plt.plot(dr, norm(cr),  label="Random Control - Coherence",    linestyle="--", color="#FF5722", alpha=0.6)
 
     plt.xlabel("Distance")
     plt.ylabel("Normalized Metrics")
-    plt.title("Morphological Sensitivity Benchmark v1.1 — Bio-Inspired vs. Random Control")
+    plt.title("Morphological Sensitivity Benchmark v1.1 - Bio-Inspired vs. Random Control")
     plt.grid(True, alpha=0.3)
     plt.legend()
 

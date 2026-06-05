@@ -1,5 +1,6 @@
 import subprocess
 import sys
+import csv
 from pathlib import Path
 
 ROOT = Path(__file__).parent
@@ -8,20 +9,17 @@ def run(script):
     print(f"\n[RUN] {script}")
     subprocess.run([sys.executable, str(ROOT / script)], check=True)
 
-def set_morphology(mode):
-    import json
-    path = ROOT / "data/parameters.json"
-    with open(path, "r") as f:
-        data = json.load(f)
-
-    data["VI_experimental_sweep_parameters"]["morphology_mode"] = mode
-
-    with open(path, "w") as f:
-        json.dump(data, f, indent=2)
-
 def run_coupling(mode, output_file, tensor_file):
     import data.node_coupling as coupling
     coupling.run_sweep(mode, output_file, tensor_file)
+
+    with open(output_file, "r") as f:
+        rows = list(csv.DictReader(f))
+    last = rows[-1]
+    print(f"      Peak AF: {float(last['Peak_AF']):.2f} | "
+          f"Coherence: {float(last['Coherence_Ratio']):.2f} | "
+          f"Merit Scaled: {float(last['Merit_Scaled']):.2f}  "
+          f"(d={float(last['Distance']):.1f})")
 
 def main():
     print("\n===================================================")
@@ -32,7 +30,6 @@ def main():
     run("data/node_resonance.py")
 
     print("\n[2/5] Running FRACTAL sweep...")
-    set_morphology("fractal")
     run_coupling(
         "fractal",
         "data/simulation_results_fractal.csv",
@@ -40,7 +37,6 @@ def main():
     )
 
     print("\n[3/5] Running BOTANICAL sweep...")
-    set_morphology("botanical")
     run_coupling(
         "botanical",
         "data/simulation_results_botanical.csv",
@@ -48,7 +44,6 @@ def main():
     )
 
     print("\n[4/5] Running RANDOM CONTROL sweep...")
-    set_morphology("random")
     run_coupling(
         "random",
         "data/simulation_results_random.csv",
