@@ -18,7 +18,9 @@ The system is strictly computational and interpretative. It does not represent a
 
 Install dependencies before running the pipeline:
 
-    pip install -r requirements.txt
+```bash
+pip install -r requirements.txt
+```
 
 ---
 
@@ -26,19 +28,21 @@ Install dependencies before running the pipeline:
 
 To run the full computational simulation pipeline:
 
-    python run.py
+```bash
+python run.py
+```
 
 This executes the complete workflow:
 
 - Node-level resonance and normalized response analysis in a lumped-element RLC-inspired system
-- Distributed Phased Array simulation (phase-based interference superposition)
+- Distributed Phased Array simulation (phase-based interference superposition) across three morphologies: fractal, botanical, and random control
 - Parametric sensitivity analysis of system response under geometric scaling
 
 Outputs:
 
 - Console logs of simulation results
-- `data/simulation_results_fractal.csv` & `data/simulation_results_botanical.csv` (Scalar Benchmark Contract)
-- `data/af_tensors_fractal.npz` & `data/af_tensors_botanical.npz` (Tensor Research Layer)
+- `data/simulation_results_fractal.csv`, `data/simulation_results_botanical.csv`, `data/simulation_results_random.csv` (Scalar Benchmark Contract)
+- `data/af_tensors_fractal.npz`, `data/af_tensors_botanical.npz`, `data/af_tensors_random.npz` (Tensor Research Layer)
 - `data/sensitivity_analysis.png`
 
 ---
@@ -138,9 +142,9 @@ The coupling model includes phenomenological scaling coefficients used to modula
 
 ### Spatial Configuration
 
-Nodes are distributed dynamically based on the selected morphology (fractal or botanical), comprising an array of N = 64 nodes. 
+Nodes are distributed dynamically based on the selected morphology (fractal, botanical, or random control), comprising an array of N = 64 nodes.
 
-**Geometric Treatment:** The transformation is strictly homotetic. The base topology remains fixed while the global scale is modulated continuously by a spacing parameter d from 0.1 to 2.0 meters (`positions = base_nodes * d`). 
+**Geometric Treatment:** The transformation is strictly homotetic. The base topology remains fixed while the global scale is modulated continuously by a spacing parameter d from 0.1 to 2.0 meters (`positions = base_nodes * d`).
 
 Phase assignments are applied cyclically across the N-node array to maintain controlled interference periodicity:
 
@@ -239,17 +243,17 @@ This version introduces a deterministic benchmarking pipeline for comparing syst
 
 ### Pipeline Structure & Execution State
 
-- Morphology generation (fractal / botanical)
+- Morphology generation (fractal / botanical / random control)
 - Geometric mapping of node positions
 - Array factor computation
 - Data reduction and tensor persistence
-- Plotting metrics
+- Plotting metrics across all three morphologies
 
 **Crucial Note on Execution State:** The orchestrator (`run.py`) executes a sequential benchmark by globally mutating the `data/parameters.json` file to switch between morphologies. This means the system acts as a *stateful determinist framework*. Running `data/node_coupling.py` independently outside of `run.py` will yield results exclusively tied to the last preserved configuration state of the JSON file.
 
 ### Purpose
 
-This version ensures reproducible comparison of morphological configurations under identical, automated simulation conditions, while preserving the full tensor state for decoupled computational analysis.
+This version ensures reproducible comparison of morphological configurations under identical, automated simulation conditions, while preserving the full tensor state for decoupled computational analysis. The random control morphology (`generate_random_control`) provides a uniform random baseline — same N = 64 nodes, same seed — enabling falsifiable comparison between bio-inspired and unstructured topologies.
 
 ---
 

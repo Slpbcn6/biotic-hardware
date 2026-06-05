@@ -44,10 +44,27 @@ def generate_botanical_graph(n_nodes=64, seed=42):
     return np.array(nodes)
 
 
+def generate_random_control(n_nodes=64, seed=42):
+    """
+    Baseline control morphology: uniformly random node positions.
+    Spatial range matches fractal/botanical extent (~[-2, 2]).
+    Same n_nodes and seed as bio-inspired morphologies for fair comparison.
+    """
+    rng = np.random.default_rng(seed)
+
+    x = rng.uniform(-1.5, 1.5, n_nodes)
+    y = rng.uniform(-1.5, 1.5, n_nodes)
+    z = np.zeros(n_nodes)
+
+    return np.column_stack([x, y, z])
+
+
 def load_morphology(mode="fractal"):
     if mode == "fractal":
         return generate_fractal_morphology()
     elif mode == "botanical":
         return generate_botanical_graph()
+    elif mode == "random":
+        return generate_random_control()
     else:
         raise ValueError("Unknown morphology mode")

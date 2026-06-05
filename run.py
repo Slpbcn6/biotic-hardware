@@ -28,10 +28,10 @@ def main():
     print(" DETERMINISTIC COMPARATIVE MORPHOLOGICAL PIPELINE v1.1")
     print("===================================================")
 
-    print("\n[1/4] Running node resonance baseline...")
+    print("\n[1/5] Running node resonance baseline...")
     run("data/node_resonance.py")
 
-    print("\n[2/4] Running FRACTAL sweep...")
+    print("\n[2/5] Running FRACTAL sweep...")
     set_morphology("fractal")
     run_coupling(
         "fractal",
@@ -39,7 +39,7 @@ def main():
         "data/af_tensors_fractal.npz"
     )
 
-    print("\n[3/4] Running BOTANICAL sweep...")
+    print("\n[3/5] Running BOTANICAL sweep...")
     set_morphology("botanical")
     run_coupling(
         "botanical",
@@ -47,7 +47,15 @@ def main():
         "data/af_tensors_botanical.npz"
     )
 
-    print("\n[4/4] Generating sensitivity plot...")
+    print("\n[4/5] Running RANDOM CONTROL sweep...")
+    set_morphology("random")
+    run_coupling(
+        "random",
+        "data/simulation_results_random.csv",
+        "data/af_tensors_random.npz"
+    )
+
+    print("\n[5/5] Generating sensitivity plot...")
     run("data/plot_sensitivity.py")
 
     print("\n===================================================")

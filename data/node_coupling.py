@@ -48,6 +48,9 @@ def run_sweep(mode, output_file, tensor_file):
     elif mode == "botanical":
         base_nodes = input_generator.generate_botanical_graph(n_nodes=n_nodes, seed=seed)
         noise = 0.15
+    elif mode == "random":
+        base_nodes = input_generator.generate_random_control(n_nodes=n_nodes, seed=seed)
+        noise = 0.0
     else:
         raise ValueError(f"Unknown mode: {mode}")
 
