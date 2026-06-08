@@ -52,7 +52,7 @@ def plot():
 
     plt.xlabel("Distance")
     plt.ylabel("Normalized Metrics")
-    plt.title("Morphological Sensitivity Benchmark v1.1 - Bio-Inspired vs. Random Control")
+    plt.title("Morphological Sensitivity Benchmark v1.2 - Bio-Inspired vs. Random Control")
     plt.grid(True, alpha=0.3)
     plt.legend()
 

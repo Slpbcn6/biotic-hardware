@@ -1,0 +1,72 @@
+{
+  "pipeline_version": "1.2.0",
+  "resonance_baseline": {
+    "f_simulated_hz": 12.9949,
+    "Q_factor": 0.8165,
+    "schumann_nearest_mode_hz": 14.3,
+    "schumann_mode_index": 2,
+    "deviation_pct": 9.13,
+    "reference": "NOAA/GFZ Potsdam (published reference values)"
+  },
+  "experimental_configuration": {
+    "n_nodes": 64,
+    "reference_seed": 42,
+    "beta_loss_factor": 0.25,
+    "k0_base": 0.004,
+    "k_modulation_coeff": 0.15,
+    "q_reference": 0.785
+  },
+  "multi_seed_analysis": {
+    "seeds": [
+      42,
+      43,
+      44,
+      45,
+      46
+    ],
+    "morphologies": {
+      "fractal": {
+        "Merit_Scaled": {
+          "mean": 0.018733,
+          "std": 0.000644
+        },
+        "Coherence_Ratio": {
+          "mean": 1.019715,
+          "std": 0.014734
+        },
+        "Peak_AF": {
+          "mean": 0.027308,
+          "std": 0.000554
+        }
+      },
+      "botanical": {
+        "Merit_Scaled": {
+          "mean": 0.028505,
+          "std": 0.010605
+        },
+        "Coherence_Ratio": {
+          "mean": 1.417512,
+          "std": 0.105844
+        },
+        "Peak_AF": {
+          "mean": 0.029597,
+          "std": 0.009931
+        }
+      },
+      "random": {
+        "Merit_Scaled": {
+          "mean": 0.032301,
+          "std": 0.007659
+        },
+        "Coherence_Ratio": {
+          "mean": 1.538095,
+          "std": 0.038315
+        },
+        "Peak_AF": {
+          "mean": 0.031384,
+          "std": 0.00799
+        }
+      }
+    }
+  }
+}
