@@ -1,8 +1,8 @@
-# Biotic Hardware Synthesis: A Computational Framework for Bio-Inspired ELF Resonant Architectures
+# Biotic Hardware Synthesis: A Computational Framework for Morphological Benchmarking in ELF-Inspired Coupled-Oscillator Networks
 
 This repository provides a reproducible computational framework for simulating structured network dynamics inspired by morphological datasets. It implements a full pipeline for parameter-driven simulation of coherence metrics, phase-based interference behavior (complex-valued phasor summation), sensitivity analysis under parametric variation, and formal statistical separation testing — producing numerical outputs, statistical artifacts, and visualization from a single executable workflow.
 
-It operates under an Extremely Low Frequency (ELF)-inspired scalar parameterization using morphological datasets as structured inputs for abstract graph-based and lumped-element system modeling.
+It operates under an ELF-inspired scalar parameterization using morphological datasets as structured inputs for abstract graph-based and lumped-element system modeling. All electromagnetic terminology used throughout (ELF, phased array, array factor, k0, NFMI) is applied in an analogical and computational sense. No physical electromagnetic system is modeled or implied.
 
 It implements a generative computational pipeline in which morphological structures (associated with MS 408 / Voynich Manuscript treated strictly as a non-semantic morphological dataset) are mapped into simplified wave-interference and oscillator analogues inspired by abstract electromagnetic-style system analogies. These mappings enable the study of structural and dynamical properties within coupled-oscillator and network-based simulation frameworks.
 
@@ -62,7 +62,7 @@ Botanical morphology achieves statistically significant separation from both fra
 ## Key Research Points
 
 - **Perspective:** Application of signal processing, wave-interference modeling, and bio-inspired computational design to morphological datasets extracted from MS 408.
-- **Model:** Network-based representation using coupled oscillator systems, with Near-Field Magnetic Induction (NFMI) used strictly as conceptual and structural inspiration for interaction topology design.
+- **Model:** Network-based representation using coupled oscillator systems, with Near-Field Magnetic Induction (NFMI) used strictly as conceptual inspiration for interaction topology design — not as a physical implementation or performance target.
 - **Methodology:** Mapping of morphological geometry into abstract electromagnetic network representations for simulation, parameter exploration, and statistical comparison.
 - **Validation:** Pre-simulation topology validation rejects degenerate structures before execution. Results are cross-validated against published Schumann resonance modes and stress-tested across five seeds per morphology.
 
@@ -104,7 +104,7 @@ Morphological structures are mapped into abstract network components as follows:
 - **Phase Synchronization:** Radial structures represented as phase-coupled oscillators.
 - **Material Layering:** Structural variation mapped to parameter heterogeneity (loss, damping, coupling strength).
 
-These mappings are used strictly for computational simulation.
+These mappings are used strictly for computational simulation. No physical signal propagation is modeled.
 
 ---
 
@@ -131,6 +131,8 @@ These quantities are used as comparative indicators within the simulation framew
 
 The simulated resonance frequency is compared against published Schumann resonance modes (NOAA/GFZ Potsdam). The simulated value of 12.9949 Hz positions at 9.13% deviation from mode 2 (14.30 Hz). References: Schumann 1952, Williams 1992, Nickolaenko & Hayakawa 2002.
 
+**Note on baseline comparison:** The simulated resonance frequency is a direct consequence of the LC parameters defined in `data/parameters.json` (L ≈ 1.0 H, C = 162 µF). The comparison to Schumann modes serves as an external reference frame for contextualizing the frequency regime of the model, not as a claim of physical equivalence or empirical proximity to natural ELF phenomena.
+
 ### Output
 
 The simulation produces parametric baseline metrics. Typical numerical outputs include:
@@ -140,7 +142,7 @@ The simulation produces parametric baseline metrics. Typical numerical outputs i
 - Bandwidth: **15.91 Hz**
 - Effective transfer (k_eff): **2.92**
 
-These values represent efficiency metrics derived from the simulated signal structure.
+These values represent structural indicators derived from the simulated signal structure. **Note on Q:** A value of Q = 0.81 places the model in the overdamped regime (Q < 1), meaning the system does not sustain free oscillation in the strict physical sense. The coherence and merit metrics computed by the pipeline remain valid as comparative structural indicators across morphologies. The term "resonance frequency" here refers to the frequency of peak transfer function magnitude, not to sustained oscillation.
 
 ---
 
@@ -148,7 +150,7 @@ These values represent efficiency metrics derived from the simulated signal stru
 
 The system is extended into a spatial network model: [/data/node_coupling.py](./data/node_coupling.py)
 
-This module computes coherent field superposition using a phased array formulation.
+This module computes coherent field superposition using a phased array formulation applied to abstract node graphs. The terminology (array factor, phased array, beamforming) is borrowed from antenna engineering as a computational analogy. No physical antenna array is modeled.
 
 The coupling model includes phenomenological scaling coefficients used to modulate coherence response, spatial sensitivity, and normalized quality-factor behavior across the parametric sweep. These coefficients are heuristic simulation parameters intended for exploratory system dynamics and do not represent experimentally derived electromagnetic constants.
 
@@ -165,6 +167,10 @@ Phase assignments are applied cyclically across the N-node array to maintain con
 ### Pre-simulation Topology Validation
 
 Before each sweep executes, `data/topology_validator.py` validates the generated morphology using union-find connectivity (BFS), minimum node count, and degenerate structure detection. Invalid topologies raise a `RuntimeError` and halt the pipeline.
+
+### Scaling Parameter k0
+
+The variable `k0_base` is a heuristic spatial scaling coefficient used to modulate the phase contribution of each node in the array factor computation. It is **not** the electromagnetic wave number k₀ = 2πf/c. At 12.99 Hz, the physical wave number would be k₀ ≈ 2.72×10⁻⁷ rad/m — several orders of magnitude smaller than the value used here. The discrepancy is intentional: the model operates in an abstract simulation space, not in physical electromagnetic space.
 
 ### Data Export Architecture (Dual Layer)
 
@@ -231,9 +237,7 @@ The current implementation focuses exclusively on the network synchronization ke
 - distributed coupling stability
 - emergent beamforming behavior in graph-based oscillator networks
 
-Modules related to energy conversion (e.g. plasma-like transitions, piezoelectric-like coupling) are treated as architectural specifications within the theoretical parameter space and are not instantiated in the current simulation layer.
-
-This separation reflects a layered abstraction model, where:
+Modules related to energy conversion are treated as architectural specifications within the theoretical parameter space and are not instantiated in the current simulation layer. This separation reflects a layered abstraction model, where:
 
 - the theoretical model defines the full parameterized system space
 - the implementation evaluates a restricted subset of dynamical behaviors within that space
@@ -242,56 +246,12 @@ The parameter **k** is defined as a schematic spatial scaling factor representin
 
 The implementation uses a hierarchical set of derived scaling variables (e.g. k0, k, k_eff) that operate at different stages of the simulation pipeline: base scaling initialization, coherence-modulated scaling, and post-response normalization. These variables are computational constructs used for numerical stability and do not represent a physically derived parameter hierarchy.
 
-Within the resonance module, the scaling parameter is used as a direct linear scaling factor applied to the inductance term for numerical convenience within the lumped-element model. This operation is purely computational and does not represent a physically derived transformation.
+Within the resonance module, the scaling parameter is used as a direct linear scaling factor applied to the base inductance value (`L = scaling_constant_k * 1e-2`), producing L = 1.0 H as the effective inductance for the RLC model. This value is a design choice within the abstract simulation space, not a measured or derived physical quantity.
 
 ---
 
-## Important Clarification
+## Reproducibility
 
-This project is a **computational and conceptual modeling framework**.
+All simulations are fully deterministic given fixed seeds (default: 42). The pipeline is single-command executable (`python run.py`) with no external API calls or runtime downloads. Results in `data/` are committed alongside code for reference.
 
-It does not claim:
-
-- Historical or physical interpretation of MS 408
-- Biological or physical implementation of proposed systems
-- Experimental validation of electromagnetic behavior in biological structures
-
-It provides:
-
-- A reproducible simulation environment with CI/CD validation
-- A structural abstraction framework with formal statistical testing
-- A sensitivity analysis pipeline for exploratory modeling
-- An external baseline comparison against published reference data
-
-All terminology is used strictly within a computational and analogical context.
-
----
-
-## v1.2.0 — Statistical Validation & External Baseline
-
-This version introduces:
-
-- **Pre-simulation topology validation** (`data/topology_validator.py`): union-find connectivity check, minimum node count, degenerate structure detection. Rejects invalid topologies before execution.
-- **Schumann resonance external comparison** (`data/schumann_reference.py`): anchors the simulated resonance frequency against NOAA/GFZ Potsdam published modes 1–5.
-- **Formal statistical separation** (`run.py` step 6): Welch t-test + Cohen's d across 3 metrics × 3 morphology pairs, output to `data/statistical_summary.csv`.
-- **Multi-seed analysis** (`data/multi_seed_analysis.py`, step 7): per-morphology mean ± std across seeds 42–46, output to `data/multi_seed_summary.csv`.
-- **Machine-readable exploration summary** (`data/exploration_summary.json`): consolidated record of resonance baseline, experimental configuration, and multi-seed results.
-- **CI/CD pipeline** (`.github/workflows/ci.yml`): executes `run.py` + `pytest` on every push to ensure the repository never enters a broken state.
-- **Standard CC BY 4.0 license**: replaces previous non-standard text; GitHub now recognizes the license automatically.
-
-**Execution State Note:** The orchestrator (`run.py`) executes a sequential benchmark by injecting morphology modes directly into the coupling solver, ensuring a deterministic and side-effect-free execution. Each sweep is independent; `data/parameters.json` is never mutated at runtime.
-
-### Purpose
-
-v1.2.0 transforms the project from a reproducible simulation into a scientifically defensible framework: all comparative claims between morphologies are now backed by formal statistical tests with effect size quantification, external frequency anchoring, and multi-seed stability confirmation.
-
----
-
-## References
-
-- Near-Field Magnetic Induction Communication (NFMI) – A Review — https://doi.org/10.1016/j.comnet.2020.107548
-- Magnetic Induction Communication: Theory and Applications — https://doi.org/10.1109/TAP.2010.2048858
-- Extremely Low Frequency (ELF) Electromagnetic Wave Propagation — https://www.nature.com/articles/s41598-024-71011-3
-- Metamaterial-Inspired Antennas: State of the Art and Design Challenges — https://doi.org/10.1109/ACCESS.2021.3091479
-- Bio-Inspired Electromagnetic Materials and Structures — https://doi.org/10.1021/acsami.2c21622
-- Piezoelectric Properties of Cellulose-Based Materials — https://doi.org/10.1016/j.carbpol.2025.124667
+Pinned dependency versions are declared in `requirements.txt`. Environment reproducibility is further documented in `CHANGELOG.md`.

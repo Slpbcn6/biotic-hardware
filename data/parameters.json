@@ -1,12 +1,13 @@
 {
   "author": "Santi López Puiggené",
-  "source_document": "Appendix B: Minimum Executable Case for Computational Simulation (HFSS/CST)",
+  "source_document": "Computational parameter specification — v1.2.0. Parameter values define the abstract simulation space. They are not derived from or validated against HFSS, CST, or any other professional electromagnetic simulation tool.",
   "I_simulation_fixed_parameters": {
     "frequency_hz": 12.5,
     "magnetic_permeability_ur": 1250000.0,
+    "magnetic_permeability_ur_note": "Retained as an ontological reference for the theoretical model space. Not read or used by any module in the current pipeline (node_resonance.py, node_coupling.py, run.py).",
     "resistivity_ohm_m": 0.01,
     "scaling_constant_k": 100,
-    "note": "1 cm schematic = 1 meter hardware"
+    "note": "1 unit in simulation space corresponds to 1 meter in the abstract spatial domain. No physical hardware exists or is implied."
   },
   "II_geometric_instance_planar_fractal_spiral": {
     "turns_n": 50,
@@ -23,12 +24,13 @@
   },
   "IV_network_performance_metrics": {
     "individual_q_factor": 0.8,
-    "systemic_gain": "Collective Phased Array gain",
-    "synchronization_effect": "Power-summation over high-damping biotic medium"
+    "individual_q_factor_note": "Q < 1 places the model in the overdamped regime. Coherence and merit metrics remain valid as comparative structural indicators across morphologies.",
+    "systemic_gain": "Collective Phased Array gain — computational analogy, not a physical measurement.",
+    "synchronization_effect": "Power-summation over high-damping abstract network medium"
   },
   "V_simulation_benchmarks": [
     "Quality Factor (Q) impact of substrate",
-    "Beamforming Profile (Rr -> 0 vs Rloss"
+    "Beamforming Profile (Rr -> 0 vs Rloss)"
   ],
   "VI_experimental_sweep_parameters": {
     "morphology_mode": "random",
@@ -38,6 +40,7 @@
   },
   "VII_array_factor_parameters": {
     "k0_base": 0.004,
+    "k0_base_note": "Heuristic spatial scaling coefficient. Not the electromagnetic wave number k0 = 2*pi*f/c. At 12.99 Hz the physical value would be ~2.72e-7 rad/m. This parameter operates in abstract simulation space.",
     "k_modulation_coeff": 0.15,
     "q_reference": 0.785
   }
