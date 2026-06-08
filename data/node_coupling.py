@@ -7,15 +7,17 @@ from data import input_generator
 
 os.makedirs("data", exist_ok=True)
 
+
 def load_simulation_parameters():
     with open("data/parameters.json", "r") as f:
         return json.load(f)
+
 
 def compute_array_factor(positions, Q, k0_base, k_mod_coeff, q_ref):
     theta = np.linspace(0, 2 * np.pi, 200)
     k = k0_base * (1 + k_mod_coeff * (Q - q_ref))
 
-    base_phases = [0, np.pi/2, np.pi, 3*np.pi/2]
+    base_phases = [0, np.pi / 2, np.pi, 3 * np.pi / 2]
     phases = np.array([base_phases[i % 4] for i in range(len(positions))])
 
     af = np.zeros_like(theta, dtype=complex)
@@ -31,7 +33,8 @@ def compute_array_factor(positions, Q, k0_base, k_mod_coeff, q_ref):
 
     return peak, coherence, mean, magnitude
 
-def run_sweep(mode, output_file, tensor_file):
+
+def run_sweep(mode, output_file, tensor_file, seed_override=None):
     params = load_simulation_parameters()
 
     Q0 = float(params["IV_network_performance_metrics"]["individual_q_factor"])
@@ -39,7 +42,7 @@ def run_sweep(mode, output_file, tensor_file):
     af_cfg = params["VII_array_factor_parameters"]
 
     n_nodes = int(cfg["n_nodes"])
-    seed = int(cfg["seed"])
+    seed = seed_override if seed_override is not None else int(cfg["seed"])
     beta = float(cfg["beta_loss_factor"])
 
     k0_base = float(af_cfg["k0_base"])
@@ -59,7 +62,6 @@ def run_sweep(mode, output_file, tensor_file):
         raise ValueError(f"Unknown mode: {mode}")
 
     rng = np.random.default_rng(seed)
-
     distances = np.linspace(0.1, 2.0, 30)
 
     distance_store = []
@@ -68,16 +70,19 @@ def run_sweep(mode, output_file, tensor_file):
 
     with open(output_file, "w", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow(["Distance", "Peak_AF", "Coherence_Ratio", "Merit_Function", "Q_effective", "Merit_Scaled"])
+        writer.writerow([
+            "Distance", "Peak_AF", "Coherence_Ratio",
+            "Merit_Function", "Q_effective", "Merit_Scaled"
+        ])
 
         for i, d in enumerate(distances):
-
             perturb = rng.normal(0, noise, base_nodes.shape)
             positions = (base_nodes + perturb) * d
-
             Q_eff = Q0 * (1 - beta * (i / len(distances)))
 
-            peak, coherence, mean, magnitude = compute_array_factor(positions, Q_eff, k0_base, k_mod_coeff, q_ref)
+            peak, coherence, mean, magnitude = compute_array_factor(
+                positions, Q_eff, k0_base, k_mod_coeff, q_ref
+            )
 
             merit = peak * coherence
             scaled = merit * Q_eff
@@ -88,10 +93,14 @@ def run_sweep(mode, output_file, tensor_file):
             mean_store.append(mean)
             af_store.append(magnitude)
 
-    np.savez(output_file.replace(".csv", ".npz"),
-             distance=np.array(distance_store),
-             mean=np.array(mean_store))
+    np.savez(
+        output_file.replace(".csv", ".npz"),
+        distance=np.array(distance_store),
+        mean=np.array(mean_store),
+    )
 
-    np.savez(tensor_file,
-             distance=np.array(distance_store),
-             af=np.array(af_store))
+    np.savez(
+        tensor_file,
+        distance=np.array(distance_store),
+        af=np.array(af_store),
+    )
