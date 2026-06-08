@@ -1,3 +1,11 @@
 .pytest_cache/
 __pycache__/
 *.pyc
+# Generated pipeline outputs
+data/simulation_results_*.csv
+data/simulation_results_*.npz
+data/af_tensors_*.npz
+data/statistical_summary.csv
+data/multi_seed_summary.csv
+data/exploration_summary.json
+data/resonance_params.json

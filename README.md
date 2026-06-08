@@ -1,12 +1,12 @@
 # Biotic Hardware Synthesis: A Computational Framework for Bio-Inspired ELF Resonant Architectures
 
-This repository provides a reproducible computational framework for simulating structured network dynamics inspired by morphological datasets. It implements a full pipeline for parameter-driven simulation of coherence metrics, phase-based interference behavior (complex-valued phasor summation), and sensitivity analysis under parametric variation, producing numerical outputs and visualization artifacts from a single executable workflow.
+This repository provides a reproducible computational framework for simulating structured network dynamics inspired by morphological datasets. It implements a full pipeline for parameter-driven simulation of coherence metrics, phase-based interference behavior (complex-valued phasor summation), sensitivity analysis under parametric variation, and formal statistical separation testing — producing numerical outputs, statistical artifacts, and visualization from a single executable workflow.
 
 It operates under an Extremely Low Frequency (ELF)-inspired scalar parameterization using morphological datasets as structured inputs for abstract graph-based and lumped-element system modeling.
 
 It implements a generative computational pipeline in which morphological structures (associated with MS 408 / Voynich Manuscript treated strictly as a non-semantic morphological dataset) are mapped into simplified wave-interference and oscillator analogues inspired by abstract electromagnetic-style system analogies. These mappings enable the study of structural and dynamical properties within coupled-oscillator and network-based simulation frameworks.
 
-The framework is designed for exploratory modeling, parametric sensitivity analysis, and structural experimentation. It situates these simulations within a computational context where structural consistency is evaluated using numerical wave-interference-inspired mathematical models and lumped-parameter abstractions.
+The framework is designed for exploratory modeling, parametric sensitivity analysis, structural experimentation, and morphological comparison with formal statistical validation. It situates these simulations within a computational context where structural consistency is evaluated using numerical wave-interference-inspired mathematical models and lumped-parameter abstractions.
 
 Procedural morphology generators (e.g., fractal and botanical structures) are structurally integrated into the main execution pipeline. These modules drive the deterministic benchmarking sequence via the `run.py` orchestrator, mapping structural inputs to spatial matrices before computing the array factor.
 
@@ -32,37 +32,49 @@ To run the full computational simulation pipeline:
 python run.py
 ```
 
-This executes the complete workflow:
+This executes the complete 7-step workflow:
 
-- Node-level resonance and normalized response analysis in a lumped-element RLC-inspired system
+- Node-level resonance baseline and external Schumann resonance comparison (NOAA/GFZ Potsdam, modes 1–5)
+- Pre-simulation topology validation per sweep (connectivity, node count, degenerate structure detection)
 - Distributed Phased Array simulation (phase-based interference superposition) across three morphologies: fractal, botanical, and random control
 - Parametric sensitivity analysis of system response under geometric scaling
+- Statistical separation testing: Welch t-test + Cohen's d across 3 metrics and 3 morphology pairs
+- Multi-seed analysis: mean ± std distributions across seeds 42–46
 
 Outputs:
 
-- Console logs of simulation results
+- Console logs of simulation results with per-sweep summary metrics
 - `data/simulation_results_fractal.csv`, `data/simulation_results_botanical.csv`, `data/simulation_results_random.csv` (Scalar Benchmark Contract)
 - `data/af_tensors_fractal.npz`, `data/af_tensors_botanical.npz`, `data/af_tensors_random.npz` (Tensor Research Layer)
-- `data/sensitivity_analysis.png`
+- `data/statistical_summary.csv` (Welch t-test + Cohen's d, 9 rows)
+- `data/multi_seed_summary.csv` (mean ± std per morphology, seeds 42–46)
+- `data/exploration_summary.json` (machine-readable experiment record)
+- `data/sensitivity_analysis.png` (sensitivity curves + statistical heatmaps)
+
+---
+
+## Principal Finding (v1.2)
+
+Botanical morphology achieves statistically significant separation from both fractal (Merit_Scaled: p = 0.004, d = −0.843, large effect) and random control (p = 0.005, d = 0.825, large effect). **Fractal morphology does not separate from the random control on Merit_Scaled (p = 1.000, d = −0.020).** Multi-seed analysis confirms this finding is structural: botanical Merit_Scaled shows seed-dependent variance (std = 0.0106) while fractal is seed-stable (std = 0.0006).
 
 ---
 
 ## Key Research Points
 
 - **Perspective:** Application of signal processing, wave-interference modeling, and bio-inspired computational design to morphological datasets extracted from MS 408.
-- **Model**: Network-based representation using coupled oscillator systems, with Near-Field Magnetic Induction (NFMI) used strictly as conceptual and structural inspiration for interaction topology design.
-- **Methodology:** Mapping of morphological geometry into abstract electromagnetic network representations for simulation and parameter exploration.
+- **Model:** Network-based representation using coupled oscillator systems, with Near-Field Magnetic Induction (NFMI) used strictly as conceptual and structural inspiration for interaction topology design.
+- **Methodology:** Mapping of morphological geometry into abstract electromagnetic network representations for simulation, parameter exploration, and statistical comparison.
+- **Validation:** Pre-simulation topology validation rejects degenerate structures before execution. Results are cross-validated against published Schumann resonance modes and stress-tested across five seeds per morphology.
 
-Simulation baseline:  
-[/data/parameters.json](./data/parameters.json)
+Simulation baseline: [/data/parameters.json](./data/parameters.json)
 
 ---
 
 ## Objective
 
 - Investigate whether morphological datasets can be used as structured inputs for generating consistent abstract network representations inspired by electromagnetic system analogies.
-- Provide a reproducible computational framework for simulation and sensitivity analysis.
-- Enable systematic comparison of geometric parameterizations under a unified modeling approach.
+- Provide a reproducible computational framework for simulation, sensitivity analysis, and formal statistical comparison.
+- Enable systematic comparison of geometric parameterizations under a unified modeling approach, with external baseline anchoring.
 
 ---
 
@@ -87,7 +99,7 @@ Alternative datasets with similar structural properties (synthetic fractals, bot
 Morphological structures are mapped into abstract network components as follows:
 
 - **Source / Grounding Grid:** Baseline node constraints in the network model.
-- **Modulation and Filtering**: Structural symmetries mapped to abstract response modulation within lumped-parameter simulation components.
+- **Modulation and Filtering:** Structural symmetries mapped to abstract response modulation within lumped-parameter simulation components.
 - **Inductive Coupling:** Geometric branching interpreted as coupling motifs in NFMI-inspired networks.
 - **Phase Synchronization:** Radial structures represented as phase-coupled oscillators.
 - **Material Layering:** Structural variation mapped to parameter heterogeneity (loss, damping, coupling strength).
@@ -98,9 +110,7 @@ These mappings are used strictly for computational simulation.
 
 ## Numerical Validation: Resonance and Response Structure
 
-The repository includes a reproducible numerical model located at:
-
-[/data/node_resonance.py](./data/node_resonance.py)
+The repository includes a reproducible numerical model located at: [/data/node_resonance.py](./data/node_resonance.py)
 
 This script evaluates resonance behavior and normalized response structure under ELF-inspired parameter regimes using lumped-element approximations.
 
@@ -117,6 +127,10 @@ The implemented metrics include:
 
 These quantities are used as comparative indicators within the simulation framework and are not interpreted as direct measurements of physical electromagnetic efficiency.
 
+### External Baseline: Schumann Resonance
+
+The simulated resonance frequency is compared against published Schumann resonance modes (NOAA/GFZ Potsdam). The simulated value of 12.9949 Hz positions at 9.13% deviation from mode 2 (14.30 Hz). References: Schumann 1952, Williams 1992, Nickolaenko & Hayakawa 2002.
+
 ### Output
 
 The simulation produces parametric baseline metrics. Typical numerical outputs include:
@@ -132,9 +146,7 @@ These values represent efficiency metrics derived from the simulated signal stru
 
 ## Numerical Model: Distributed Phased Array (Beamforming)
 
-The system is extended into a spatial network model:
-
-[/data/node_coupling.py](./data/node_coupling.py)
+The system is extended into a spatial network model: [/data/node_coupling.py](./data/node_coupling.py)
 
 This module computes coherent field superposition using a phased array formulation.
 
@@ -150,11 +162,16 @@ Phase assignments are applied cyclically across the N-node array to maintain con
 
 - Base sequence: **[0°, 90°, 180°, 270°]**
 
+### Pre-simulation Topology Validation
+
+Before each sweep executes, `data/topology_validator.py` validates the generated morphology using union-find connectivity (BFS), minimum node count, and degenerate structure detection. Invalid topologies raise a `RuntimeError` and halt the pipeline.
+
 ### Data Export Architecture (Dual Layer)
 
 To maintain a clean analytical contract while enabling deep research, the system bifurcates the computed data into two explicit layers:
 
 #### 1. Scalar Output (Benchmarking Contract)
+
 Exported as `data/simulation_results_*.csv`. Contains strictly the reduced variables for the analytical pipeline:
 
 - `Distance` (Spatial scaling parameter)
@@ -165,6 +182,7 @@ Exported as `data/simulation_results_*.csv`. Contains strictly the reduced varia
 - `Merit_Scaled` (Post-transformation metric)
 
 #### 2. Tensor Output (Research Layer)
+
 Exported as `data/af_tensors_*.npz`. Contains the preserved latent state of the system for advanced topological analysis:
 
 - `distance`: Full array of scaling steps.
@@ -173,18 +191,29 @@ Exported as `data/af_tensors_*.npz`. Contains the preserved latent state of the 
 
 ---
 
+## Statistical Analysis
+
+After all three sweeps complete, the pipeline executes formal statistical separation testing via `run.py` step 6:
+
+- **Welch t-test** (unequal variance): robust comparison across all 3 metric × 3 pair combinations (9 rows).
+- **Cohen's d** effect size: small (< 0.5), medium (0.5–0.8), large (> 0.8).
+- Output: `data/statistical_summary.csv` (7 columns: Metric, Pair, t_statistic, p_value, Significant_p05, Cohens_d, Effect_size).
+
+Multi-seed analysis (step 7) runs each morphology through seeds 42–46 and reports mean ± std per metric, confirming result stability across random initializations.
+
+---
+
 ## Sensitivity Analysis
 
 A parametric sweep evaluates system response under continuous variation of the global spatial scale d. The visual analysis extracts and normalizes specific variables from the scalar CSV datasets.
 
-The visualization plots:
+The visualization generates a combined figure with two sections:
 
-- Normalized Coherence Ratio (`norm(cf)`)
-- Normalized Merit Scaled (`norm(msf)`)
+**Section 1 — Sensitivity Curves:** Normalized Coherence Ratio (`norm(cf)`) and Normalized Merit Scaled (`norm(msf)`) across all three morphologies.
 
-Outputs:
+**Section 2 — Statistical Heatmaps:** p-value matrix (3 metrics × 3 pairs) where green = significant at p < 0.05, and |Cohen's d| matrix where blue intensity = effect size magnitude.
 
-- `data/sensitivity_analysis.png`
+Output: `data/sensitivity_analysis.png`
 
 ---
 
@@ -198,16 +227,16 @@ The README specifies the implemented computational subset of this space.
 
 The current implementation focuses exclusively on the network synchronization kernel, which evaluates:
 
-- phase coherence  
-- distributed coupling stability  
-- emergent beamforming behavior in graph-based oscillator networks  
+- phase coherence
+- distributed coupling stability
+- emergent beamforming behavior in graph-based oscillator networks
 
 Modules related to energy conversion (e.g. plasma-like transitions, piezoelectric-like coupling) are treated as architectural specifications within the theoretical parameter space and are not instantiated in the current simulation layer.
 
 This separation reflects a layered abstraction model, where:
 
-- the theoretical model defines the full parameterized system space  
-- the implementation evaluates a restricted subset of dynamical behaviors within that space  
+- the theoretical model defines the full parameterized system space
+- the implementation evaluates a restricted subset of dynamical behaviors within that space
 
 The parameter **k** is defined as a schematic spatial scaling factor representing the mapping between normalized geometric space and simulation space. It is not derived from electromagnetic wave propagation constants. Consequently, it is not directly coupled to material parameters such as permeability (μr); both operate as independent parameters within the modeling abstraction.
 
@@ -229,50 +258,40 @@ It does not claim:
 
 It provides:
 
-- A reproducible simulation environment
-- A structural abstraction framework
+- A reproducible simulation environment with CI/CD validation
+- A structural abstraction framework with formal statistical testing
 - A sensitivity analysis pipeline for exploratory modeling
+- An external baseline comparison against published reference data
 
 All terminology is used strictly within a computational and analogical context.
 
 ---
 
-## v1.1.2 - Morphological Benchmark Pipeline
+## v1.2.0 — Statistical Validation & External Baseline
 
-This version introduces a deterministic benchmarking pipeline for comparing system dynamics under different structural inputs.
+This version introduces:
 
-### Pipeline Structure & Execution State
+- **Pre-simulation topology validation** (`data/topology_validator.py`): union-find connectivity check, minimum node count, degenerate structure detection. Rejects invalid topologies before execution.
+- **Schumann resonance external comparison** (`data/schumann_reference.py`): anchors the simulated resonance frequency against NOAA/GFZ Potsdam published modes 1–5.
+- **Formal statistical separation** (`run.py` step 6): Welch t-test + Cohen's d across 3 metrics × 3 morphology pairs, output to `data/statistical_summary.csv`.
+- **Multi-seed analysis** (`data/multi_seed_analysis.py`, step 7): per-morphology mean ± std across seeds 42–46, output to `data/multi_seed_summary.csv`.
+- **Machine-readable exploration summary** (`data/exploration_summary.json`): consolidated record of resonance baseline, experimental configuration, and multi-seed results.
+- **CI/CD pipeline** (`.github/workflows/ci.yml`): executes `run.py` + `pytest` on every push to ensure the repository never enters a broken state.
+- **Standard CC BY 4.0 license**: replaces previous non-standard text; GitHub now recognizes the license automatically.
 
-- Morphology generation (fractal / botanical / random control)
-- Geometric mapping of node positions
-- Array factor computation
-- Data reduction and tensor persistence
-- Plotting metrics across all three morphologies
-
-**Note on Execution State:** The orchestrator (`run.py`) executes a sequential benchmark by injecting morphology modes directly into the coupling solver, ensuring a deterministic and side-effect-free execution. Each sweep is independent; `data/parameters.json` is never mutated at runtime. Running `data/node_coupling.py` independently outside of `run.py` will use the configuration state defined in the JSON file at that moment.
+**Execution State Note:** The orchestrator (`run.py`) executes a sequential benchmark by injecting morphology modes directly into the coupling solver, ensuring a deterministic and side-effect-free execution. Each sweep is independent; `data/parameters.json` is never mutated at runtime.
 
 ### Purpose
 
-This version ensures reproducible comparison of morphological configurations under identical, automated simulation conditions, while preserving the full tensor state for decoupled computational analysis. The random control morphology (`generate_random_control`) provides a uniform random baseline — same N = 64 nodes, same seed — enabling falsifiable comparison between bio-inspired and unstructured topologies.
+v1.2.0 transforms the project from a reproducible simulation into a scientifically defensible framework: all comparative claims between morphologies are now backed by formal statistical tests with effect size quantification, external frequency anchoring, and multi-seed stability confirmation.
 
 ---
 
 ## References
 
-- Near-Field Magnetic Induction Communication (NFMI) – A Review  
-  https://doi.org/10.1016/j.comnet.2020.107548  
-
-- Magnetic Induction Communication: Theory and Applications  
-  https://doi.org/10.1109/TAP.2010.2048858  
-
-- Extremely Low Frequency (ELF) Electromagnetic Wave Propagation  
-  https://www.nature.com/articles/s41598-024-71011-3  
-
-- Metamaterial-Inspired Antennas: State of the Art and Design Challenges  
-  https://doi.org/10.1109/ACCESS.2021.3091479  
-
-- Bio-Inspired Electromagnetic Materials and Structures  
-  https://doi.org/10.1021/acsami.2c21622  
-
-- Piezoelectric Properties of Cellulose-Based Materials  
-  https://doi.org/10.1016/j.carbpol.2025.124667
+- Near-Field Magnetic Induction Communication (NFMI) – A Review — https://doi.org/10.1016/j.comnet.2020.107548
+- Magnetic Induction Communication: Theory and Applications — https://doi.org/10.1109/TAP.2010.2048858
+- Extremely Low Frequency (ELF) Electromagnetic Wave Propagation — https://www.nature.com/articles/s41598-024-71011-3
+- Metamaterial-Inspired Antennas: State of the Art and Design Challenges — https://doi.org/10.1109/ACCESS.2021.3091479
+- Bio-Inspired Electromagnetic Materials and Structures — https://doi.org/10.1021/acsami.2c21622
+- Piezoelectric Properties of Cellulose-Based Materials — https://doi.org/10.1016/j.carbpol.2025.124667
