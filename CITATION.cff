@@ -7,8 +7,8 @@ authors:
     orcid: "https://orcid.org/0009-0002-9922-1235"
 
 title: "Biotic Hardware Synthesis"
-version: 1.2.0
-date-released: 2026-06-08
+version: 1.2.1
+date-released: 2026-06-09
 
 identifiers:
   - type: doi
@@ -17,18 +17,22 @@ identifiers:
 url: "https://github.com/Slpbcn6/biotic-hardware"
 
 abstract: >
-  A deterministic computational framework for bio-inspired ELF resonant simulation.
-  Evaluates fractal and botanical morphologies against a random control baseline using
+  A deterministic computational framework for bio-inspired ELF-inspired resonant
+  simulation. Evaluates five morphologies - fractal, botanical, a random control,
+  and two synthetic controls (Fibonacci spiral, Voronoi vertex distribution) - using
   phased array coupling, coherence analysis, and a composite merit metric. Includes
   pre-simulation topology validation (union-find connectivity, degenerate structure
   detection), external Schumann resonance baseline comparison (NOAA/GFZ Potsdam,
   modes 1-5), multi-seed sensitivity analysis producing mean +/- std distributions
   across seeds [42-46], and full statistical separation testing (Welch t-test, Cohen d)
-  across three metrics and three morphology pairs integrated into the main pipeline.
-  Principal finding: botanical morphology achieves statistically significant separation
-  from both fractal (p=0.004, d=-0.843) and random control (p=0.005, d=0.825) on
-  Merit_Scaled; fractal does not separate from random (p=1.000, d=-0.020). Results
-  are reproducible via explicit seed tracking, pinned dependencies, and CI/CD.
+  across three metrics and ten morphology pairs (30 rows) integrated into the main
+  pipeline. Principal finding: on Merit_Scaled, 9 of 10 morphology pairs separate at
+  p < 0.05; the only non-significant pair is fractal vs random control (p=0.938,
+  d=-0.020). The two synthetic controls bound the metric range - Voronoi highest and
+  Fibonacci lowest, each separating from every other morphology with large effect
+  (|d| > 1.4); botanical separates from both fractal (p=0.002, d=-0.843) and random
+  control (p=0.002, d=0.825). Results are reproducible via explicit seed tracking,
+  pinned dependencies, and CI/CD.
 
 keywords:
   - Coupled oscillator networks
