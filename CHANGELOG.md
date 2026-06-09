@@ -1,5 +1,35 @@
 # Changelog
 
+## [1.2.1] - 2026-06-09
+
+### Added
+
+- `data/input_generator.py`: two control morphologies - `generate_fibonacci_spiral()` (golden-angle 137.508 deg) and `generate_voronoi_control()` (scipy Voronoi vertex sampling).
+- `data/config.py`: centralized output paths and the morphology list (read from `parameters.json`).
+- `data/parameter_derivation.py`: auditable L/C derivation documenting the f_target -> L -> C -> f_res chain (12.5 Hz); documentation only, does not alter the simulation.
+- `.github/dependabot.yml`: weekly Dependabot monitoring for `pip` and `github-actions`.
+- `data/parameters.json`: `VIII_pipeline` metadata (version + morphologies) and an `IX_conceptual_reference_values` section.
+
+### Changed
+
+- Output layout: all generated artifacts now write to `outputs/` instead of `data/`; `sensitivity_analysis.png` is also written to `data/`.
+- Morphology list and statistical pairs are derived dynamically; removed the duplicated `MORPHOLOGY_MODES` literals and the hardcoded `/7` step counter.
+- `run.py`: statistical summary now runs before the sensitivity plot, restoring the full 3-panel figure; pairs generated via `itertools.combinations`; custom `_welch_t()` replaced by `scipy.stats.ttest_ind(equal_var=False)`.
+- `data/node_coupling.py`: vectorized `compute_array_factor()`; topology validation moved into `run_sweep()` (reads `connection_radius_m`); removed the redundant `simulation_results_*.npz` write.
+- `data/parameters.json`: removed dead `morphology_mode`; added `connection_radius_m`; moved the unused `magnetic_permeability_ur` and `resistivity_ohm_m` out of section I into `IX_conceptual_reference_values`.
+- `data/schumann_reference.py`: removed a latent `np` reference (numpy was never imported).
+- `tests/test_integrity.py`: updated for the `outputs/` layout and v1.2.1 pipeline metadata.
+- `requirements.txt`: added `scipy`; pinned `pytest`.
+- `.github/workflows/ci.yml`: pinned actions to commit SHAs; removed the duplicate standalone pipeline run.
+
+### Scientific results
+
+- Merit_Scaled (seed 42, N=64): 9 of 10 pairs significant; only Fractal vs Random not significant (p=0.938, d=-0.020). Botanical vs Fractal p=0.002, d=-0.843 (large); Botanical vs Random p=0.002, d=0.825 (large). Voronoi and Fibonacci each separate from every other morphology with large effect (|d|>1.4).
+- Coherence_Ratio: all 10 pairs statistically significant with large effect sizes.
+- Peak_AF: 9 of 10 pairs significant; only Fractal vs Botanical not significant (p=0.457, d=-0.194). Botanical vs Random p=0.001, d=0.913 (large); Fractal vs Random p=0.005, d=0.764 (medium).
+- Multi-seed (seeds 42-46): Voronoi highest Merit_Scaled (mean 0.0567, std 0.0117) and Fibonacci lowest (0.0070, std 0.0006); botanical and random seed-sensitive (std ~0.008-0.011), fractal and fibonacci seed-stable (std ~0.0006).
+- Scope: `Merit_Scaled` is an internal structural indicator within the abstract simulation space, not a physical performance metric; figures describe this metric only, not general properties of the geometries.
+
 ## [1.2.0] - 2026-06-08
 
 ### Added

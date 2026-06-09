@@ -1,12 +1,16 @@
-import numpy as np
+import sys
 import json
-import os
+from pathlib import Path
 
-os.makedirs("data", exist_ok=True)
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-def load_parameters(path="data/parameters.json"):
-    with open(path, "r") as f:
-        raw = json.load(f)
+import numpy as np
+
+from data.config import load_parameters, ensure_output_dir, output_path, rel
+
+
+def get_rlc():
+    raw = load_parameters()
 
     fixed = raw.get("I_simulation_fixed_parameters", {})
     derived = raw.get("III_derived_electrical_values", {})
@@ -22,14 +26,11 @@ def load_parameters(path="data/parameters.json"):
     C = parse_range(derived.get("capacitance_f", 1.0))
     R = parse_range(derived.get("ohmic_losses_ohm", 100.0))
 
-    return {
-        "L_H": L,
-        "C_F": C,
-        "R_ohm": R
-    }
+    return {"L_H": L, "C_F": C, "R_ohm": R}
 
-if __name__ == "__main__":
-    params = load_parameters()
+
+def main():
+    params = get_rlc()
 
     L = params["L_H"]
     C = params["C_F"]
@@ -51,7 +52,6 @@ if __name__ == "__main__":
 
     peak = np.max(magnitude)
     mean = np.mean(magnitude)
-
     k_eff = peak / (mean + 1e-12)
 
     params_out = {
@@ -62,23 +62,22 @@ if __name__ == "__main__":
         "f_resonance_Hz": round(f_res, 6),
         "Q_factor": round(Q, 6),
         "bandwidth_Hz": round(BW, 6),
-        "k_eff": round(k_eff, 6)
+        "k_eff": round(k_eff, 6),
     }
 
-    output_path = "data/resonance_params.json"
+    ensure_output_dir()
+    out = output_path("resonance_params.json")
 
-    with open(output_path, "w") as f_out:
+    with open(out, "w") as f_out:
         json.dump(params_out, f_out, indent=2)
 
     print("")
-    print("NODE RESONANCE MODEL (PARAMETRIC)")
-    print("")
+    print("NODE RESONANCE BASELINE")
+    print(f"  L = {L:.4f} H  |  C = {C:.2e} F  |  R = {R:.1f} ohm")
+    print(f"  f_res = {f_res:.4f} Hz  |  Q = {Q:.4f}  |  BW = {BW:.4f} Hz")
+    print(f"  k_eff = {k_eff:.4f}")
+    print(f"  Written: {rel(out)}")
 
-    print(f"Resonance frequency : {f_res:.4f} Hz")
-    print(f"Quality factor Q    : {Q:.4f}")
-    print(f"Bandwidth           : {BW:.4f} Hz")
-    print(f"k_eff (peak/mean)   : {k_eff:.4f}")
 
-    print("")
-    print("Exported -> data/resonance_params.json")
-    print("Node Resonance Model: SUCCESSFUL EXECUTION")
+if __name__ == "__main__":
+    main()

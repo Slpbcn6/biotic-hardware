@@ -1,257 +1,193 @@
-# Biotic Hardware Synthesis: A Computational Framework for Morphological Benchmarking in ELF-Inspired Coupled-Oscillator Networks
-
-This repository provides a reproducible computational framework for simulating structured network dynamics inspired by morphological datasets. It implements a full pipeline for parameter-driven simulation of coherence metrics, phase-based interference behavior (complex-valued phasor summation), sensitivity analysis under parametric variation, and formal statistical separation testing — producing numerical outputs, statistical artifacts, and visualization from a single executable workflow.
-
-It operates under an ELF-inspired scalar parameterization using morphological datasets as structured inputs for abstract graph-based and lumped-element system modeling. All electromagnetic terminology used throughout (ELF, phased array, array factor, k0, NFMI) is applied in an analogical and computational sense. No physical electromagnetic system is modeled or implied.
-
-It implements a generative computational pipeline in which morphological structures (associated with MS 408 / Voynich Manuscript treated strictly as a non-semantic morphological dataset) are mapped into simplified wave-interference and oscillator analogues inspired by abstract electromagnetic-style system analogies. These mappings enable the study of structural and dynamical properties within coupled-oscillator and network-based simulation frameworks.
-
-The framework is designed for exploratory modeling, parametric sensitivity analysis, structural experimentation, and morphological comparison with formal statistical validation. It situates these simulations within a computational context where structural consistency is evaluated using numerical wave-interference-inspired mathematical models and lumped-parameter abstractions.
-
-Procedural morphology generators (e.g., fractal and botanical structures) are structurally integrated into the main execution pipeline. These modules drive the deterministic benchmarking sequence via the `run.py` orchestrator, mapping structural inputs to spatial matrices before computing the array factor.
-
-The system is strictly computational and interpretative. It does not represent a physical or biological implementation.
-
----
-
-## Requirements
-
-Install dependencies before running the pipeline:
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-## Quick Start
-
-To run the full computational simulation pipeline:
-
-```bash
-python run.py
-```
-
-This executes the complete 7-step workflow:
-
-- Node-level resonance baseline and external Schumann resonance comparison (NOAA/GFZ Potsdam, modes 1–5)
-- Pre-simulation topology validation per sweep (connectivity, node count, degenerate structure detection)
-- Distributed Phased Array simulation (phase-based interference superposition) across three morphologies: fractal, botanical, and random control
-- Parametric sensitivity analysis of system response under geometric scaling
-- Statistical separation testing: Welch t-test + Cohen's d across 3 metrics and 3 morphology pairs
-- Multi-seed analysis: mean ± std distributions across seeds 42–46
-
-Outputs:
-
-- Console logs of simulation results with per-sweep summary metrics
-- `data/simulation_results_fractal.csv`, `data/simulation_results_botanical.csv`, `data/simulation_results_random.csv` (Scalar Benchmark Contract)
-- `data/af_tensors_fractal.npz`, `data/af_tensors_botanical.npz`, `data/af_tensors_random.npz` (Tensor Research Layer)
-- `data/statistical_summary.csv` (Welch t-test + Cohen's d, 9 rows)
-- `data/multi_seed_summary.csv` (mean ± std per morphology, seeds 42–46)
-- `data/exploration_summary.json` (machine-readable experiment record)
-- `data/sensitivity_analysis.png` (sensitivity curves + statistical heatmaps)
-
----
-
-## Principal Finding (v1.2)
-
-Botanical morphology achieves statistically significant separation from both fractal (Merit_Scaled: p = 0.004, d = −0.843, large effect) and random control (p = 0.005, d = 0.825, large effect). **Fractal morphology does not separate from the random control on Merit_Scaled (p = 1.000, d = −0.020).** Multi-seed analysis confirms this finding is structural: botanical Merit_Scaled shows seed-dependent variance (std = 0.0106) while fractal is seed-stable (std = 0.0006).
-
----
-
-## Key Research Points
-
-- **Perspective:** Application of signal processing, wave-interference modeling, and bio-inspired computational design to morphological datasets extracted from MS 408.
-- **Model:** Network-based representation using coupled oscillator systems, with Near-Field Magnetic Induction (NFMI) used strictly as conceptual inspiration for interaction topology design — not as a physical implementation or performance target.
-- **Methodology:** Mapping of morphological geometry into abstract electromagnetic network representations for simulation, parameter exploration, and statistical comparison.
-- **Validation:** Pre-simulation topology validation rejects degenerate structures before execution. Results are cross-validated against published Schumann resonance modes and stress-tested across five seeds per morphology.
-
-Simulation baseline: [/data/parameters.json](./data/parameters.json)
-
----
-
-## Objective
-
-- Investigate whether morphological datasets can be used as structured inputs for generating consistent abstract network representations inspired by electromagnetic system analogies.
-- Provide a reproducible computational framework for simulation, sensitivity analysis, and formal statistical comparison.
-- Enable systematic comparison of geometric parameterizations under a unified modeling approach, with external baseline anchoring.
-
----
-
-## Dataset Rationale (MS 408)
-
-MS 408 (Voynich Manuscript) is used as a morphological dataset.
-
-The dataset is not interpreted in historical or semantic terms. It is used strictly as a high-complexity structural input for testing abstraction and mapping methods.
-
-Within this framework, MS 408 functions as:
-
-- a high-complexity structural benchmark
-- a non-semantic morphological input source
-- a testbed for robustness of network generation methods
-
-Alternative datasets with similar structural properties (synthetic fractals, botanical diagrams, procedural geometries) are compatible with this framework.
-
----
-
-## Propagation and Signal Flow (Conceptual Model)
-
-Morphological structures are mapped into abstract network components as follows:
-
-- **Source / Grounding Grid:** Baseline node constraints in the network model.
-- **Modulation and Filtering:** Structural symmetries mapped to abstract response modulation within lumped-parameter simulation components.
-- **Inductive Coupling:** Geometric branching interpreted as coupling motifs in NFMI-inspired networks.
-- **Phase Synchronization:** Radial structures represented as phase-coupled oscillators.
-- **Material Layering:** Structural variation mapped to parameter heterogeneity (loss, damping, coupling strength).
-
-These mappings are used strictly for computational simulation. No physical signal propagation is modeled.
-
----
-
-## Numerical Validation: Resonance and Response Structure
-
-The repository includes a reproducible numerical model located at: [/data/node_resonance.py](./data/node_resonance.py)
-
-This script evaluates resonance behavior and normalized response structure under ELF-inspired parameter regimes using lumped-element approximations.
-
-### Model Definition
-
-The resonance module evaluates normalized response behavior in a lumped-element RLC-inspired model using inductive, capacitive, and resistive parameters extracted from the simulation configuration. These parameters are treated as abstract numerical inputs for a simplified computational representation of oscillatory behavior.
-
-The implemented metrics include:
-
-- Resonance frequency (f_res)
-- Quality factor (Q)
-- Bandwidth estimation
-- Peak-to-mean normalized response ratios
-
-These quantities are used as comparative indicators within the simulation framework and are not interpreted as direct measurements of physical electromagnetic efficiency.
-
-### External Baseline: Schumann Resonance
-
-The simulated resonance frequency is compared against published Schumann resonance modes (NOAA/GFZ Potsdam). The simulated value of 12.9949 Hz positions at 9.13% deviation from mode 2 (14.30 Hz). References: Schumann 1952, Williams 1992, Nickolaenko & Hayakawa 2002.
-
-**Note on baseline comparison:** The simulated resonance frequency is a direct consequence of the LC parameters defined in `data/parameters.json` (L ≈ 1.0 H, C = 162 µF). The comparison to Schumann modes serves as an external reference frame for contextualizing the frequency regime of the model, not as a claim of physical equivalence or empirical proximity to natural ELF phenomena.
-
-### Output
-
-The simulation produces parametric baseline metrics. Typical numerical outputs include:
-
-- Resonance frequency: **12.99 Hz**
-- Quality factor (Q): **0.81**
-- Bandwidth: **15.91 Hz**
-- Effective transfer (k_eff): **2.92**
-
-These values represent structural indicators derived from the simulated signal structure. **Note on Q:** A value of Q = 0.81 places the model in the overdamped regime (Q < 1), meaning the system does not sustain free oscillation in the strict physical sense. The coherence and merit metrics computed by the pipeline remain valid as comparative structural indicators across morphologies. The term "resonance frequency" here refers to the frequency of peak transfer function magnitude, not to sustained oscillation.
-
----
-
-## Numerical Model: Distributed Phased Array (Beamforming)
-
-The system is extended into a spatial network model: [/data/node_coupling.py](./data/node_coupling.py)
-
-This module computes coherent field superposition using a phased array formulation applied to abstract node graphs. The terminology (array factor, phased array, beamforming) is borrowed from antenna engineering as a computational analogy. No physical antenna array is modeled.
-
-The coupling model includes phenomenological scaling coefficients used to modulate coherence response, spatial sensitivity, and normalized quality-factor behavior across the parametric sweep. These coefficients are heuristic simulation parameters intended for exploratory system dynamics and do not represent experimentally derived electromagnetic constants.
-
-### Spatial Configuration
-
-Nodes are distributed dynamically based on the selected morphology (fractal, botanical, or random control), comprising an array of N = 64 nodes.
-
-**Geometric Treatment:** The transformation is strictly homotetic. The base topology remains fixed while the global scale is modulated continuously by a spacing parameter d from 0.1 to 2.0 meters (`positions = base_nodes * d`).
-
-Phase assignments are applied cyclically across the N-node array to maintain controlled interference periodicity:
-
-- Base sequence: **[0°, 90°, 180°, 270°]**
-
-### Pre-simulation Topology Validation
-
-Before each sweep executes, `data/topology_validator.py` validates the generated morphology using union-find connectivity (BFS), minimum node count, and degenerate structure detection. Invalid topologies raise a `RuntimeError` and halt the pipeline.
-
-### Scaling Parameter k0
-
-The variable `k0_base` is a heuristic spatial scaling coefficient used to modulate the phase contribution of each node in the array factor computation. It is **not** the electromagnetic wave number k₀ = 2πf/c. At 12.99 Hz, the physical wave number would be k₀ ≈ 2.72×10⁻⁷ rad/m — several orders of magnitude smaller than the value used here. The discrepancy is intentional: the model operates in an abstract simulation space, not in physical electromagnetic space.
-
-### Data Export Architecture (Dual Layer)
-
-To maintain a clean analytical contract while enabling deep research, the system bifurcates the computed data into two explicit layers:
-
-#### 1. Scalar Output (Benchmarking Contract)
-
-Exported as `data/simulation_results_*.csv`. Contains strictly the reduced variables for the analytical pipeline:
-
-- `Distance` (Spatial scaling parameter)
-- `Peak_AF` (Maximum amplitude of the Array Factor)
-- `Coherence_Ratio` (Peak-to-mean field distribution ratio)
-- `Merit_Function` (Base structural performance)
-- `Q_effective` (Density-dependent dynamic regularization)
-- `Merit_Scaled` (Post-transformation metric)
-
-#### 2. Tensor Output (Research Layer)
-
-Exported as `data/af_tensors_*.npz`. Contains the preserved latent state of the system for advanced topological analysis:
-
-- `distance`: Full array of scaling steps.
-- `mean`: The raw mean field distribution magnitude per step.
-- `af`: The complete 200-point Array Factor magnitude vector per step.
-
----
-
-## Statistical Analysis
-
-After all three sweeps complete, the pipeline executes formal statistical separation testing via `run.py` step 6:
-
-- **Welch t-test** (unequal variance): robust comparison across all 3 metric × 3 pair combinations (9 rows).
-- **Cohen's d** effect size: small (< 0.5), medium (0.5–0.8), large (> 0.8).
-- Output: `data/statistical_summary.csv` (7 columns: Metric, Pair, t_statistic, p_value, Significant_p05, Cohens_d, Effect_size).
-
-Multi-seed analysis (step 7) runs each morphology through seeds 42–46 and reports mean ± std per metric, confirming result stability across random initializations.
-
----
-
-## Sensitivity Analysis
-
-A parametric sweep evaluates system response under continuous variation of the global spatial scale d. The visual analysis extracts and normalizes specific variables from the scalar CSV datasets.
-
-The visualization generates a combined figure with two sections:
-
-**Section 1 — Sensitivity Curves:** Normalized Coherence Ratio (`norm(cf)`) and Normalized Merit Scaled (`norm(msf)`) across all three morphologies.
-
-**Section 2 — Statistical Heatmaps:** p-value matrix (3 metrics × 3 pairs) where green = significant at p < 0.05, and |Cohen's d| matrix where blue intensity = effect size magnitude.
-
-Output: `data/sensitivity_analysis.png`
-
----
-
-## Integration: Theory vs Computational Implementation
-
-This repository implements a computational validation of the coherence and beamforming behavior defined in the theoretical model.
-
-The associated document [Morpho-Topological Framework and Parameter Space.md](./docs/Morpho-Topological%20Framework%20and%20Parameter%20Space.md) defines a theoretical parameter space for the full system model, including structural variables such as permeability coefficients, coupling regimes, and energy-transfer analogues.
-
-The README specifies the implemented computational subset of this space.
-
-The current implementation focuses exclusively on the network synchronization kernel, which evaluates:
-
-- phase coherence
-- distributed coupling stability
-- emergent beamforming behavior in graph-based oscillator networks
-
-Modules related to energy conversion are treated as architectural specifications within the theoretical parameter space and are not instantiated in the current simulation layer. This separation reflects a layered abstraction model, where:
-
-- the theoretical model defines the full parameterized system space
-- the implementation evaluates a restricted subset of dynamical behaviors within that space
-
-The parameter **k** is defined as a schematic spatial scaling factor representing the mapping between normalized geometric space and simulation space. It is not derived from electromagnetic wave propagation constants. Consequently, it is not directly coupled to material parameters such as permeability (μr); both operate as independent parameters within the modeling abstraction.
-
-The implementation uses a hierarchical set of derived scaling variables (e.g. k0, k, k_eff) that operate at different stages of the simulation pipeline: base scaling initialization, coherence-modulated scaling, and post-response normalization. These variables are computational constructs used for numerical stability and do not represent a physically derived parameter hierarchy.
-
-Within the resonance module, the scaling parameter is used as a direct linear scaling factor applied to the base inductance value (`L = scaling_constant_k * 1e-2`), producing L = 1.0 H as the effective inductance for the RLC model. This value is a design choice within the abstract simulation space, not a measured or derived physical quantity.
-
----
-
-## Reproducibility
-
-All simulations are fully deterministic given fixed seeds (default: 42). The pipeline is single-command executable (`python run.py`) with no external API calls or runtime downloads. Results in `data/` are committed alongside code for reference.
-
-Pinned dependency versions are declared in `requirements.txt`. Environment reproducibility is further documented in `CHANGELOG.md`.
+import sys
+import csv
+import os
+from itertools import combinations
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import numpy as np
+
+from data.config import morphologies, ensure_output_dir, output_path, data_path
+
+
+MORPHOLOGY_MODES = morphologies()
+
+NAMED_COLORS = {
+    "fractal":   "#2196F3",
+    "botanical": "#4CAF50",
+    "random":    "#FF5722",
+    "fibonacci": "#9C27B0",
+    "voronoi":   "#FF9800",
+}
+
+_FALLBACK = matplotlib.colormaps["tab10"]
+
+
+def color_for(mode, i):
+    return NAMED_COLORS.get(mode, _FALLBACK(i % 10))
+
+
+METRICS = ["Merit_Scaled", "Coherence_Ratio", "Peak_AF"]
+PAIRS = [
+    f"{a.capitalize()} vs {b.capitalize()}"
+    for a, b in combinations(MORPHOLOGY_MODES, 2)
+]
+
+
+def load_mode_data(filepath):
+    d, p, c, m, q, ms = [], [], [], [], [], []
+    with open(filepath, "r") as f:
+        reader = csv.DictReader(f)
+        for r in reader:
+            d.append(float(r["Distance"]))
+            p.append(float(r["Peak_AF"]))
+            c.append(float(r["Coherence_Ratio"]))
+            m.append(float(r["Merit_Function"]))
+            q.append(float(r["Q_effective"]))
+            ms.append(float(r["Merit_Scaled"]))
+    return (
+        np.array(d), np.array(p), np.array(c),
+        np.array(m), np.array(q), np.array(ms),
+    )
+
+
+def norm(x):
+    return (x - x.min()) / (x.max() - x.min() + 1e-12)
+
+
+def load_statistical_summary(filepath):
+    p_matrix   = np.full((len(METRICS), len(PAIRS)), np.nan)
+    d_matrix   = np.full((len(METRICS), len(PAIRS)), np.nan)
+    sig_matrix = [["" for _ in PAIRS] for _ in METRICS]
+
+    if not os.path.exists(filepath):
+        return p_matrix, d_matrix, sig_matrix
+
+    with open(filepath, "r") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            metric = row["Metric"]
+            pair   = row["Pair"]
+            if metric not in METRICS or pair not in PAIRS:
+                continue
+            i = METRICS.index(metric)
+            j = PAIRS.index(pair)
+            p_matrix[i, j]  = float(row["p_value"])
+            d_matrix[i, j]  = abs(float(row["Cohens_d"]))
+            sig_matrix[i][j] = row.get("Significant_p05", "")
+
+    return p_matrix, d_matrix, sig_matrix
+
+
+def plot_sensitivity_curves(ax, mode_data):
+    for i, (mode, (d, p, c, mf, q, ms)) in enumerate(mode_data.items()):
+        color = color_for(mode, i)
+        ax.plot(d, norm(ms), label=f"{mode.capitalize()} - Merit Scaled",
+                linewidth=2, color=color)
+        ax.plot(d, norm(c),  label=f"{mode.capitalize()} - Coherence",
+                linestyle="--", color=color, alpha=0.5)
+
+    ax.set_xlabel("Distance (m)", fontsize=10)
+    ax.set_ylabel("Normalized value", fontsize=10)
+    ax.set_title(
+        f"Morphological Sensitivity Benchmark v1.2.1 - {len(mode_data)} Morphologies",
+        fontsize=11,
+    )
+    ax.grid(True, alpha=0.3)
+    ax.legend(fontsize=8, ncol=2)
+
+
+def plot_stat_heatmaps(ax_p, ax_d, p_matrix, d_matrix, sig_matrix):
+    short_metrics = ["Merit\nScaled", "Coherence\nRatio", "Peak\nAF"]
+    short_pairs = [
+        f"{a[:3]}/{b[:3]}"
+        for a, b in combinations(MORPHOLOGY_MODES, 2)
+    ]
+
+    masked_p = np.where(np.isnan(p_matrix), 1.0, p_matrix)
+    im1 = ax_p.imshow(masked_p, cmap="RdYlGn_r", vmin=0, vmax=0.1, aspect="auto")
+    ax_p.set_xticks(range(len(PAIRS)))
+    ax_p.set_xticklabels(short_pairs, fontsize=7, rotation=45, ha="right")
+    ax_p.set_yticks(range(len(METRICS)))
+    ax_p.set_yticklabels(short_metrics, fontsize=8)
+    ax_p.set_title("p-value  (green = significant, p < 0.05)", fontsize=9)
+    for i in range(len(METRICS)):
+        for j in range(len(PAIRS)):
+            val = p_matrix[i, j]
+            if np.isnan(val):
+                label = "n/a"
+            else:
+                sig = "*" if sig_matrix[i][j] == "yes" else ""
+                label = f"{val:.3f}{sig}"
+            txt_color = "white" if (not np.isnan(val) and val < 0.01) else "black"
+            ax_p.text(j, i, label, ha="center", va="center",
+                      fontsize=6, color=txt_color, fontweight="bold")
+    plt.colorbar(im1, ax=ax_p, fraction=0.046, pad=0.04)
+
+    d_max = max(float(np.nanmax(d_matrix)) if not np.all(np.isnan(d_matrix)) else 1.0, 1.0)
+    masked_d = np.where(np.isnan(d_matrix), 0.0, d_matrix)
+    im2 = ax_d.imshow(masked_d, cmap="Blues", vmin=0, vmax=d_max, aspect="auto")
+    ax_d.set_xticks(range(len(PAIRS)))
+    ax_d.set_xticklabels(short_pairs, fontsize=7, rotation=45, ha="right")
+    ax_d.set_yticks(range(len(METRICS)))
+    ax_d.set_yticklabels(short_metrics, fontsize=8)
+    ax_d.set_title("|Cohen's d|  (dark blue = large effect > 0.8)", fontsize=9)
+    for i in range(len(METRICS)):
+        for j in range(len(PAIRS)):
+            val = d_matrix[i, j]
+            label = "n/a" if np.isnan(val) else f"{val:.2f}"
+            txt_color = "white" if (not np.isnan(val) and val > d_max * 0.6) else "black"
+            ax_d.text(j, i, label, ha="center", va="center",
+                      fontsize=6, color=txt_color, fontweight="bold")
+    plt.colorbar(im2, ax=ax_d, fraction=0.046, pad=0.04)
+
+
+def plot():
+    mode_data = {}
+    for mode in MORPHOLOGY_MODES:
+        path = output_path(f"simulation_results_{mode}.csv")
+        if not os.path.exists(path):
+            print(f"[plot_sensitivity] Missing: {path} - skipping.")
+            continue
+        mode_data[mode] = load_mode_data(path)
+
+    if len(mode_data) < 2:
+        print("[plot_sensitivity] Need at least 2 morphologies - aborting.")
+        return
+
+    stat_path = output_path("statistical_summary.csv")
+    p_matrix, d_matrix, sig_matrix = load_statistical_summary(stat_path)
+    has_stats = not np.all(np.isnan(p_matrix))
+
+    if has_stats:
+        fig = plt.figure(figsize=(20, 11))
+        gs  = fig.add_gridspec(2, 2, height_ratios=[1.6, 1], hspace=0.48, wspace=0.38)
+        ax_curves = fig.add_subplot(gs[0, :])
+        ax_p      = fig.add_subplot(gs[1, 0])
+        ax_d      = fig.add_subplot(gs[1, 1])
+        plot_sensitivity_curves(ax_curves, mode_data)
+        plot_stat_heatmaps(ax_p, ax_d, p_matrix, d_matrix, sig_matrix)
+        fig.suptitle(
+            "Biotic Hardware Synthesis v1.2.1 - Morphological Benchmark & Statistical Validation",
+            fontsize=13, fontweight="bold", y=0.99,
+        )
+    else:
+        fig, ax_curves = plt.subplots(figsize=(14, 6))
+        plot_sensitivity_curves(ax_curves, mode_data)
+
+    ensure_output_dir()
+    out_png = output_path("sensitivity_analysis.png")
+    data_png = data_path("sensitivity_analysis.png")
+    plt.savefig(out_png, dpi=300, bbox_inches="tight")
+    plt.savefig(data_png, dpi=300, bbox_inches="tight")
+    plt.close()
+    print(f"[plot_sensitivity] Plot saved: {out_png}")
+    print(f"[plot_sensitivity] Plot also saved: {data_png}")
+
+
+if __name__ == "__main__":
+    plot()

@@ -1,37 +1,28 @@
-"""
-Multi-seed sensitivity analysis — v1.2
-
-Runs each morphology across N seeds to produce mean +/- std distributions
-instead of single-point results. Transforms point estimates into statistically
-robust distributions enabling falsifiable comparison across morphologies.
-"""
-
 import numpy as np
 import csv
 from pathlib import Path
 
 import data.node_coupling as coupling
+from data.config import morphologies, ensure_output_dir, output_path
 
 SEEDS = [42, 43, 44, 45, 46]
-MODES = ["fractal", "botanical", "random"]
 METRICS = ["Merit_Scaled", "Coherence_Ratio", "Peak_AF"]
 
 
-def run_multi_seed(output_file="data/multi_seed_summary.csv"):
-    """
-    Runs each morphology with each seed in SEEDS.
-    Computes mean +/- std per metric across seeds.
-    Writes results to output_file.
-    Returns results dict.
-    """
+def run_multi_seed(output_file=None):
+    ensure_output_dir()
+    if output_file is None:
+        output_file = output_path("multi_seed_summary.csv")
+
+    modes = morphologies()
     results = {}
 
-    for mode in MODES:
+    for mode in modes:
         mode_data = {m: [] for m in METRICS}
 
         for seed in SEEDS:
-            tmp_csv = f"data/_tmp_{mode}_{seed}.csv"
-            tmp_npz = f"data/_tmp_{mode}_{seed}.npz"
+            tmp_csv = output_path(f"_tmp_{mode}_{seed}.csv")
+            tmp_npz = output_path(f"_tmp_{mode}_{seed}.npz")
 
             coupling.run_sweep(mode, tmp_csv, tmp_npz, seed_override=seed)
 
@@ -48,7 +39,7 @@ def run_multi_seed(output_file="data/multi_seed_summary.csv"):
         results[mode] = {
             m: {
                 "mean": float(np.mean(mode_data[m])),
-                "std": float(np.std(mode_data[m])),
+                "std":  float(np.std(mode_data[m])),
             }
             for m in METRICS
         }

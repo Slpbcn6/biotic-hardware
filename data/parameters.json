@@ -1,13 +1,10 @@
 {
   "author": "Santi López Puiggené",
-  "source_document": "Computational parameter specification — v1.2.0. Parameter values define the abstract simulation space. They are not derived from or validated against HFSS, CST, or any other professional electromagnetic simulation tool.",
+  "source_document": "Computational parameter specification — v1.2.1. Parameter values define the abstract simulation space. They are not derived from or validated against HFSS, CST, or any other professional electromagnetic simulation tool.",
   "I_simulation_fixed_parameters": {
     "frequency_hz": 12.5,
-    "magnetic_permeability_ur": 1250000.0,
-    "magnetic_permeability_ur_note": "Retained as an ontological reference for the theoretical model space. Not read or used by any module in the current pipeline (node_resonance.py, node_coupling.py, run.py).",
-    "resistivity_ohm_m": 0.01,
     "scaling_constant_k": 100,
-    "note": "1 unit in simulation space corresponds to 1 meter in the abstract spatial domain. No physical hardware exists or is implied."
+    "note": "Active inputs only. 1 unit in simulation space corresponds to 1 meter in the abstract spatial domain. No physical hardware exists or is implied."
   },
   "II_geometric_instance_planar_fractal_spiral": {
     "turns_n": 50,
@@ -20,7 +17,8 @@
     "capacitance_f": "1.5e-4 - 1.7e-4",
     "capacitance_uf_approx": 162.0,
     "resonance_match_hz": 12.5,
-    "ohmic_losses_ohm": "100 - 1000"
+    "ohmic_losses_ohm": "100 - 1000",
+    "inductance_derivation_note": "L_H = scaling_constant_k * 1e-2. With k=100 this gives L=1.0 H. Combined with C=1.5e-4 F yields omega_0=81.65 rad/s, f_res=12.99 Hz, matching the target 12.5 Hz range."
   },
   "IV_network_performance_metrics": {
     "individual_q_factor": 0.8,
@@ -33,15 +31,25 @@
     "Beamforming Profile (Rr -> 0 vs Rloss)"
   ],
   "VI_experimental_sweep_parameters": {
-    "morphology_mode": "random",
     "n_nodes": 64,
     "seed": 42,
-    "beta_loss_factor": 0.25
+    "beta_loss_factor": 0.25,
+    "connection_radius_m": 2.0,
+    "connection_radius_note": "Union-find adjacency radius for topology validation. Matches the spatial extent of all morphologies (~[-1.5, 1.5] to ~[-2.0, 2.0] units)."
   },
   "VII_array_factor_parameters": {
     "k0_base": 0.004,
     "k0_base_note": "Heuristic spatial scaling coefficient. Not the electromagnetic wave number k0 = 2*pi*f/c. At 12.99 Hz the physical value would be ~2.72e-7 rad/m. This parameter operates in abstract simulation space.",
     "k_modulation_coeff": 0.15,
     "q_reference": 0.785
+  },
+  "VIII_pipeline": {
+    "version": "1.2.1",
+    "morphologies": ["fractal", "botanical", "random", "fibonacci", "voronoi"]
+  },
+  "IX_conceptual_reference_values": {
+    "note": "Theoretical/ontological reference values retained for context only. These are NOT read by any module in the pipeline and do not participate in any calculation. Separated from the active parameter sections so they are not mistaken for simulation inputs.",
+    "magnetic_permeability_ur": 1250000.0,
+    "resistivity_ohm_m": 0.01
   }
 }
