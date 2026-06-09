@@ -2,11 +2,6 @@ import numpy as np
 
 
 def _connected_components(positions, connection_radius):
-    """
-    Union-find connectivity check.
-    Two nodes are considered adjacent if their Euclidean distance <= connection_radius.
-    Returns the number of connected components.
-    """
     n = len(positions)
     parent = list(range(n))
 
@@ -30,16 +25,6 @@ def _connected_components(positions, connection_radius):
 
 
 def validate_topology(nodes, connection_radius=2.0, min_nodes=8):
-    """
-    Validates morphology topology before simulation.
-    Returns (is_valid: bool, report: list[str]).
-
-    Checks (in order):
-    1. Minimum node count
-    2. No degenerate structure (all nodes at same position)
-    3. Full graph connectivity within connection_radius
-       — a single connected component guarantees no isolated nodes.
-    """
     report = []
     positions = nodes[:, :2]
     n = len(positions)
@@ -50,13 +35,13 @@ def validate_topology(nodes, connection_radius=2.0, min_nodes=8):
 
     spread = np.std(positions, axis=0)
     if np.all(spread < 1e-6):
-        report.append("FAIL: degenerate structure — all nodes at the same position")
+        report.append("FAIL: degenerate structure - all nodes at the same position")
         return False, report
 
     n_components = _connected_components(positions, connection_radius)
     if n_components > 1:
         report.append(
-            f"FAIL: graph is disconnected — "
+            f"FAIL: graph is disconnected - "
             f"{n_components} components at radius {connection_radius}m"
         )
         return False, report
