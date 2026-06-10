@@ -20,20 +20,20 @@ All parameters function as identifiers of structural transformations within the 
 
 ## Note on Legacy Parameter Inheritance (Version Control Layer)
 
-This framework maintains a frozen parameter set (`parameters.json`, v1.0 baseline) inherited from earlier development stages. These parameters are preserved strictly for reproducibility of prior simulation states and are not subject to reinterpretation under the current epistemological constraints of this document.
+This framework uses `parameters.json` as its active configuration artifact, versioned alongside the codebase (current: v1.2.1). While individual parameter values evolve across releases, their epistemological status within this document remains constant: all entries function exclusively as abstract structural identifiers and are not subject to physical reinterpretation under the current constraints of this framework.
 
-Within the current architecture, legacy parameters function as immutable input artifacts to the computational pipeline, rather than semantically active variables.
+Within the current architecture, parameters function as structurally-bounded input artifacts to the computational pipeline, rather than semantically active variables subject to physical interpretation.
 
 While some terminology originates from earlier modeling phases that used physically-referential language, all such terms are now recontextualized exclusively as structural identifiers within a graph-based abstraction system.
 
 To prevent semantic leakage between model versions, the system enforces a strict separation between:
 
-- **Legacy parameter space (v1.0):** frozen symbolic configuration layer
+- **Versioned parameter space (`parameters.json`):** evolving configuration artifact, epistemologically constrained to abstract structural identifiers across all versions
 - **Active modeling layer (current version):** epistemologically constrained abstraction space
 
 No interpretative binding is permitted between these layers beyond structural data compatibility.
 
-Legacy parameters are immutable symbolic artifacts. Their role is restricted to structural reproducibility across versioned computational states. No physical, causal, or empirical interpretation is permitted within any operational layer of this document.
+Parameters are versioned symbolic artifacts. Their role is restricted to defining structural relationships within the computational pipeline. No physical, causal, or empirical interpretation is permitted within any operational layer of this document.
 
 ## Mathematical Representation Constraint
 

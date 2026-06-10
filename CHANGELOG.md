@@ -21,6 +21,7 @@
 - `tests/test_integrity.py`: updated for the `outputs/` layout and v1.2.1 pipeline metadata.
 - `requirements.txt`: added `scipy`; pinned `pytest`.
 - `.github/workflows/ci.yml`: pinned actions to commit SHAs; removed the duplicate standalone pipeline run.
+- `LICENSE`: replaced 15-line summary with official CC BY 4.0 legalcode — GitHub now recognizes license automatically.
 
 ### Scientific results
 
@@ -34,7 +35,7 @@
 
 ### Added
 
-- `data/topology_validator.py`: pre-simulation morphology validation with union-find   connectivity check (BFS), minimum node count, degenerate structure detection, and   maximum nearest-neighbor distance reporting. Invalid topologies are rejected before   any sweep executes.
+- `data/topology_validator.py`: pre-simulation morphology validation with union-find with path-halving, minimum node count, degenerate structure detection, and maximum nearest-neighbor distance reporting. Invalid topologies are rejected before any sweep executes.
 - `data/schumann_reference.py`: external ELF baseline comparison against published Schumann resonance modes (NOAA/GFZ Potsdam). Simulated 12.9949 Hz positioned at   9.13% deviation from mode 2 (14.30 Hz). Cites Schumann 1952, Williams 1992, Nickolaenko & Hayakawa 2002.
 - `data/multi_seed_analysis.py`: multi-seed sensitivity analysis across seeds [42–46] per morphology — transforms single-point results into mean +/- std distributions.
 - `data/exploration_summary.json` (pipeline output): machine-readable record of resonance baseline, experimental configuration, and multi-seed results per morphology.  Satisfies roadmap exploration_summary.json contract.
@@ -52,8 +53,6 @@
 - `tests/test_integrity.py`: updated essential_files list to include all v1.2 modules;
   added assertions validating statistical_summary.csv (9 rows, 7 columns),
   multi_seed_summary.csv (3 rows), and exploration_summary.json schema.
-- `LICENSE`: replaced non-standard text with official CC BY 4.0 body — GitHub now
-  recognizes license automatically.
 
 ### Scientific results
 

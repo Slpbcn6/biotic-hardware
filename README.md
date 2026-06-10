@@ -168,7 +168,7 @@ Phase assignments are applied cyclically across the N-node array to maintain con
 
 ### Pre-simulation Topology Validation
 
-Before each sweep executes, `data/topology_validator.py` validates the generated morphology using union-find connectivity (BFS), minimum node count, and degenerate structure detection. Invalid topologies raise a `RuntimeError` and halt the pipeline.
+Before each sweep executes, `data/topology_validator.py` validates the generated morphology using union-find with path-halving, minimum node count, and degenerate structure detection. Invalid topologies raise a `RuntimeError` and halt the pipeline.
 
 ### Scaling Parameter k0
 
