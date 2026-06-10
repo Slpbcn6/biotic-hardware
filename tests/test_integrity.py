@@ -13,30 +13,34 @@ ROOT = Path(__file__).parent.parent
 with open(ROOT / "data" / "parameters.json") as _f:
     MORPHOLOGY_MODES = json.load(_f)["VIII_pipeline"]["morphologies"]
 
+ESSENTIAL_FILES = [
+    "run.py",
+    "data/__init__.py",
+    "data/config.py",
+    "data/parameters.json",
+    "data/node_resonance.py",
+    "data/node_coupling.py",
+    "data/plot_sensitivity.py",
+    "data/input_generator.py",
+    "data/topology_validator.py",
+    "data/schumann_reference.py",
+    "data/multi_seed_analysis.py",
+    "data/parameter_derivation.py",
+    "data/parametric_sweep.py",
+]
+
+
+def _copy_essential(tmp_path):
+    for src in ESSENTIAL_FILES:
+        dest = tmp_path / src
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy(ROOT / src, dest)
+
 
 def test_morphological_divergence():
     with tempfile.TemporaryDirectory() as tmpdir:
         tmp_path = Path(tmpdir)
-
-        essential_files = [
-            "run.py",
-            "data/__init__.py",
-            "data/config.py",
-            "data/parameters.json",
-            "data/node_resonance.py",
-            "data/node_coupling.py",
-            "data/plot_sensitivity.py",
-            "data/input_generator.py",
-            "data/topology_validator.py",
-            "data/schumann_reference.py",
-            "data/multi_seed_analysis.py",
-            "data/parameter_derivation.py",
-        ]
-
-        for src in essential_files:
-            dest = tmp_path / src
-            dest.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy(ROOT / src, dest)
+        _copy_essential(tmp_path)
 
         result = subprocess.run(
             [sys.executable, "run.py"],
@@ -44,7 +48,6 @@ def test_morphological_divergence():
             capture_output=True,
             text=True,
         )
-
         assert result.returncode == 0, result.stderr
 
         for mode in MORPHOLOGY_MODES:
@@ -69,15 +72,28 @@ def test_morphological_divergence():
         stat_csv = tmp_path / "outputs/statistical_summary.csv"
         multi_csv = tmp_path / "outputs/multi_seed_summary.csv"
         summary_json = tmp_path / "outputs/exploration_summary.json"
+        robustness_csv = tmp_path / "outputs/robustness_matrix.csv"
 
         assert stat_csv.exists(), "statistical_summary.csv missing"
         assert multi_csv.exists(), "multi_seed_summary.csv missing"
         assert summary_json.exists(), "exploration_summary.json missing"
+        assert robustness_csv.exists(), "robustness_matrix.csv missing"
 
         out_png = tmp_path / "outputs/sensitivity_analysis.png"
         data_png = tmp_path / "data/sensitivity_analysis.png"
         assert out_png.exists(), "sensitivity_analysis.png missing in outputs/"
         assert data_png.exists(), "sensitivity_analysis.png missing in data/"
+
+        for mode in MORPHOLOGY_MODES:
+            npz_path = tmp_path / f"outputs/af_tensors_{mode}.npz"
+            assert npz_path.exists(), f"{mode} NPZ missing"
+            # Corrección: Uso de contexto 'with' para cerrar el descriptor de archivo
+            with np.load(npz_path) as npz_data:
+                assert "distance" in npz_data, f"{mode} NPZ missing 'distance' key"
+                assert "af" in npz_data, f"{mode} NPZ missing 'af' key"
+                assert npz_data["af"].shape == (30, 200), (
+                    f"{mode} NPZ 'af' shape expected (30, 200), got {npz_data['af'].shape}"
+                )
 
         df_stat = pd.read_csv(stat_csv)
         required_stat_cols = [
@@ -112,13 +128,32 @@ def test_morphological_divergence():
         assert "parameter_derivation" in summary
         assert "resonance_baseline" in summary
         assert "multi_seed_analysis" in summary
-        assert summary["pipeline_version"] == "1.2.1"
+        assert summary["pipeline_version"] == "1.2.2"
         assert set(summary["morphologies"]) == set(MORPHOLOGY_MODES)
+
+        exp_cfg = summary["experimental_configuration"]
+        assert "noise_botanical" in exp_cfg, "noise_botanical missing from experimental_configuration"
+        assert exp_cfg["noise_botanical"] == 0.15
 
         deriv = summary["parameter_derivation"]
         assert deriv["f_target_hz"] == 12.5
         assert deriv["f_check_hz"] == 12.5
         assert 1.5e-4 <= deriv["C_derived_F"] <= 1.7e-4
+
+        df_rob = pd.read_csv(robustness_csv)
+        required_rob_cols = [
+            "k0_base", "beta_loss_factor", "Q_individual",
+            "p_botanical_vs_random", "d_botanical_vs_random", "finding_holds",
+        ]
+        for col in required_rob_cols:
+            assert col in df_rob.columns, f"Missing column in robustness_matrix: {col}"
+        assert len(df_rob) == 48, (
+            f"Expected 48 rows (4 k0 x 3 beta x 4 Q), got {len(df_rob)}"
+        )
+        n_holds = df_rob["finding_holds"].sum()
+        assert n_holds / 48 >= 0.5, (
+            f"Botanical separation holds in <50% of grid ({n_holds}/48)"
+        )
 
 
 def test_resonance_config_integrity():
@@ -158,3 +193,42 @@ def test_conceptual_reference_values_are_separated():
     ref = data["IX_conceptual_reference_values"]
     assert "magnetic_permeability_ur" in ref
     assert "resistivity_ohm_m" in ref
+
+
+def test_determinism():
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmp_path = Path(tmpdir)
+        _copy_essential(tmp_path)
+
+        def _run():
+            out_dir = tmp_path / "outputs"
+            if out_dir.exists():
+                shutil.rmtree(out_dir)
+            r = subprocess.run(
+                [sys.executable, "run.py"],
+                cwd=tmp_path,
+                capture_output=True,
+                text=True,
+            )
+            assert r.returncode == 0, r.stderr
+
+        _run()
+        first = {}
+        for mode in MORPHOLOGY_MODES:
+            f = tmp_path / f"outputs/simulation_results_{mode}.csv"
+            first[mode] = f.read_text()
+        first_stat = (tmp_path / "outputs/statistical_summary.csv").read_text()
+        first_rob = (tmp_path / "outputs/robustness_matrix.csv").read_text()
+
+        _run()
+        for mode in MORPHOLOGY_MODES:
+            f = tmp_path / f"outputs/simulation_results_{mode}.csv"
+            assert f.read_text() == first[mode], (
+                f"Non-deterministic simulation output: {mode}"
+            )
+        assert (tmp_path / "outputs/statistical_summary.csv").read_text() == first_stat, (
+            "Non-deterministic statistical_summary.csv"
+        )
+        assert (tmp_path / "outputs/robustness_matrix.csv").read_text() == first_rob, (
+            "Non-deterministic robustness_matrix.csv"
+        )

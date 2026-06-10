@@ -32,7 +32,7 @@ To run the full computational simulation pipeline:
 python run.py
 ```
 
-This executes the complete 10-step workflow:
+This executes the complete 11-step workflow:
 
 - Parameter derivation: closed-form L/C derivation from the target frequency (f_target → L → C → f_check at 12.5 Hz)
 - Node-level resonance baseline and external Schumann resonance comparison (NOAA/GFZ Potsdam, modes 1–5)
@@ -41,6 +41,7 @@ This executes the complete 10-step workflow:
 - Statistical separation testing: Welch t-test + Cohen's d across 3 metrics and 10 morphology pairs
 - Parametric sensitivity analysis and visualization of system response under geometric scaling
 - Multi-seed analysis: mean ± std distributions across seeds 42–46
+- Parametric robustness sweep: k0 × beta × Q grid (48 combinations) confirming botanical separation is structural, not a tuning artifact
 
 Outputs (generated artifacts are written to `outputs/`):
 
@@ -52,12 +53,13 @@ Outputs (generated artifacts are written to `outputs/`):
 - `outputs/multi_seed_summary.csv` (mean ± std per morphology, seeds 42–46)
 - `outputs/exploration_summary.json` (machine-readable experiment record)
 - `outputs/sensitivity_analysis.png` — sensitivity curves + statistical heatmaps (also written to `data/sensitivity_analysis.png`)
+- `outputs/robustness_matrix.csv` (parametric robustness grid: 48 combinations of k0, beta, Q; records p and Cohen's d for botanical vs random at each point)
 
 ---
 
-## Principal Finding (v1.2.1)
+## Principal Finding (v1.2.2)
 
-On Merit_Scaled, 9 of the 10 morphology pairs separate at p < 0.05; the sole non-significant pair is fractal vs random control (p = 0.938, d = −0.020). The two synthetic controls bound the metric range: Voronoi yields the highest Merit_Scaled (multi-seed mean 0.0567) and Fibonacci the lowest (0.0070), each separating from every other morphology with large effect (|d| > 1.4). Botanical separates from both fractal (p = 0.002, d = −0.843, large effect) and random control (p = 0.002, d = 0.825, large effect). Multi-seed analysis confirms the result is structural: botanical, random, and Voronoi carry seed-dependent variance (std ≈ 0.008–0.012), while fractal and Fibonacci are seed-stable (std ≈ 0.0006). Merit_Scaled is an internal structural indicator within the abstract simulation space, not a physical performance measure.
+On Merit_Scaled, 9 of the 10 morphology pairs separate at p < 0.05; the sole non-significant pair is fractal vs random control (p = 0.938, d = −0.020). The two synthetic controls bound the metric range: Voronoi yields the highest Merit_Scaled (multi-seed mean 0.0567) and Fibonacci the lowest (0.0070), each separating from every other morphology with large effect (|d| > 1.4). Botanical separates from both fractal (p = 0.002, d = −0.843, large effect) and random control (p = 0.002, d = 0.825, large effect). Multi-seed analysis confirms the result is structural: botanical, random, and Voronoi carry seed-dependent variance (std ≈ 0.008–0.012), while fractal and Fibonacci are seed-stable (std ≈ 0.0006). Merit_Scaled is an internal structural indicator within the abstract simulation space, not a physical performance measure. Parametric robustness (v1.2.2): the botanical separation holds across 100% of the 48-point k0 × beta × Q parameter grid (see `outputs/robustness_matrix.csv`), confirming the finding is a structural property of the botanical morphology.
 
 ---
 

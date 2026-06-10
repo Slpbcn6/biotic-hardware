@@ -7,8 +7,8 @@ authors:
     orcid: "https://orcid.org/0009-0002-9922-1235"
 
 title: "Biotic Hardware Synthesis"
-version: 1.2.1
-date-released: 2026-06-09
+version: 1.2.2
+date-released: 2026-06-10
 
 identifiers:
   - type: doi
@@ -17,22 +17,26 @@ identifiers:
 url: "https://github.com/Slpbcn6/biotic-hardware"
 
 abstract: >
-  A deterministic computational framework for bio-inspired ELF-inspired resonant
-  simulation. Evaluates five morphologies - fractal, botanical, a random control,
-  and two synthetic controls (Fibonacci spiral, Voronoi vertex distribution) - using
-  phased array coupling, coherence analysis, and a composite merit metric. Includes
-  pre-simulation topology validation (union-find connectivity, degenerate structure
-  detection), external Schumann resonance baseline comparison (NOAA/GFZ Potsdam,
-  modes 1-5), multi-seed sensitivity analysis producing mean +/- std distributions
-  across seeds [42-46], and full statistical separation testing (Welch t-test, Cohen d)
-  across three metrics and ten morphology pairs (30 rows) integrated into the main
-  pipeline. Principal finding: on Merit_Scaled, 9 of 10 morphology pairs separate at
-  p < 0.05; the only non-significant pair is fractal vs random control (p=0.938,
-  d=-0.020). The two synthetic controls bound the metric range - Voronoi highest and
-  Fibonacci lowest, each separating from every other morphology with large effect
-  (|d| > 1.4); botanical separates from both fractal (p=0.002, d=-0.843) and random
-  control (p=0.002, d=0.825). Results are reproducible via explicit seed tracking,
-  pinned dependencies, and CI/CD.
+  A deterministic computational framework for morphological benchmarking in
+  ELF-inspired coupled-oscillator networks. Evaluates five morphologies — fractal,
+  botanical, a random control, and two synthetic controls (Fibonacci spiral, Voronoi
+  vertex distribution) — using phased array coupling, coherence analysis, and a
+  composite merit metric. Includes pre-simulation topology validation (union-find
+  connectivity, degenerate structure detection), external Schumann resonance baseline
+  comparison (NOAA/GFZ Potsdam, modes 1-5), multi-seed sensitivity analysis
+  (seeds 42-46), full statistical separation testing (Welch t-test, Cohen d) across
+  three metrics and ten morphology pairs (30 rows), and a parametric robustness sweep
+  (k0 x beta x Q, 48 grid points) confirming that the principal finding is structural
+  rather than a tuning artifact. Principal finding: on Merit_Scaled, 9 of 10 morphology
+  pairs separate at p < 0.05; the only non-significant pair is fractal vs random control
+  (p=0.938, d=-0.020). Voronoi and Fibonacci bound the metric range (each separating
+  from all others with large effect, |d| > 1.4); botanical separates from both fractal
+  (p=0.002, d=-0.843) and random control (p=0.002, d=0.825). Extreme Cohen's d values
+  in Coherence_Ratio (e.g. d=-1398 for Fractal vs Voronoi) arise from near-zero
+  within-group variance and are reported as n/a via an explicit NaN guard (pooled
+  std < 1e-4). All results are reproducible via explicit seed tracking, pinned
+  dependencies, and CI/CD. Note: all electromagnetic terminology (ELF, phased array,
+  array factor) is used as a computational analogy; no physical system is modeled.
 
 keywords:
   - Coupled oscillator networks
@@ -44,3 +48,4 @@ keywords:
   - Schumann resonance
   - Statistical morphology analysis
   - Multi-seed sensitivity analysis
+  - Parametric robustness

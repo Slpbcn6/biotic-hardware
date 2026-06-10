@@ -19,7 +19,7 @@ from data.config import (
 ROOT = Path(__file__).parent
 
 MORPHOLOGY_MODES = morphologies()
-TOTAL_STEPS = len(MORPHOLOGY_MODES) + 5
+TOTAL_STEPS = len(MORPHOLOGY_MODES) + 6
 
 
 def _step(n, label):
@@ -53,9 +53,9 @@ def run_coupling(mode):
 
 def _cohens_d(a, b):
     a, b = np.array(a, dtype=float), np.array(b, dtype=float)
-    pooled = np.sqrt(
-        (np.std(a, ddof=1) ** 2 + np.std(b, ddof=1) ** 2) / 2 + 1e-14
-    )
+    pooled = np.sqrt((np.std(a, ddof=1) ** 2 + np.std(b, ddof=1) ** 2) / 2)
+    if pooled < 1e-4:
+        return float("nan")
     return float((np.mean(a) - np.mean(b)) / pooled)
 
 
@@ -83,13 +83,23 @@ def compute_statistical_summary(output_file=None):
             t, p = ttest_ind(s1, s2, equal_var=False)
             d = _cohens_d(s1, s2)
             sig = "yes" if p < 0.05 else "no"
-            size = "large" if abs(d) > 0.8 else "medium" if abs(d) > 0.5 else "small"
+            if np.isnan(d):
+                size = "n/a"
+                d_write = "n/a"
+            else:
+                size = (
+                    "extreme" if abs(d) > 50
+                    else "large" if abs(d) > 0.8
+                    else "medium" if abs(d) > 0.5
+                    else "small"
+                )
+                d_write = round(d, 4)
             pair_label = f"{a.capitalize()} vs {b.capitalize()}"
             rows_out.append([
                 metric, pair_label,
                 round(float(t), 4),
                 round(float(p), 6),
-                sig, round(d, 4), size,
+                sig, d_write, size,
             ])
 
     with open(output_file, "w", newline="") as f:
@@ -102,9 +112,10 @@ def compute_statistical_summary(output_file=None):
 
     print(f"      {'Metric':<18} {'Pair':<32} {'p':>7}  {'d':>7}  {'sig':>4}  effect")
     for row in rows_out:
+        d_display = f"{'n/a':>7}" if row[5] == "n/a" else f"{row[5]:>7.3f}"
         print(
             f"      {row[0]:<18} {row[1]:<32} "
-            f"{row[3]:>7.4f}  {row[5]:>7.3f}  {row[4]:>4}  {row[6]}"
+            f"{row[3]:>7.4f}  {d_display}  {row[4]:>4}  {row[6]}"
         )
 
     return rows_out
@@ -144,7 +155,7 @@ def write_exploration_summary(resonance_data, derivation_data, multi_seed_result
     nearest_hz, mode_n, deviation_pct = nearest_schumann_mode(f_sim)
 
     summary = {
-        "pipeline_version": "1.2.1",
+        "pipeline_version": "1.2.2",
         "parameter_derivation": {
             "f_target_hz": derivation_data["f_target_hz"],
             "L_H": derivation_data["L_H"],
@@ -163,6 +174,7 @@ def write_exploration_summary(resonance_data, derivation_data, multi_seed_result
             "n_nodes": params["VI_experimental_sweep_parameters"]["n_nodes"],
             "reference_seed": params["VI_experimental_sweep_parameters"]["seed"],
             "beta_loss_factor": params["VI_experimental_sweep_parameters"]["beta_loss_factor"],
+            "noise_botanical": params["VI_experimental_sweep_parameters"].get("noise_botanical", 0.15),
             "connection_radius_m": params["VI_experimental_sweep_parameters"]["connection_radius_m"],
             "k0_base": params["VII_array_factor_parameters"]["k0_base"],
             "k_modulation_coeff": params["VII_array_factor_parameters"]["k_modulation_coeff"],
@@ -197,7 +209,7 @@ def main():
     ensure_output_dir()
 
     print("\n===================================================")
-    print(" DETERMINISTIC COMPARATIVE MORPHOLOGICAL PIPELINE v1.2.1")
+    print(" DETERMINISTIC COMPARATIVE MORPHOLOGICAL PIPELINE v1.2.2")
     print(f" {n} morphologies | {total_pairs} pairs | seeds 42-46")
     print("===================================================")
 
@@ -228,8 +240,12 @@ def main():
     print("\n      Writing exploration_summary.json...")
     write_exploration_summary(resonance_data, derivation_data, multi_seed_results)
 
+    _step(n + 6, f"Parametric robustness sweep (k0 x beta x Q — {len([0.002,0.004,0.006,0.008])*len([0.1,0.25,0.4])*len([0.5,0.8,1.5,3.0])} grid points)...")
+    from data.parametric_sweep import run_parametric_sweep
+    run_parametric_sweep()
+
     print("\n===================================================")
-    print(" BENCHMARK COMPLETE - v1.2.1")
+    print(" BENCHMARK COMPLETE - v1.2.2")
     print("===================================================")
 
     out_dir = ensure_output_dir()

@@ -37,6 +37,7 @@ def run_sweep(mode, output_file, tensor_file, seed_override=None):
     seed = seed_override if seed_override is not None else int(cfg["seed"])
     beta = float(cfg["beta_loss_factor"])
     connection_radius = float(cfg.get("connection_radius_m", 2.0))
+    noise_botanical = float(cfg.get("noise_botanical", 0.15))
 
     k0_base = float(af_cfg["k0_base"])
     k_mod_coeff = float(af_cfg["k_modulation_coeff"])
@@ -59,7 +60,7 @@ def run_sweep(mode, output_file, tensor_file, seed_override=None):
     if not valid:
         raise RuntimeError(f"Topology validation failed for {mode}: {report}")
 
-    noise = 0.15 if mode == "botanical" else 0.0
+    noise = noise_botanical if mode == "botanical" else 0.0
     rng = np.random.default_rng(seed)
     distances = np.linspace(0.1, 2.0, 30)
 

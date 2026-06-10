@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.2.2] - 2026-06-10
+
+### Added
+
+- `data/parametric_sweep.py`: parametric robustness sweep across a 4×3×4 grid of `k0_base` [0.002, 0.004, 0.006, 0.008] × `beta_loss_factor` [0.1, 0.25, 0.4] × `Q_individual` [0.5, 0.8, 1.5, 3.0] (48 combinations). For each combination, runs botanical vs random, computes Welch t-test + Cohen's d on Merit_Scaled, and records whether botanical separation holds at p < 0.05. Output: `outputs/robustness_matrix.csv`. Callable standalone (`python data/parametric_sweep.py`) or as step 11 of `run.py`.
+- `data/parameters.json`: `noise_botanical` added to section VI (Gaussian perturbation std for botanical node positions, previously hardcoded in `node_coupling.py`); `noise_botanical_note` documents that all other morphologies use noise = 0.0.
+- `tests/test_integrity.py`: `test_determinism()` — runs the full pipeline twice from identical state and asserts all simulation CSVs, statistical summary, and robustness matrix are bit-for-bit identical across runs. Confirms full pipeline determinism under explicit seed control.
+
+### Changed
+
+- `data/node_coupling.py`: `noise_botanical` now read from `parameters.json` section VI instead of being hardcoded as 0.15. Backward-compatible (defaults to 0.15 if key absent).
+- `run.py`:
+  - `_cohens_d()`: replaced `+ 1e-14` denominator guard with an explicit NaN guard — returns `float("nan")` when pooled std < 1e-4, preventing numerically invalid values from being written to CSV.
+  - `compute_statistical_summary()`: Cohen's d NaN written as `"n/a"` in CSV and console; added `"extreme"` label for |d| > 50 (distinct from `"large"` for > 0.8).
+  - `write_exploration_summary()`: `noise_botanical` added to `experimental_configuration` block.
+  - Pipeline extended to 11 steps; parametric robustness sweep runs as step 11.
+  - Version strings bumped to v1.2.2.
+- `tests/test_integrity.py`: `data/parametric_sweep.py` added to `ESSENTIAL_FILES`; `pipeline_version` assertion updated to `"1.2.2"`; `noise_botanical` asserted in `experimental_configuration`; robustness matrix assertions added (existence, columns, 48 rows, ≥ 50% holds).
+- `CITATION.cff`: version bumped to 1.2.2, date-released 2026-06-10; abstract updated.
+
+### Scientific results
+
+- **Robustness sweep (48/48, 100%)**: botanical separation from random control holds at p < 0.05 in every grid point of the 48-combination k0 × beta × Q space. The finding is a structural property of botanical morphology, not a configuration artifact.
+- **Extreme Cohen's d in Coherence_Ratio pairs**: Fractal vs Voronoi (d = −1398.713) and Fractal vs Random (d = −189.666) arise from near-zero within-group variance in fractal Coherence_Ratio (std ≈ 0.00012). These are labeled `"extreme"` in Effect_size (|d| > 50) as a clear signal that they are not real effect sizes. They do not affect Merit_Scaled results.
+- The 30 t-test p-values describe response-curve separation across 30 deterministic distance steps, not draws from an i.i.d. distribution. They are reproducible structural descriptors. Multiplicity correction (Holm/BH) deferred to v1.2.3.
+- Merit_Scaled (seed 42, N=64): unchanged from v1.2.1 — 9 of 10 pairs significant; fractal vs random non-significant (p = 0.938, d = −0.020).
+
 ## [1.2.1] - 2026-06-09
 
 ### Added
