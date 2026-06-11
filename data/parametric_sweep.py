@@ -5,19 +5,13 @@ from scipy.stats import ttest_ind
 from data import input_generator
 from data.node_coupling import compute_array_factor
 from data.config import load_parameters, ensure_output_dir, output_path, rel
+from data.stats_utils import cohens_d
 
 K0_GRID = [0.002, 0.004, 0.006, 0.008]
 BETA_GRID = [0.1, 0.25, 0.4]
 Q_GRID = [0.5, 0.8, 1.5, 3.0]
 
 DISTANCES = np.linspace(0.1, 2.0, 30)
-
-
-def _cohens_d_safe(a, b):
-    pooled = np.sqrt((np.std(a, ddof=1) ** 2 + np.std(b, ddof=1) ** 2) / 2)
-    if pooled < 1e-4:
-        return float("nan")
-    return float((np.mean(a) - np.mean(b)) / pooled)
 
 
 def _merit_scaled_series(
@@ -73,7 +67,7 @@ def run_parametric_sweep(output_file=None):
                     k0, beta, Q0, k_mod_coeff, q_ref,
                 )
                 _, p = ttest_ind(bot, rnd, equal_var=False)
-                d = _cohens_d_safe(bot, rnd)
+                d = cohens_d(bot, rnd)
                 holds = bool(p < 0.05 and not np.isnan(d))
                 d_str = "n/a" if np.isnan(d) else round(d, 4)
                 rows_out.append([

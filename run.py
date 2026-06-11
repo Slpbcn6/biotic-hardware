@@ -15,6 +15,7 @@ from data.config import (
     output_path,
     rel,
 )
+from data.stats_utils import cohens_d
 
 ROOT = Path(__file__).parent
 
@@ -51,14 +52,6 @@ def run_coupling(mode):
     )
 
 
-def _cohens_d(a, b):
-    a, b = np.array(a, dtype=float), np.array(b, dtype=float)
-    pooled = np.sqrt((np.std(a, ddof=1) ** 2 + np.std(b, ddof=1) ** 2) / 2)
-    if pooled < 1e-4:
-        return float("nan")
-    return float((np.mean(a) - np.mean(b)) / pooled)
-
-
 def _col(rows, key):
     return [float(r[key]) for r in rows]
 
@@ -81,7 +74,7 @@ def compute_statistical_summary(output_file=None):
             s1 = _col(morphology_data[a], metric)
             s2 = _col(morphology_data[b], metric)
             t, p = ttest_ind(s1, s2, equal_var=False)
-            d = _cohens_d(s1, s2)
+            d = cohens_d(s1, s2)
             sig = "yes" if p < 0.05 else "no"
             if np.isnan(d):
                 size = "n/a"

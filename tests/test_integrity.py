@@ -27,6 +27,7 @@ ESSENTIAL_FILES = [
     "data/multi_seed_analysis.py",
     "data/parameter_derivation.py",
     "data/parametric_sweep.py",
+    "data/stats_utils.py", 
 ]
 
 

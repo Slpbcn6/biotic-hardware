@@ -94,7 +94,7 @@ def plot_sensitivity_curves(ax, mode_data):
     ax.set_xlabel("Distance (m)", fontsize=10)
     ax.set_ylabel("Normalized value", fontsize=10)
     ax.set_title(
-        f"Morphological Sensitivity Benchmark v1.2.1 - {len(mode_data)} Morphologies",
+        f"Morphological Sensitivity Benchmark v1.2.2 - {len(mode_data)} Morphologies",
         fontsize=11,
     )
     ax.grid(True, alpha=0.3)
@@ -172,7 +172,7 @@ def plot():
         plot_sensitivity_curves(ax_curves, mode_data)
         plot_stat_heatmaps(ax_p, ax_d, p_matrix, d_matrix, sig_matrix)
         fig.suptitle(
-            "Biotic Hardware Synthesis v1.2.1 - Morphological Benchmark & Statistical Validation",
+            "Biotic Hardware Synthesis v1.2.2 - Morphological Benchmark & Statistical Validation",
             fontsize=13, fontweight="bold", y=0.99,
         )
     else:
