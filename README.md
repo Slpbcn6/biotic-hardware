@@ -1,5 +1,13 @@
 # Biotic Hardware Synthesis: A Computational Framework for Morphological Benchmarking in ELF-Inspired Coupled-Oscillator Networks
 
+<p align="center">
+  <a href="https://github.com/Slpbcn6/biotic-hardware/actions/workflows/ci.yml"><img src="https://github.com/Slpbcn6/biotic-hardware/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://www.python.org"><img src="https://img.shields.io/badge/python-3.12-blue?logo=python&logoColor=white" alt="Python 3.12"></a>
+  <a href="https://creativecommons.org/licenses/by/4.0/"><img src="https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey" alt="License: CC BY 4.0"></a>
+  <a href="https://github.com/Slpbcn6/biotic-hardware/blob/main/CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.2.2-green" alt="Version"></a>
+</p>
+
+
 ![Biotic Hardware Synthesis](assets/readme1-2-2.svg)
 
 
