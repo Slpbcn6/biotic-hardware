@@ -2,7 +2,7 @@
 
 ## What this is
 
-Biotic Hardware Synthesis is a deterministic, single-command Python framework that treats morphological datasets — the MS 408 / Voynich Manuscript botanical iconography, plus synthetic geometric controls — as structured inputs, maps them into abstract coupled-oscillator and phased-array network models, and measures how their structure affects a set of coherence and merit metrics under continuous geometric scaling.
+Biotic Hardware Synthesis is a deterministic, single-command Python framework that treats synthetic morphologies inspired by the MS 408 / Voynich Manuscript botanical iconography, plus geometric controls, as structured inputs, maps them into abstract coupled-oscillator and phased-array network models, and measures how their structure affects a set of coherence and merit metrics under continuous geometric scaling.
 
 It is strictly a computational simulation. All electromagnetic vocabulary (resonance, array factor, beamforming, NFMI) is used as an analytical analogy; no physical, biological, or electromagnetic system is modeled, built, or implied.
 

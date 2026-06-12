@@ -98,16 +98,12 @@ Simulation baseline: [/data/parameters.json](./data/parameters.json)
 
 ## Dataset Rationale (MS 408)
 
-MS 408 (Voynich Manuscript) is used as a morphological dataset.
-
-The dataset is not interpreted in historical or semantic terms. It is used strictly as a high-complexity structural input for testing abstraction and mapping methods.
-
+MS 408 (Voynich Manuscript) inspired the morphological taxonomy explored here; the generators are synthetic abstractions, not derived from manuscript imagery.
+The dataset is not interpreted in historical or semantic terms. It is used strictly as a conceptual reference for selecting a high-complexity structural family to abstract and benchmark.
 Within this framework, MS 408 functions as:
-
-- a high-complexity structural benchmark
-- a non-semantic morphological input source
-- a testbed for robustness of network generation methods
-
+- a conceptual reference for a high-complexity structural family
+- a non-semantic reference — the manuscript is referenced, not parsed
+- a motivating case for benchmarking synthetic generation methods under structural complexity
 Alternative datasets with similar structural properties (synthetic fractals, botanical diagrams, procedural geometries) are compatible with this framework.
 
 ---
