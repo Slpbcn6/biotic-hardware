@@ -7,6 +7,23 @@ from data.topology_validator import validate_topology
 
 
 def compute_array_factor(positions, Q, k0_base, k_mod_coeff, q_ref):
+    """Compute the complex-valued array factor over the full angular domain [0, 2π].
+
+    Each node is assigned a base phase from the repeating sequence
+    [0, π/2, π, 3π/2]. The spatial contribution is modulated by the
+    Q-dependent wave number k = k0_base * (1 + k_mod_coeff * (Q - q_ref)).
+
+    Returns
+    -------
+    peak : float
+        Maximum magnitude of the array factor.
+    coherence : float
+        Peak-to-mean ratio (coherence proxy).
+    mean : float
+        Mean magnitude across the angular domain.
+    magnitude : ndarray, shape (200,)
+        Magnitude of the array factor at each of the 200 angular samples.
+    """
     theta = np.linspace(0, 2 * np.pi, 200)
     k = k0_base * (1 + k_mod_coeff * (Q - q_ref))
 
@@ -27,6 +44,32 @@ def compute_array_factor(positions, Q, k0_base, k_mod_coeff, q_ref):
 
 
 def run_sweep(mode, output_file, tensor_file, seed_override=None):
+    """Run the full distance sweep for a single morphology mode.
+
+    Parameters
+    ----------
+    mode : str
+        One of: 'fractal', 'botanical', 'random', 'fibonacci', 'voronoi'.
+    output_file : str
+        Path for the scalar CSV output.
+    tensor_file : str
+        Path for the NPZ tensor output (keys: 'distance', 'af').
+    seed_override : int or None
+        When set, overrides the seed from parameters.json. Used by
+        multi_seed_analysis.py to iterate across seeds without mutating the
+        config file.
+
+    Returns
+    -------
+    str
+        Topology validation report string (the PASS line).
+
+    Notes
+    -----
+    noise_level (read from parameters.json section VI) is applied identically
+    to every morphology — there is no morphology-conditional noise branch.
+    This ensures fair comparison across all structural inputs.
+    """
     params = load_parameters()
 
     Q0 = float(params["IV_network_performance_metrics"]["individual_q_factor"])
@@ -37,7 +80,7 @@ def run_sweep(mode, output_file, tensor_file, seed_override=None):
     seed = seed_override if seed_override is not None else int(cfg["seed"])
     beta = float(cfg["beta_loss_factor"])
     connection_radius = float(cfg.get("connection_radius_m", 2.0))
-    noise_botanical = float(cfg.get("noise_botanical", 0.15))
+    noise_level = float(cfg.get("noise_level", 0.15))
 
     k0_base = float(af_cfg["k0_base"])
     k_mod_coeff = float(af_cfg["k_modulation_coeff"])
@@ -60,7 +103,8 @@ def run_sweep(mode, output_file, tensor_file, seed_override=None):
     if not valid:
         raise RuntimeError(f"Topology validation failed for {mode}: {report}")
 
-    noise = noise_botanical if mode == "botanical" else 0.0
+    # noise_level is applied identically to every morphology (symmetric regime).
+    # No conditional branch on mode — all morphologies receive the same perturbation.
     rng = np.random.default_rng(seed)
     distances = np.linspace(0.1, 2.0, 30)
 
@@ -77,7 +121,7 @@ def run_sweep(mode, output_file, tensor_file, seed_override=None):
         ])
 
         for i, d in enumerate(distances):
-            perturb = rng.normal(0, noise, base_nodes.shape)
+            perturb = rng.normal(0, noise_level, base_nodes.shape)
             positions = (base_nodes + perturb) * d
             Q_eff = Q0 * (1 - beta * (i / len(distances)))
 

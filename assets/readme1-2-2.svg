@@ -114,16 +114,16 @@
     </line>
     <text x="106" y="132" font-size="10" fill="#FF8888" text-anchor="middle" opacity="0">
       <animate attributeName="opacity" to="0.75" begin="3.8s" dur="0.5s" fill="freeze"/>
-      p=0.938 n.s.
+      p=0.484 n.s.
     </text>
 
     <text x="206" y="65" font-size="11" fill="#00FF00" text-anchor="middle" filter="url(#glow)" opacity="0">
       <animate attributeName="opacity" to="0.9" begin="3.7s" dur="0.5s" fill="freeze"/>
-      0.0567
+      0.0575
     </text>
     <text x="46" y="215" font-size="10" fill="#888888" text-anchor="middle" opacity="0">
       <animate attributeName="opacity" to="0.7" begin="3.0s" dur="0.5s" fill="freeze"/>
-      0.0070
+      0.0089
     </text>
 
     <g font-size="11" text-anchor="middle">
@@ -215,10 +215,10 @@
     <line x1="0" y1="190" x2="190" y2="190" stroke="#FFFFFF" stroke-opacity="0.1" stroke-width="0.5"/>
 
     <text x="0" y="210" font-size="14" fill="#FFFFFF" fill-opacity="0.9">Botanical ≠ Fractal</text>
-    <text x="0" y="224" font-size="11" fill="#888888">p=0.002  |d|=0.843  (large)</text>
+    <text x="0" y="224" font-size="11" fill="#888888">p=0.026  |d|=0.593  (medium)</text>
 
     <text x="0" y="251" font-size="14" fill="#FF8888">Fractal ≈ Random</text>
-    <text x="0" y="265" font-size="11" fill="#888888">p=0.938  |d|=0.020  (n.s.)</text>
+    <text x="0" y="265" font-size="11" fill="#888888">p=0.484  |d|=0.182  (n.s.)</text>
   </g>
 
   <g transform="translate(825, 30)" font-family="Courier New, monospace" opacity="0">
@@ -246,7 +246,7 @@
     <line x1="0" y1="138" x2="210" y2="138" stroke="#FFFFFF" stroke-opacity="0.1" stroke-width="0.5"/>
 
     <text x="0" y="160" font-size="14" fill="#00FF00" font-weight="bold">Max Separation Event</text>
-    <text x="0" y="176" font-size="12" fill="#FFFFFF" fill-opacity="0.8">|d| = 1398.71 (Extreme)</text>
+    <text x="0" y="176" font-size="12" fill="#FFFFFF" fill-opacity="0.8">|d| = 8.926 (Large)</text>
     <text x="0" y="190" font-size="11" fill="#888888">Metric: Coherence Ratio</text>
 
     <text x="0" y="225" font-size="13" fill="#FFFFFF" fill-opacity="0.9">Structural Variance</text>

@@ -34,6 +34,8 @@
     "n_nodes": 64,
     "seed": 42,
     "beta_loss_factor": 0.25,
+    "noise_level": 0.15,
+    "noise_level_note": "Symmetric Gaussian perturbation (sigma) applied identically to every morphology at every sweep step. Single source of truth — read by node_coupling.py and parametric_sweep.py.",
     "connection_radius_m": 2.0,
     "connection_radius_note": "Union-find adjacency radius for topology validation. Matches the spatial extent of all morphologies (~[-1.5, 1.5] to ~[-2.0, 2.0] units)."
   },

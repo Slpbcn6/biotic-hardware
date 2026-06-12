@@ -77,12 +77,12 @@ def compute_statistical_summary(output_file=None):
             d = cohens_d(s1, s2)
             sig = "yes" if p < 0.05 else "no"
             if np.isnan(d):
-                size = "n/a"
+                size    = "n/a"
                 d_write = "n/a"
             else:
                 size = (
                     "extreme" if abs(d) > 50
-                    else "large" if abs(d) > 0.8
+                    else "large"  if abs(d) > 0.8
                     else "medium" if abs(d) > 0.5
                     else "small"
                 )
@@ -150,28 +150,28 @@ def write_exploration_summary(resonance_data, derivation_data, multi_seed_result
     summary = {
         "pipeline_version": "1.2.2",
         "parameter_derivation": {
-            "f_target_hz": derivation_data["f_target_hz"],
-            "L_H": derivation_data["L_H"],
-            "C_derived_F": derivation_data["C_F"],
-            "f_check_hz": derivation_data["f_actual_hz"],
+            "f_target_hz":  derivation_data["f_target_hz"],
+            "L_H":          derivation_data["L_H"],
+            "C_derived_F":  derivation_data["C_F"],
+            "f_check_hz":   derivation_data["f_actual_hz"],
         },
         "resonance_baseline": {
-            "f_simulated_hz": round(f_sim, 4),
-            "Q_factor": round(resonance_data["Q_factor"], 4),
+            "f_simulated_hz":           round(f_sim, 4),
+            "Q_factor":                 round(resonance_data["Q_factor"], 4),
             "schumann_nearest_mode_hz": nearest_hz,
-            "schumann_mode_index": mode_n,
-            "deviation_pct": deviation_pct,
-            "reference": "NOAA/GFZ Potsdam (published reference values)",
+            "schumann_mode_index":      mode_n,
+            "deviation_pct":            deviation_pct,
+            "reference":                "NOAA/GFZ Potsdam (published reference values)",
         },
         "experimental_configuration": {
-            "n_nodes": params["VI_experimental_sweep_parameters"]["n_nodes"],
-            "reference_seed": params["VI_experimental_sweep_parameters"]["seed"],
-            "beta_loss_factor": params["VI_experimental_sweep_parameters"]["beta_loss_factor"],
-            "noise_botanical": params["VI_experimental_sweep_parameters"].get("noise_botanical", 0.15),
+            "n_nodes":             params["VI_experimental_sweep_parameters"]["n_nodes"],
+            "reference_seed":      params["VI_experimental_sweep_parameters"]["seed"],
+            "beta_loss_factor":    params["VI_experimental_sweep_parameters"]["beta_loss_factor"],
+            "noise_level":         params["VI_experimental_sweep_parameters"].get("noise_level", 0.15),
             "connection_radius_m": params["VI_experimental_sweep_parameters"]["connection_radius_m"],
-            "k0_base": params["VII_array_factor_parameters"]["k0_base"],
-            "k_modulation_coeff": params["VII_array_factor_parameters"]["k_modulation_coeff"],
-            "q_reference": params["VII_array_factor_parameters"]["q_reference"],
+            "k0_base":             params["VII_array_factor_parameters"]["k0_base"],
+            "k_modulation_coeff":  params["VII_array_factor_parameters"]["k_modulation_coeff"],
+            "q_reference":         params["VII_array_factor_parameters"]["q_reference"],
         },
         "morphologies": params["VIII_pipeline"]["morphologies"],
         "multi_seed_analysis": {
@@ -210,7 +210,7 @@ def main():
     from data.parameter_derivation import report as derive_report
     derivation_data = derive_report()
 
-    _step(2, "Node resonance baseline (simulation)...")
+    _step(2, "Node resonance baseline (simulation)....")
     run("data/node_resonance.py")
     with open(output_path("resonance_params.json")) as f:
         resonance_data = json.load(f)
@@ -233,8 +233,8 @@ def main():
     print("\n      Writing exploration_summary.json...")
     write_exploration_summary(resonance_data, derivation_data, multi_seed_results)
 
-    _step(n + 6, f"Parametric robustness sweep (k0 x beta x Q — {len([0.002,0.004,0.006,0.008])*len([0.1,0.25,0.4])*len([0.5,0.8,1.5,3.0])} grid points)...")
-    from data.parametric_sweep import run_parametric_sweep
+    from data.parametric_sweep import run_parametric_sweep, K0_GRID, BETA_GRID, Q_GRID
+    _step(n + 6, f"Parametric robustness sweep (k0 x beta x Q — {len(K0_GRID) * len(BETA_GRID) * len(Q_GRID)} grid points)...")
     run_parametric_sweep()
 
     print("\n===================================================")
