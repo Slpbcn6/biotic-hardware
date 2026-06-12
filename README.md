@@ -14,9 +14,9 @@
 
 This repository provides a reproducible computational framework for simulating structured network dynamics inspired by morphological datasets. It implements a full pipeline for parameter-driven simulation of coherence metrics, phase-based interference behavior (complex-valued phasor summation), sensitivity analysis under parametric variation, and formal statistical separation testing — producing numerical outputs, statistical artifacts, and visualization from a single executable workflow.
 
-It operates under an ELF-inspired scalar parameterization using morphological datasets as structured inputs for abstract graph-based and lumped-element system modeling. All electromagnetic terminology used throughout (ELF, phased array, array factor, k0, NFMI) is applied in an analogical and computational sense. No physical electromagnetic system is modeled or implied.
+It operates under an ELF-inspired scalar parameterization using synthetic morphologies as structured inputs for abstract graph-based and lumped-element system modeling. All electromagnetic terminology used throughout (ELF, phased array, array factor, k0, NFMI) is applied in an analogical and computational sense. No physical electromagnetic system is modeled or implied.
 
-It implements a generative computational pipeline in which morphological structures (associated with MS 408 / Voynich Manuscript treated strictly as a non-semantic morphological dataset) are mapped into simplified wave-interference and oscillator analogues inspired by abstract electromagnetic-style system analogies. These mappings enable the study of structural and dynamical properties within coupled-oscillator and network-based simulation frameworks.
+It implements a generative computational pipeline in which synthetic morphological structures (inspired by MS 408 / Voynich Manuscript, treated strictly as a non-semantic taxonomic reference) are mapped into simplified wave-interference and oscillator analogues inspired by abstract electromagnetic-style system analogies. These mappings enable the study of structural and dynamical properties within coupled-oscillator and network-based simulation frameworks.
 
 The framework is designed for exploratory modeling, parametric sensitivity analysis, structural experimentation, and morphological comparison with formal statistical validation. It situates these simulations within a computational context where structural consistency is evaluated using numerical wave-interference-inspired mathematical models and lumped-parameter abstractions.
 
@@ -79,7 +79,7 @@ Parametric robustness (v1.2.2, symmetric noise): under the corrected symmetric n
 
 ## Key Research Points
 
-- **Perspective:** Application of signal processing, wave-interference modeling, and bio-inspired computational design to morphological datasets extracted from MS 408.
+- **Perspective:** Application of signal processing, wave-interference modeling, and bio-inspired computational design to synthetic morphologies inspired by MS 408.
 - **Model:** Network-based representation using coupled oscillator systems, with Near-Field Magnetic Induction (NFMI) used strictly as conceptual inspiration for interaction topology design — not as a physical implementation or performance target.
 - **Methodology:** Mapping of morphological geometry into abstract electromagnetic network representations for simulation, parameter exploration, and statistical comparison.
 - **Validation:** Pre-simulation topology validation rejects degenerate structures before execution. Results are cross-validated against published Schumann resonance modes and stress-tested across five seeds per morphology.
@@ -99,11 +99,15 @@ Simulation baseline: [/data/parameters.json](./data/parameters.json)
 ## Dataset Rationale (MS 408)
 
 MS 408 (Voynich Manuscript) inspired the morphological taxonomy explored here; the generators are synthetic abstractions, not derived from manuscript imagery.
+
 The dataset is not interpreted in historical or semantic terms. It is used strictly as a conceptual reference for selecting a high-complexity structural family to abstract and benchmark.
+
 Within this framework, MS 408 functions as:
+
 - a conceptual reference for a high-complexity structural family
 - a non-semantic reference — the manuscript is referenced, not parsed
 - a motivating case for benchmarking synthetic generation methods under structural complexity
+
 Alternative datasets with similar structural properties (synthetic fractals, botanical diagrams, procedural geometries) are compatible with this framework.
 
 ---
