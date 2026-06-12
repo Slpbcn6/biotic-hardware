@@ -8,7 +8,7 @@ authors:
 
 title: "Biotic Hardware Synthesis"
 version: 1.2.2
-date-released: 2026-06-10
+date-released: 2026-06-11
 
 identifiers:
   - type: doi
@@ -27,16 +27,20 @@ abstract: >
   (seeds 42-46), full statistical separation testing (Welch t-test, Cohen d) across
   three metrics and ten morphology pairs (30 rows), and a parametric robustness sweep
   (k0 x beta x Q, 48 grid points) confirming that the principal finding is structural
-  rather than a tuning artifact. Principal finding: on Merit_Scaled, 9 of 10 morphology
-  pairs separate at p < 0.05; the only non-significant pair is fractal vs random control
-  (p=0.938, d=-0.020). Voronoi and Fibonacci bound the metric range (each separating
-  from all others with large effect, |d| > 1.4); botanical separates from both fractal
-  (p=0.002, d=-0.843) and random control (p=0.002, d=0.825). Extreme Cohen's d values
-  in Coherence_Ratio (e.g. d=-1398 for Fractal vs Voronoi) arise from near-zero
-  within-group variance and are reported as n/a via an explicit NaN guard (pooled
-  std < 1e-4). All results are reproducible via explicit seed tracking, pinned
-  dependencies, and CI/CD. Note: all electromagnetic terminology (ELF, phased array,
-  array factor) is used as a computational analogy; no physical system is modeled.
+  rather than a tuning artifact. Principal finding under symmetric noise regime
+  (v1.2.2): on Merit_Scaled, 9 of 10 morphology pairs separate at p < 0.05; the only
+  non-significant pair is fractal vs random control (p=0.484, d=0.182). Voronoi yields
+  the highest Merit_Scaled (multi-seed mean 0.0575) and Fibonacci the lowest (0.0089),
+  each separating from every other morphology with large effect (|d| > 1.1). Botanical
+  separates from fractal (p=0.026, d=-0.593, medium) and from random control
+  (p=0.008, d=0.714, medium). The previously reported extreme Cohen's d values in
+  Coherence_Ratio (e.g. d=-1398) were artifacts of near-zero within-group variance
+  caused by the asymmetric noise regime; under symmetric noise all effect sizes are
+  interpretable (max |d|=8.926). Parametric robustness: 48/48 grid points confirm
+  botanical separation from random at p < 0.05 (Cohen's d range 0.642-0.840).
+  All results are reproducible via explicit seed tracking, pinned dependencies,
+  and CI/CD. Note: all electromagnetic terminology (ELF, phased array, array factor)
+  is used as a computational analogy; no physical system is modeled.
 
 keywords:
   - Coupled oscillator networks
