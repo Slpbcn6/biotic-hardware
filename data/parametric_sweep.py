@@ -1,33 +1,29 @@
+import os
 import numpy as np
 import csv
-from scipy.stats import ttest_ind
 
 from data import input_generator
 from data.node_coupling import compute_array_factor
 from data.config import load_parameters, ensure_output_dir, output_path, rel
-from data.stats_utils import cohens_d
 
-K0_GRID   = [0.002, 0.004, 0.006, 0.008]
-BETA_GRID = [0.1, 0.25, 0.4]
-Q_GRID    = [0.5, 0.8, 1.5, 3.0]
+K0_GRID   = [0.002, 0.004, 0.006, 0.008, 0.012]
+BETA_GRID = [0.10, 0.20, 0.25, 0.35, 0.40]
+Q_GRID    = [0.5, 0.8, 1.2, 2.0, 3.0]
 
 DISTANCES = np.linspace(0.1, 2.0, 30)
+
+GENERATORS = {
+    "botanical": input_generator.generate_botanical_graph,
+    "random":    input_generator.generate_random_control,
+    "fractal":   input_generator.generate_fractal_morphology,
+}
 
 
 def _merit_scaled_series(
     mode, n_nodes, seed, noise_level,
     k0_base, beta, Q0, k_mod_coeff, q_ref,
 ):
-    """Compute the Merit_Scaled series for one morphology at one grid point.
-
-    noise_level is applied identically regardless of mode, matching the
-    symmetric noise regime used in node_coupling.run_sweep().
-    """
-    generators = {
-        "botanical": input_generator.generate_botanical_graph,
-        "random":    input_generator.generate_random_control,
-    }
-    base_nodes = generators[mode](n_nodes=n_nodes, seed=seed)
+    base_nodes = GENERATORS[mode](n_nodes=n_nodes, seed=seed)
     rng = np.random.default_rng(seed)
     n_steps = len(DISTANCES)
     results = []
@@ -42,17 +38,13 @@ def _merit_scaled_series(
     return np.array(results)
 
 
+def _curve_separation(reference, other):
+    ref_mean = float(np.mean(reference))
+    other_mean = float(np.mean(other))
+    return (ref_mean - other_mean) / abs(other_mean + 1e-12)
+
+
 def run_parametric_sweep(output_file=None):
-    """Run the full parametric robustness sweep (K0 × BETA × Q grid).
-
-    Compares botanical vs random across every grid point using Welch t-test
-    and Cohen's d on Merit_Scaled. Both morphologies receive the same
-    noise_level perturbation (symmetric regime).
-
-    Output columns: k0_base, beta_loss_factor, Q_individual,
-    p_botanical_vs_random, d_botanical_vs_random, finding_holds.
-    finding_holds = True when p < 0.05 and Cohen's d is not NaN.
-    """
     if output_file is None:
         output_file = output_path("robustness_matrix.csv")
 
@@ -66,12 +58,17 @@ def run_parametric_sweep(output_file=None):
     k_mod_coeff = float(af_cfg["k_modulation_coeff"])
     q_ref       = float(af_cfg["q_reference"])
 
-    rows_out = []
-    total = len(K0_GRID) * len(BETA_GRID) * len(Q_GRID)
+    fast_mode = os.environ.get("PIPELINE_FAST") == "1"
+    k0_grid   = K0_GRID[:2]   if fast_mode else K0_GRID
+    beta_grid = BETA_GRID[:2] if fast_mode else BETA_GRID
+    q_grid    = Q_GRID[:2]    if fast_mode else Q_GRID
 
-    for k0 in K0_GRID:
-        for beta in BETA_GRID:
-            for Q0 in Q_GRID:
+    rows_out = []
+    total = len(k0_grid) * len(beta_grid) * len(q_grid)
+
+    for k0 in k0_grid:
+        for beta in beta_grid:
+            for Q0 in q_grid:
                 bot = _merit_scaled_series(
                     "botanical", n_nodes, seed, noise_level,
                     k0, beta, Q0, k_mod_coeff, q_ref,
@@ -80,14 +77,17 @@ def run_parametric_sweep(output_file=None):
                     "random", n_nodes, seed, noise_level,
                     k0, beta, Q0, k_mod_coeff, q_ref,
                 )
-                _, p = ttest_ind(bot, rnd, equal_var=False)
-                d = cohens_d(bot, rnd)
-                holds = bool(p < 0.05 and not np.isnan(d))
-                d_str = "n/a" if np.isnan(d) else round(d, 4)
+                frac = _merit_scaled_series(
+                    "fractal", n_nodes, seed, noise_level,
+                    k0, beta, Q0, k_mod_coeff, q_ref,
+                )
+                sep_vs_random = _curve_separation(bot, rnd)
+                sep_vs_fractal = _curve_separation(bot, frac)
+                holds = bool(sep_vs_random >= 0.10)
                 rows_out.append([
                     k0, beta, Q0,
-                    round(float(p), 6),
-                    d_str,
+                    round(sep_vs_random, 4),
+                    round(sep_vs_fractal, 4),
                     holds,
                 ])
 
@@ -96,19 +96,21 @@ def run_parametric_sweep(output_file=None):
         writer = csv.writer(f)
         writer.writerow([
             "k0_base", "beta_loss_factor", "Q_individual",
-            "p_botanical_vs_random", "d_botanical_vs_random", "finding_holds",
+            "curve_sep_botanical_vs_random",
+            "curve_sep_botanical_vs_fractal",
+            "finding_holds",
         ])
         writer.writerows(rows_out)
 
     n_holds = sum(1 for r in rows_out if r[5])
-    frac = n_holds / total * 100
+    frac_pct = n_holds / total * 100
     print(
         f"      Robustness: {n_holds}/{total} grid points — "
-        f"botanical separates from random at p<0.05 in {frac:.1f}% of parameter space"
+        f"botanical separates from random (curve_sep >= 0.10) in {frac_pct:.1f}% of parameter space"
     )
     print(f"      Written: {rel(output_file)}")
 
-    return rows_out, frac
+    return rows_out, frac_pct
 
 
 if __name__ == "__main__":

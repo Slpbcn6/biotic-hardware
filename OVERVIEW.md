@@ -1,4 +1,4 @@
-# Overview: Biotic Hardware Synthesis (v1.2.2)
+# Overview: Biotic Hardware Synthesis (v1.2.3)
 
 ## What this is
 
@@ -19,15 +19,16 @@ The framework answers one question rigorously: does the geometry of a morphology
 
 ## Pipeline
 
-The system executes a deterministic 11-step computational workflow for abstract complex-valued interference modeling over the angular domain across multiple structural inputs:
+The system executes a deterministic 12-step computational workflow for abstract complex-valued interference modeling over the angular domain across multiple structural inputs:
 
 1. Parameter derivation — closed-form L/C derivation from the target frequency (f_target → L → C → f_check at 12.5 Hz), documenting the resonance configuration without altering the simulation.
 2. Node-level resonance baseline and external Schumann resonance comparison (NOAA/GFZ Potsdam reference modes 1–5).
 3–7. Five morphology sweeps — fractal, botanical, random control, Fibonacci spiral (golden-angle 137.508°), and Voronoi control. Each sweep runs: geometry → pre-simulation topology validation (union-find with path-halving, minimum node count, degenerate-structure rejection) → array factor → coherence → merit. Invalid topologies are rejected before the sweep executes.
-8. Statistical separation: Welch t-test + Cohen's d across 3 metrics × 10 morphology pairs (30 rows).
+8. Curve-separation descriptors: Welch t-test + Cohen's d across 3 metrics × 10 morphology pairs on autocorrelated sweep steps (descriptive only — 30 rows).
 9. Parametric sensitivity analysis and visualization across all five morphologies.
-10. Multi-seed analysis (seeds 42–46 per morphology), producing mean ± std distributions and a machine-readable exploration summary.
-11. Parametric robustness sweep: `data/parametric_sweep.py` runs botanical vs random across a 4×3×4 grid of k0_base × beta_loss_factor × Q_individual (48 combinations), recording p and Cohen's d at each point. Output: `outputs/robustness_matrix.csv`.
+10. Multi-seed analysis (N=30 seeds, seeds 42–71 per morphology), producing mean ± std distributions and a machine-readable exploration summary.
+11. Multi-seed classical inference: `data/inference_analysis.py` runs Welch t-test, Cohen's d, bootstrap CI, Holm-Bonferroni, and post-hoc power over the N=30 per-seed means. Morphologies with near-zero seed variance (fractal, Fibonacci) are flagged n/a to prevent variance-collapse artefacts. Output: `outputs/inference_summary.csv`.
+12. Parametric robustness sweep: `data/parametric_sweep.py` runs botanical vs random vs fractal across a 5×5×5 grid of k0_base × beta_loss_factor × Q_individual (125 combinations), recording the curve-separation ratios at each point. Output: `outputs/robustness_matrix.csv`.
 
 Run:
 
@@ -62,10 +63,12 @@ All generated artifacts are written to `outputs/` (regenerated on each run); `se
 ### Statistical Outputs
 
 - `outputs/resonance_params.json` — node resonance baseline (simulated f_resonance and Q factor).
-- `outputs/statistical_summary.csv` — Welch t-test + Cohen's d across 3 metrics × 10 morphology pairs (30 rows × 7 columns).
-- `outputs/multi_seed_summary.csv` — per-morphology mean ± std across seeds 42–46.
+- `outputs/curve_separation_summary.csv` — Welch t-test + Cohen's d curve-separation descriptors across 3 metrics × 10 morphology pairs on autocorrelated sweep steps (descriptive only, not independent-sample tests).
+- `outputs/multi_seed_summary.csv` — per-morphology mean ± std across N=30 seeds (seeds 42–71).
+- `outputs/multi_seed_raw.csv` — per-seed means per morphology × metric; raw input to the inference step.
+- `outputs/inference_summary.csv` — classical inference over N=30 per-seed means: Welch t-test, Cohen's d, bootstrap CI, Holm-corrected p, post-hoc power. Pairs involving a seed-frozen morphology are reported as n/a (variance collapse).
 - `outputs/exploration_summary.json` — machine-readable record of parameter derivation, resonance baseline, experimental configuration, and multi-seed results per morphology.
-- `outputs/robustness_matrix.csv` — parametric robustness grid: 48 combinations of k0_base × beta_loss_factor × Q_individual; columns: k0_base, beta_loss_factor, Q_individual, p_botanical_vs_random, d_botanical_vs_random, finding_holds.
+- `outputs/robustness_matrix.csv` — parametric robustness grid: 125 combinations (5×5×5) of k0_base × beta_loss_factor × Q_individual; columns: k0_base, beta_loss_factor, Q_individual, curve_sep_botanical_vs_random, curve_sep_botanical_vs_fractal, finding_holds.
 
 ### Visualization Artifacts
 
@@ -75,11 +78,11 @@ All generated artifacts are written to `outputs/` (regenerated on each run); `se
 
 ## Key Results
 
-Principal finding (v1.2.2, symmetric noise): on Merit_Scaled, **9 of 10 morphology pairs separate at p < 0.05; the sole non-significant pair is fractal vs random control (p = 0.484, d = 0.182).** The two synthetic controls bound the metric range — **Voronoi is highest (multi-seed mean 0.0575) and Fibonacci lowest (0.0089), each separating from every other morphology with large effect (|d| > 1.1).** Botanical separates from fractal (p = 0.026, d = −0.593, medium effect) and from random control (p = 0.008, d = 0.714, medium effect). Under the corrected symmetric noise regime (noise_level = 0.15 applied identically to all morphologies), botanical effect sizes are medium rather than large; the separation persists under fair comparison conditions, confirming it is a structural property of botanical morphology rather than an artifact of asymmetric perturbation.
+Principal finding (v1.2.3): v1.2.3 distinguishes the descriptive single-seed curve-separation lens from the classical multi-seed inference. In the inference, fractal and Fibonacci are seed-frozen (per-seed std ≈ 0.0005), so every pair involving them is reported as **n/a** (18 of 30 pairs) rather than as a spurious large-effect finding. Of the 12 statistically valid pairs, **4 survive Holm–Bonferroni correction, all of them botanical separating from a stochastic control**: vs random and vs Voronoi on Merit_Scaled (d = −0.79, −1.05) and on Peak_AF (d = −0.86, −1.19), with post-hoc power 0.85–0.99. Botanical sits consistently below both stochastic controls.
 
-Multi-seed analysis confirms the result is structural: botanical, random, and Voronoi carry seed-dependent variance (std ≈ 0.007–0.012), while fractal and Fibonacci are seed-stable (std ≈ 0.0005–0.0009). Geometric structure alone does not differentiate fractal from an unstructured baseline at this configuration; the measurable separations are driven by botanical branching and by the control vertex distributions. Merit_Scaled is an internal structural indicator within the abstract simulation space, not a physical performance measure.
+Multi-seed analysis explains why the guard is required: botanical, random, and Voronoi carry seed-dependent variance (std ≈ 0.012–0.020), while fractal and Fibonacci are seed-stable (std ≈ 0.0005–0.0009). No claim is made about comparisons involving the seed-frozen morphologies. Merit_Scaled is an internal structural indicator within the abstract simulation space, not a physical performance measure.
 
-Robustness finding (v1.2.2, symmetric noise): botanical separation holds at p < 0.05 in **100% of the 48-point k0 × beta × Q grid** (`outputs/robustness_matrix.csv`), with Cohen's d ranging from 0.642 to 0.840 (medium-to-large) across all combinations. The finding is a structural property of botanical morphology, not a configuration artifact.
+Robustness finding (v1.2.3): botanical's curve separation from the random control holds in **100% of the 125-point k0 × beta × Q grid** (`outputs/robustness_matrix.csv`), with the botanical-vs-random separation ratio between 0.45 and 0.49 at every point. The finding is a structural property of botanical morphology, not a configuration artifact.
 
 ![Sensitivity Analysis](./data/sensitivity_analysis.png)
 
@@ -94,6 +97,8 @@ This system is strictly computational. It does not model or validate physical sy
 ---
 
 ## Version History
+
+v1.2.3 adds a classical multi-seed inference step (`data/inference_analysis.py`: Welch t-test, Cohen's d, bootstrap CI, Holm-Bonferroni, post-hoc power over N=30 per-seed means) together with a variance-collapse guard that flags seed-frozen morphologies (fractal, Fibonacci) as `n/a` instead of reporting their inflated effect sizes as findings; raises the multi-seed count from 5 to 30 seeds (42–71); expands the robustness sweep to a full 5×5×5 = 125-point grid reporting curve-separation ratios; renames `statistical_summary.csv` to `curve_separation_summary.csv` to mark it as a descriptor rather than an independent-sample test; and externalizes the seed list to `parameters.json`. The net effect is that the only surviving statistical claims are botanical separating from the stochastic controls.
 
 v1.2.2 corrects the noise regime from asymmetric (botanical only, σ=0.15; all others σ=0.0) to symmetric (`noise_level=0.15` applied identically to every morphology); externalizes `noise_level` to `parameters.json` section VI as the single source of truth; updates `exploration_summary.json` accordingly; adds parametric robustness analysis (`data/parametric_sweep.py`, 48-point grid, 100% of combinations confirm botanical separation at p<0.05); fixes the Cohen's d NaN artifact (pooled std < 1e-4 → `"n/a"`, |d| > 50 → `"extreme"`); and adds a full-pipeline determinism test. Under symmetric noise, Coherence_Ratio no longer produces extreme Cohen's d values — those were artifacts of near-zero fractal variance under asymmetric conditions.
 

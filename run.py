@@ -20,7 +20,7 @@ from data.stats_utils import cohens_d
 ROOT = Path(__file__).parent
 
 MORPHOLOGY_MODES = morphologies()
-TOTAL_STEPS = len(MORPHOLOGY_MODES) + 6
+TOTAL_STEPS = len(MORPHOLOGY_MODES) + 7
 
 
 def _step(n, label):
@@ -58,7 +58,7 @@ def _col(rows, key):
 
 def compute_statistical_summary(output_file=None):
     if output_file is None:
-        output_file = output_path("statistical_summary.csv")
+        output_file = output_path("curve_separation_summary.csv")
 
     morphology_data = {}
     for mode in MORPHOLOGY_MODES:
@@ -134,21 +134,28 @@ def multi_seed_step():
     return results
 
 
+def inference_step():
+    from data.inference_analysis import run_inference
+    records = run_inference()
+    return records
+
+
 def write_exploration_summary(resonance_data, derivation_data, multi_seed_results,
                                output_file=None):
     from data.schumann_reference import nearest_schumann_mode
-    from data.multi_seed_analysis import SEEDS
 
     if output_file is None:
         output_file = output_path("exploration_summary.json")
 
     params = load_parameters()
+    seeds = params["VI_experimental_sweep_parameters"]["multi_seed_list"]
+    pipeline_version = params["VIII_pipeline"]["version"]
 
     f_sim = resonance_data["f_resonance_Hz"]
     nearest_hz, mode_n, deviation_pct = nearest_schumann_mode(f_sim)
 
     summary = {
-        "pipeline_version": "1.2.2",
+        "pipeline_version": pipeline_version,
         "parameter_derivation": {
             "f_target_hz":  derivation_data["f_target_hz"],
             "L_H":          derivation_data["L_H"],
@@ -175,7 +182,7 @@ def write_exploration_summary(resonance_data, derivation_data, multi_seed_result
         },
         "morphologies": params["VIII_pipeline"]["morphologies"],
         "multi_seed_analysis": {
-            "seeds": SEEDS,
+            "seeds": seeds,
             "morphologies": {
                 mode: {
                     metric: {
@@ -196,14 +203,17 @@ def write_exploration_summary(resonance_data, derivation_data, multi_seed_result
 
 
 def main():
+    params = load_parameters()
+    seeds = params["VI_experimental_sweep_parameters"]["multi_seed_list"]
+    pipeline_version = params["VIII_pipeline"]["version"]
     n = len(MORPHOLOGY_MODES)
     total_pairs = n * (n - 1) // 2
 
     ensure_output_dir()
 
     print("\n===================================================")
-    print(" DETERMINISTIC COMPARATIVE MORPHOLOGICAL PIPELINE v1.2.2")
-    print(f" {n} morphologies | {total_pairs} pairs | seeds 42-46")
+    print(f" DETERMINISTIC COMPARATIVE MORPHOLOGICAL PIPELINE v{pipeline_version}")
+    print(f" {n} morphologies | {total_pairs} pairs | N={len(seeds)} seeds ({seeds[0]}–{seeds[-1]})")
     print("===================================================")
 
     _step(1, "Parameter derivation (f_target -> L, C)...")
@@ -221,24 +231,27 @@ def main():
         _step(idx, f"{mode.upper()} sweep...")
         run_coupling(mode)
 
-    _step(n + 3, f"Statistical separation (Welch t-test + Cohen d, 3 metrics x {total_pairs} pairs)...")
+    _step(n + 3, f"Curve separation descriptors (Welch t + Cohen d, 3 metrics x {total_pairs} pairs)...")
     compute_statistical_summary()
 
-    _step(n + 4, "Sensitivity plot (curves + stat heatmaps)...")
-    run("data/plot_sensitivity.py")
-
-    _step(n + 5, f"Multi-seed analysis (seeds 42-46 x {n} morphologies)...")
+    _step(n + 4, f"Multi-seed analysis (N={len(seeds)} seeds x {n} morphologies)...")
     multi_seed_results = multi_seed_step()
 
     print("\n      Writing exploration_summary.json...")
     write_exploration_summary(resonance_data, derivation_data, multi_seed_results)
 
+    _step(n + 5, "Inference analysis (Welch + Holm-Bonferroni + bootstrap CI 95% + power)...")
+    inference_step()
+
+    _step(n + 6, "Sensitivity plot (curves + stat heatmaps)...")
+    run("data/plot_sensitivity.py")
+
     from data.parametric_sweep import run_parametric_sweep, K0_GRID, BETA_GRID, Q_GRID
-    _step(n + 6, f"Parametric robustness sweep (k0 x beta x Q — {len(K0_GRID) * len(BETA_GRID) * len(Q_GRID)} grid points)...")
+    _step(n + 7, f"Parametric robustness sweep ({len(K0_GRID)} x {len(BETA_GRID)} x {len(Q_GRID)} = {len(K0_GRID) * len(BETA_GRID) * len(Q_GRID)} grid points)...")
     run_parametric_sweep()
 
     print("\n===================================================")
-    print(" BENCHMARK COMPLETE - v1.2.2")
+    print(f" BENCHMARK COMPLETE - v{pipeline_version}")
     print("===================================================")
 
     out_dir = ensure_output_dir()

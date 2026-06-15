@@ -20,7 +20,7 @@ All parameters function as identifiers of structural transformations within the 
 
 ## Note on Legacy Parameter Inheritance (Version Control Layer)
 
-This framework uses `parameters.json` as its active configuration artifact, versioned alongside the codebase (current: v1.2.2). While individual parameter values evolve across releases, their epistemological status within this document remains constant: all entries function exclusively as abstract structural identifiers and are not subject to physical reinterpretation under the current constraints of this framework.
+This framework uses `parameters.json` as its active configuration artifact, versioned alongside the codebase (current: v1.2.3). While individual parameter values evolve across releases, their epistemological status within this document remains constant: all entries function exclusively as abstract structural identifiers and are not subject to physical reinterpretation under the current constraints of this framework.
 
 Within the current architecture, parameters function as structurally-bounded input artifacts to the computational pipeline, rather than semantically active variables subject to physical interpretation.
 
@@ -227,11 +227,11 @@ All parameters in this section are simulation inputs defining the abstract mater
 
 ## Appendix A: Quantitative Functional Isomorphism Table
 
-This appendix consolidates, as a single conceptual reference, the abstract metrics distributed across the preceding sections. It is a theoretical mapping layer: several entries — for example the coupling parameter $K_{\text{DIPOLE}}$, the permeability bound, and the plasma-frequency analogue — are conceptual constructs and are **not** active inputs to the executable v1.2.2 pipeline, whose reproducible parameter set is defined separately in Appendix B. All quantities are structural-coherence parameters defined within the graph-based abstraction system; none denotes a physical measurement.
+This appendix consolidates, as a single conceptual reference, the abstract metrics distributed across the preceding sections. It is a theoretical mapping layer: several entries — for example the coupling parameter $K_{\text{DIPOLE}}$, the permeability bound, and the plasma-frequency analogue — are conceptual constructs and are **not** active inputs to the executable v1.2.3 pipeline, whose reproducible parameter set is defined separately in Appendix B. All quantities are structural-coherence parameters defined within the graph-based abstraction system; none denotes a physical measurement.
 
 ### Foundational Modeling Parameters
 
-* **Computational Coupling Parameter ($K_{\text{DIPOLE}}$):** a conceptual scaling parameter for the abstract interaction kernel, used to discuss global coupling amplitude. It is a theoretical construct, not an active variable in the v1.2.2 pipeline — runtime node coupling is evaluated through a phased-array superposition (`data/node_coupling.py`) — and it does not represent a physical constant.
+* **Computational Coupling Parameter ($K_{\text{DIPOLE}}$):** a conceptual scaling parameter for the abstract interaction kernel, used to discuss global coupling amplitude. It is a theoretical construct, not an active variable in the v1.2.3 pipeline — runtime node coupling is evaluated through a phased-array superposition (`data/node_coupling.py`) — and it does not represent a physical constant.
 * **Effective Permeability ($\mu_r$):** a phenomenological parameter representing combined structural amplification within the model. It is a modeling construct, independent of the geometric scaling constant $k$, and is not constrained to physically realizable limits.
 
 ### I. Structural and Inductive Parameters
@@ -266,7 +266,7 @@ This appendix consolidates, as a single conceptual reference, the abstract metri
 
 ## Appendix B: Minimum Reproducible Parameter Set (Simulation Baseline)
 
-This appendix defines the minimum parameter set required to reproduce the resonance results of the v1.2.2 pipeline. All quantities are internal coherence metrics of the abstraction system; the derivation is reproduced exactly by `data/parameter_derivation.py` and `data/node_resonance.py` (invoked from `run.py`).
+This appendix defines the minimum parameter set required to reproduce the resonance results of the v1.2.3 pipeline. All quantities are internal coherence metrics of the abstraction system; the derivation is reproduced exactly by `data/parameter_derivation.py` and `data/node_resonance.py` (invoked from `run.py`).
 
 ### I. Fixed Parameters
 
