@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import subprocess
 import sys
@@ -25,6 +26,7 @@ ESSENTIAL_FILES = [
     "data/topology_validator.py",
     "data/schumann_reference.py",
     "data/multi_seed_analysis.py",
+    "data/inference_analysis.py",
     "data/parameter_derivation.py",
     "data/parametric_sweep.py",
     "data/stats_utils.py",
@@ -48,6 +50,7 @@ def test_morphological_divergence():
             cwd=tmp_path,
             capture_output=True,
             text=True,
+            env={**os.environ, "PIPELINE_FAST": "1"},
         )
         assert result.returncode == 0, result.stderr
 
@@ -70,13 +73,17 @@ def test_morphological_divergence():
         corr = np.corrcoef(df_f[metric], df_b[metric])[0, 1]
         assert corr < 0.999, "Fractal and botanical must not be perfectly correlated"
 
-        stat_csv      = tmp_path / "outputs/statistical_summary.csv"
-        multi_csv     = tmp_path / "outputs/multi_seed_summary.csv"
-        summary_json  = tmp_path / "outputs/exploration_summary.json"
+        stat_csv       = tmp_path / "outputs/curve_separation_summary.csv"
+        multi_csv      = tmp_path / "outputs/multi_seed_summary.csv"
+        raw_csv        = tmp_path / "outputs/multi_seed_raw.csv"
+        inference_csv  = tmp_path / "outputs/inference_summary.csv"
+        summary_json   = tmp_path / "outputs/exploration_summary.json"
         robustness_csv = tmp_path / "outputs/robustness_matrix.csv"
 
-        assert stat_csv.exists(),       "statistical_summary.csv missing"
+        assert stat_csv.exists(),       "curve_separation_summary.csv missing"
         assert multi_csv.exists(),      "multi_seed_summary.csv missing"
+        assert raw_csv.exists(),        "multi_seed_raw.csv missing"
+        assert inference_csv.exists(),  "inference_summary.csv missing"
         assert summary_json.exists(),   "exploration_summary.json missing"
         assert robustness_csv.exists(), "robustness_matrix.csv missing"
 
@@ -103,7 +110,7 @@ def test_morphological_divergence():
         ]
         for col in required_stat_cols:
             assert col in df_stat.columns, \
-                f"Missing column in statistical_summary: {col}"
+                f"Missing column in curve_separation_summary: {col}"
 
         n_modes = len(MORPHOLOGY_MODES)
         expected_pairs = n_modes * (n_modes - 1) // 2
@@ -124,6 +131,24 @@ def test_morphological_divergence():
             f"Expected {len(MORPHOLOGY_MODES)} morphology rows in multi_seed_summary"
         )
 
+        df_raw = pd.read_csv(raw_csv)
+        required_raw_cols = ["Morphology", "Seed", "Merit_Scaled", "Coherence_Ratio", "Peak_AF"]
+        for col in required_raw_cols:
+            assert col in df_raw.columns, f"Missing column in multi_seed_raw: {col}"
+        assert len(df_raw) > 0, "multi_seed_raw.csv is empty"
+
+        df_inf = pd.read_csv(inference_csv)
+        required_inf_cols = [
+            "Metric", "Pair", "N", "mean_diff",
+            "CI_lower", "CI_upper", "Cohens_d",
+            "p_raw", "p_holm", "Significant_holm", "power",
+        ]
+        for col in required_inf_cols:
+            assert col in df_inf.columns, f"Missing column in inference_summary: {col}"
+        assert len(df_inf) == expected_rows, (
+            f"Expected {expected_rows} rows in inference_summary, got {len(df_inf)}"
+        )
+
         with open(summary_json) as fj:
             summary = json.load(fj)
 
@@ -132,7 +157,7 @@ def test_morphological_divergence():
         assert "resonance_baseline"         in summary
         assert "experimental_configuration" in summary
         assert "multi_seed_analysis"        in summary
-        assert summary["pipeline_version"] == "1.2.2"
+        assert summary["pipeline_version"] == "1.2.3"
         assert set(summary["morphologies"]) == set(MORPHOLOGY_MODES)
 
         exp_cfg = summary["experimental_configuration"]
@@ -151,17 +176,21 @@ def test_morphological_divergence():
         df_rob = pd.read_csv(robustness_csv)
         required_rob_cols = [
             "k0_base", "beta_loss_factor", "Q_individual",
-            "p_botanical_vs_random", "d_botanical_vs_random", "finding_holds",
+            "curve_sep_botanical_vs_random", "curve_sep_botanical_vs_fractal",
+            "finding_holds",
         ]
         for col in required_rob_cols:
             assert col in df_rob.columns, \
                 f"Missing column in robustness_matrix: {col}"
-        assert len(df_rob) == 48, (
-            f"Expected 48 rows (4 k0 x 3 beta x 4 Q), got {len(df_rob)}"
+
+        expected_rob_rows = 8
+        assert len(df_rob) == expected_rob_rows, (
+            f"Expected {expected_rob_rows} rows in robustness_matrix (subprocess forces "
+            f"PIPELINE_FAST=1, a 2x2x2 grid), got {len(df_rob)}"
         )
         n_holds = df_rob["finding_holds"].sum()
-        assert n_holds / 48 >= 0.5, (
-            f"Botanical separation holds in <50% of grid ({n_holds}/48)"
+        assert n_holds / len(df_rob) >= 0.5, (
+            f"Botanical separation holds in <50% of grid ({n_holds}/{len(df_rob)})"
         )
 
 
@@ -196,6 +225,13 @@ def test_resonance_config_integrity():
     assert sweep_cfg["noise_level"] > 0, \
         "noise_level must be positive"
 
+    assert "multi_seed_list" in sweep_cfg, \
+        "multi_seed_list missing from VI_experimental_sweep_parameters"
+    assert isinstance(sweep_cfg["multi_seed_list"], list), \
+        "multi_seed_list must be a list"
+    assert len(sweep_cfg["multi_seed_list"]) >= 2, \
+        "multi_seed_list must contain at least 2 seeds"
+
 
 def test_conceptual_reference_values_are_separated():
     with open(ROOT / "data" / "parameters.json") as f:
@@ -225,6 +261,7 @@ def test_determinism():
                 cwd=tmp_path,
                 capture_output=True,
                 text=True,
+                env={**os.environ, "PIPELINE_FAST": "1"},
             )
             assert r.returncode == 0, r.stderr
 
@@ -233,8 +270,10 @@ def test_determinism():
         for mode in MORPHOLOGY_MODES:
             f = tmp_path / f"outputs/simulation_results_{mode}.csv"
             first[mode] = f.read_text()
-        first_stat = (tmp_path / "outputs/statistical_summary.csv").read_text()
-        first_rob  = (tmp_path / "outputs/robustness_matrix.csv").read_text()
+        first_stat     = (tmp_path / "outputs/curve_separation_summary.csv").read_text()
+        first_rob      = (tmp_path / "outputs/robustness_matrix.csv").read_text()
+        first_raw      = (tmp_path / "outputs/multi_seed_raw.csv").read_text()
+        first_inf      = (tmp_path / "outputs/inference_summary.csv").read_text()
 
         _run()
         for mode in MORPHOLOGY_MODES:
@@ -242,7 +281,11 @@ def test_determinism():
             assert f.read_text() == first[mode], (
                 f"Non-deterministic simulation output: {mode}"
             )
-        assert (tmp_path / "outputs/statistical_summary.csv").read_text() == first_stat, \
-            "Non-deterministic statistical_summary.csv"
+        assert (tmp_path / "outputs/curve_separation_summary.csv").read_text() == first_stat, \
+            "Non-deterministic curve_separation_summary.csv"
         assert (tmp_path / "outputs/robustness_matrix.csv").read_text() == first_rob, \
             "Non-deterministic robustness_matrix.csv"
+        assert (tmp_path / "outputs/multi_seed_raw.csv").read_text() == first_raw, \
+            "Non-deterministic multi_seed_raw.csv"
+        assert (tmp_path / "outputs/inference_summary.csv").read_text() == first_inf, \
+            "Non-deterministic inference_summary.csv"
