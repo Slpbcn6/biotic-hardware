@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.4] - 2026-06-16
+
+### Changed
+
+- **Documentation reframing:** the morphological taxonomy is now presented in terms of natural botanical branching patterns and geometric structural families, rather than with MS 408 as the primary analytical reference. The manuscript is acknowledged as the historical origin of the project in a closing note within each document's introductory section. No code, parameters, tests, or computational results are affected.
+- **`assets/` header diagram (SVG):** updated to v1.2.4; revised tagline to botanical framing ("Does botanical branching produce a measurable topological signature?"); panel 03 retitled from "Matrix Map" to "Significance" with explicit Holm–Bonferroni framing and n/a count (18/30); panel 04 retitled from "Robustness" to "Inference" with per-metric effect sizes and power.
+
+
 ## [1.2.3] - 2026-06-14
 
 ### Fixed

@@ -1,10 +1,12 @@
-# Overview: Biotic Hardware Synthesis (v1.2.3)
+# Overview: Biotic Hardware Synthesis (v1.2.4)
 
 ## What this is
 
-Biotic Hardware Synthesis is a deterministic, single-command Python framework that treats synthetic morphologies inspired by the MS 408 / Voynich Manuscript botanical iconography, plus geometric controls, as structured inputs, maps them into abstract coupled-oscillator and phased-array network models, and measures how their structure affects a set of coherence and merit metrics under continuous geometric scaling.
+Biotic Hardware Synthesis is a deterministic, single-command Python framework that treats synthetic morphologies inspired by botanical branching patterns and natural plant geometry, plus geometric controls, as structured inputs, maps them into abstract coupled-oscillator and phased-array network models, and measures how their structure affects a set of coherence and merit metrics under continuous geometric scaling.
 
 It is strictly a computational simulation. All electromagnetic vocabulary (resonance, array factor, beamforming, NFMI) is used as an analytical analogy; no physical, biological, or electromagnetic system is modeled, built, or implied.
+
+This project originated from the visual study of botanical iconography in MS 408 (Voynich Manuscript). The manuscript is the historical starting point; the morphological generators and the benchmarking framework are independent of it.
 
 ## What it is for
 
@@ -97,6 +99,8 @@ This system is strictly computational. It does not model or validate physical sy
 ---
 
 ## Version History
+
+v1.2.4 reframes the project documentation in terms of natural botanical branching patterns and geometric structural families. The historical origin of the project (visual study of MS 408 / Voynich Manuscript) is acknowledged in a closing note within each document's introductory section. No code, parameters, tests, or computational results are affected.
 
 v1.2.3 adds a classical multi-seed inference step (`data/inference_analysis.py`: Welch t-test, Cohen's d, bootstrap CI, Holm-Bonferroni, post-hoc power over N=30 per-seed means) together with a variance-collapse guard that flags seed-frozen morphologies (fractal, Fibonacci) as `n/a` instead of reporting their inflated effect sizes as findings; raises the multi-seed count from 5 to 30 seeds (42–71); expands the robustness sweep to a full 5×5×5 = 125-point grid reporting curve-separation ratios; renames `statistical_summary.csv` to `curve_separation_summary.csv` to mark it as a descriptor rather than an independent-sample test; and externalizes the seed list to `parameters.json`. The net effect is that the only surviving statistical claims are botanical separating from the stochastic controls.
 

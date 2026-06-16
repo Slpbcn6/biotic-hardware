@@ -305,7 +305,7 @@ def plot():
             plot_curve_panel(ax, mode_data, seed_summary, key, label, idx == 0)
 
     fig.suptitle(
-        "Biotic Hardware Synthesis  ·  Morphological Benchmark  ·  v1.2.3",
+        "Biotic Hardware Synthesis  ·  Morphological Benchmark  ·  v1.2.4",
         fontsize=24, fontweight="bold", y=1.02,
     )
 

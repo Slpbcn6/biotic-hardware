@@ -157,7 +157,7 @@ def test_morphological_divergence():
         assert "resonance_baseline"         in summary
         assert "experimental_configuration" in summary
         assert "multi_seed_analysis"        in summary
-        assert summary["pipeline_version"] == "1.2.3"
+        assert summary["pipeline_version"] == "1.2.4"
         assert set(summary["morphologies"]) == set(MORPHOLOGY_MODES)
 
         exp_cfg = summary["experimental_configuration"]
