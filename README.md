@@ -1,4 +1,4 @@
-# Biotic Hardware Synthesis: A Computational Framework for Morphological Benchmarking in ELF-Inspired Coupled-Oscillator Networks
+# Biotic Hardware Synthesis: Computational Framework for Morphological Pattern Discrimination via Statistical Inference
 
 <p align="center">
   <a href="https://github.com/Slpbcn6/biotic-hardware/actions/workflows/ci.yml"><img src="https://github.com/Slpbcn6/biotic-hardware/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
