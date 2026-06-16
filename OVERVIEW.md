@@ -104,7 +104,7 @@ This system is strictly computational. It does not model or validate physical sy
 
 ## Version History
 
-v1.2.5 externalises `curve_separation_threshold` from a hardcoded literal in `data/parametric_sweep.py` into `data/parameters.json` section VI as the single source of truth; removes the unused `IX_conceptual_reference_values` section from `parameters.json`; moves the `BENCHMARK COMPLETE` banner in `run.py` to after the artifact listing with an artifact count; drops the corresponding integrity test (section IX no longer exists, 3 tests remain); and adds `tests/conftest.py` with an animated dot progress indicator that writes to `sys.stdout` to avoid  column corruption on Windows terminals.
+v1.2.5 externalises `curve_separation_threshold` from a hardcoded literal in `data/parametric_sweep.py` into `data/parameters.json` section VI as the single source of truth; removes the unused `IX_conceptual_reference_values` section from `parameters.json`; moves the `BENCHMARK COMPLETE` banner in `run.py` to after the artifact listing with an artifact count; drops the corresponding integrity test (section IX no longer exists, 3 tests remain); and adds `tests/conftest.py` with an animated dot progress indicator that writes to `sys.stdout` to avoid column corruption on Windows terminals.
 
 v1.2.4 reframes the project documentation in terms of natural botanical branching patterns and geometric structural families. The historical origin of the project (visual study of MS 408 / Voynich Manuscript) is acknowledged in a closing note within each document's introductory section. No code, parameters, tests, or computational results are affected.
 

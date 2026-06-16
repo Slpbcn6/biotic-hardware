@@ -3,12 +3,16 @@
 ## [1.2.5] - 2026-06-16
 
 ### Changed
+
 - **`data/parameters.json`**: removed unused `IX_conceptual_reference_values` section (was never read by any module); added `curve_separation_threshold: 0.10` to section VI as single source of truth for the parametric sweep threshold.
 - **`data/parametric_sweep.py`**: threshold read from `parameters.json` via `.get("curve_separation_threshold", 0.10)` instead of a hardcoded literal; log message now reflects the configured value dynamically.
 - **`run.py`**: `BENCHMARK COMPLETE` banner moved to after the artifact listing, with artifact count (`N artifacts in outputs/ | all steps OK`).
 - **`tests/test_integrity.py`**: removed `test_conceptual_reference_values_are_separated` (section IX no longer exists); 3 tests remain.
+
 ### Added
+
 - **`tests/conftest.py`** (new): animated dot progress indicator for `pytest -v`; writes directly to `sys.stdout` to avoid corrupting pytest's column tracker and prevent `[NN%]` from wrapping to a new line on Windows terminals.
+
 
 ## [1.2.4] - 2026-06-16
 
