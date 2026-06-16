@@ -25,7 +25,11 @@ The system executes a deterministic 12-step computational workflow for abstract 
 
 1. Parameter derivation — closed-form L/C derivation from the target frequency (f_target → L → C → f_check at 12.5 Hz), documenting the resonance configuration without altering the simulation.
 2. Node-level resonance baseline and external Schumann resonance comparison (NOAA/GFZ Potsdam reference modes 1–5).
-3–7. Five morphology sweeps — fractal, botanical, random control, Fibonacci spiral (golden-angle 137.508°), and Voronoi control. Each sweep runs: geometry → pre-simulation topology validation (union-find with path-halving, minimum node count, degenerate-structure rejection) → array factor → coherence → merit. Invalid topologies are rejected before the sweep executes.
+3. Fractal morphology sweep — geometry → pre-simulation topology validation (union-find with path-halving, minimum node count, degenerate-structure rejection) → array factor → coherence → merit.
+4. Botanical morphology sweep — same pipeline as step 3.
+5. Random control morphology sweep — same pipeline as step 3.
+6. Fibonacci spiral morphology sweep (golden-angle 137.508°) — same pipeline as step 3.
+7. Voronoi control morphology sweep — same pipeline as step 3. Invalid topologies are rejected before any sweep executes.
 8. Curve-separation descriptors: Welch t-test + Cohen's d across 3 metrics × 10 morphology pairs on autocorrelated sweep steps (descriptive only — 30 rows).
 9. Parametric sensitivity analysis and visualization across all five morphologies.
 10. Multi-seed analysis (N=30 seeds, seeds 42–71 per morphology), producing mean ± std distributions and a machine-readable exploration summary.

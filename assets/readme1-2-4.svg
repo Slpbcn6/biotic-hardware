@@ -44,15 +44,15 @@
     <text x="0" y="72" font-size="19" font-weight="bold" letter-spacing="-0.5" fill="#FFFFFF" fill-opacity="0.95">Biotic Hardware</text>
     <text x="0" y="94" font-size="19" font-weight="bold" letter-spacing="-0.5" fill="#FFFFFF" fill-opacity="0.95">Synthesis</text>
 
-    <text x="0" y="126" font-size="15" fill="#FFFFFF" fill-opacity="0.75">Does geometry produce</text>
-    <text x="0" y="146" font-size="15" fill="#FFFFFF" fill-opacity="0.75">a measurable signature</text>
-    <text x="0" y="166" font-size="15" fill="#FFFFFF" fill-opacity="0.75">in a network model?</text>
+    <text x="0" y="126" font-size="15" fill="#FFFFFF" fill-opacity="0.75">Does botanical branching</text>
+    <text x="0" y="146" font-size="15" fill="#FFFFFF" fill-opacity="0.75">produce a measurable</text>
+    <text x="0" y="166" font-size="15" fill="#FFFFFF" fill-opacity="0.75">topological signature?</text>
 
     <text x="0" y="198" font-size="15" fill="#00FF41">5 morphologies · 10 pairs</text>
     <text x="0" y="218" font-size="15" fill="#00FF41">3 metrics · seeds 42–71</text>
     <text x="0" y="238" font-size="15" fill="#00FF41">64 nodes · 30 sweep steps</text>
 
-    <text x="0" y="265" font-size="12" fill="#888888">Welch t-test + Cohen's d</text>
+    <text x="0" y="272" font-size="12" fill="#888888">Welch t-test + Cohen's d</text>
   </g>
 
   <g transform="translate(295, 30)" font-family="Courier New, monospace" opacity="0">
@@ -98,13 +98,14 @@
       <animate attributeName="y" to="163" begin="2.3s" dur="0.7s" fill="freeze"/>
       <animate attributeName="height" to="82" begin="2.3s" dur="0.7s" fill="freeze"/>
     </rect>
+    <rect x="113" y="163" width="26" height="82" fill="none" stroke="#00FF00" stroke-width="1.5" stroke-dasharray="4,2"/>
 
     <rect x="153" y="245" width="26" height="0" fill="#00FF00" fill-opacity="0.45">
       <animate attributeName="y" to="134" begin="2.5s" dur="0.7s" fill="freeze"/>
       <animate attributeName="height" to="111" begin="2.5s" dur="0.7s" fill="freeze"/>
     </rect>
 
-    <rect x="193" y="245" width="26" height="0" fill="#00FF00" filter="url(#glow)">
+    <rect x="193" y="245" width="26" height="0" fill="#00FF00" fill-opacity="0.6">
       <animate attributeName="y" to="111" begin="2.7s" dur="0.9s" fill="freeze"/>
       <animate attributeName="height" to="134" begin="2.7s" dur="0.9s" fill="freeze"/>
     </rect>
@@ -119,12 +120,13 @@
     </text>
 
     <g font-size="11" text-anchor="middle">
-      <text x="46"  y="265" fill="#666666">Fib</text>
-      <text x="86"  y="265" fill="#888888">Frac</text>
-      <text x="126" y="265" fill="#888888">Bot</text>
-      <text x="166" y="265" fill="#888888">Rand</text>
-      <text x="206" y="265" fill="#00FF00">Vor</text>
+      <text x="46" y="272" fill="#666666">Fib</text>
+      <text x="86" y="272" fill="#888888">Frac</text>
+      <text x="126" y="272" fill="#00FF00" font-weight="bold">Bot</text>
+      <text x="166" y="272" fill="#888888">Rand</text>
+      <text x="206" y="272" fill="#888888">Vor</text>
     </g>
+    <text x="126" y="156" font-size="7.5" fill="#00FF00" text-anchor="middle">distinctive</text>
   </g>
 
   <g transform="translate(585, 30)" font-family="Courier New, monospace" opacity="0">
@@ -139,78 +141,18 @@
       <animate attributeName="stroke-width" values="0.4;0.05;0;0" keyTimes="0;0.375;0.376;1" dur="4s" repeatCount="indefinite" begin="3s"/>
     </circle>
 
-    <text x="0" y="14" font-size="14" fill="#00FF00" font-weight="bold" letter-spacing="1.5">03 / MATRIX MAP</text>
-    <line x1="0" y1="26" x2="190" y2="26" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1" stroke-dasharray="4,4">
-      <animate attributeName="stroke-dashoffset" from="8" to="0" dur="3s" repeatCount="indefinite"/>
-    </line>
+    <text x="0" y="14" font-size="14" fill="#00FF00" font-weight="bold" letter-spacing="1.5">03 / SIGNIFICANCE</text>
+    <line x1="0" y1="26" x2="200" y2="26" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1" stroke-dasharray="4,4"/>
+    <text x="0" y="46" font-size="12" fill="#888888">Holm-Bonferroni correction</text>
 
-    <text x="0" y="46" font-size="12" fill="#888888">p-value significance matrix</text>
+    <text x="0" y="100" font-size="34" font-weight="bold" fill="#00FF00">4 / 12</text>
+    <text x="0" y="122" font-size="13" fill="#FFFFFF" fill-opacity="0.85">significant comparisons</text>
 
-    <text x="0" y="95" font-size="44" font-weight="bold" letter-spacing="-2" fill="#00FF00" filter="url(#glow)">4/12</text>
-    <text x="0" y="115" font-size="13" fill="#FFFFFF" fill-opacity="0.9" font-weight="bold">significant pairs</text>
+    <text x="0" y="166" font-size="20" font-weight="bold" fill="#FFFFFF" fill-opacity="0.7">18 / 30</text>
+    <text x="0" y="186" font-size="12" fill="#888888">comparisons n/a</text>
+    <text x="0" y="202" font-size="12" fill="#888888">(fractal, Fibonacci)</text>
 
-    <g transform="translate(0, 142)" opacity="0">
-      <animate attributeName="opacity" to="1" dur="0.5s" begin="3.5s" fill="freeze"/>
-      <text x="0" y="-6" font-size="10" fill="#888888">Pairwise Morphology Significance</text>
-      
-      <rect x="0"   y="4" width="16" height="12" fill="#00FF00" fill-opacity="0">
-        <animate attributeName="fill-opacity" to="0.8" dur="0.1s" begin="3.5s" fill="freeze"/>
-      </rect>
-      <rect x="20"  y="4" width="16" height="12" fill="#00FF00" fill-opacity="0">
-        <animate attributeName="fill-opacity" to="0.8" dur="0.1s" begin="3.6s" fill="freeze"/>
-      </rect>
-      <rect x="40"  y="4" width="16" height="12" fill="#00FF00" fill-opacity="0">
-        <animate attributeName="fill-opacity" to="0.8" dur="0.1s" begin="3.7s" fill="freeze"/>
-      </rect>
-      <rect x="60"  y="4" width="16" height="12" fill="#00FF00" fill-opacity="0">
-        <animate attributeName="fill-opacity" to="0.8" dur="0.1s" begin="3.8s" fill="freeze"/>
-      </rect>
-      <rect x="80"  y="4" width="16" height="12" fill="#FFFFFF" fill-opacity="0">
-        <animate attributeName="fill-opacity" to="0.12" dur="0.1s" begin="3.9s" fill="freeze"/>
-      </rect>
-      <rect x="100" y="4" width="16" height="12" fill="#FFFFFF" fill-opacity="0">
-        <animate attributeName="fill-opacity" to="0.12" dur="0.1s" begin="4.0s" fill="freeze"/>
-      </rect>
-      <rect x="120" y="4" width="16" height="12" fill="#FFFFFF" fill-opacity="0">
-        <animate attributeName="fill-opacity" to="0.12" dur="0.1s" begin="4.1s" fill="freeze"/>
-      </rect>
-      <rect x="140" y="4" width="16" height="12" fill="#FFFFFF" fill-opacity="0">
-        <animate attributeName="fill-opacity" to="0.12" dur="0.1s" begin="4.2s" fill="freeze"/>
-      </rect>
-
-      <rect x="0"   y="20" width="16" height="12" fill="#FFFFFF" fill-opacity="0">
-        <animate attributeName="fill-opacity" to="0.12" dur="0.1s" begin="4.3s" fill="freeze"/>
-      </rect>
-      <rect x="20"  y="20" width="16" height="12" fill="#FFFFFF" fill-opacity="0">
-        <animate attributeName="fill-opacity" to="0.12" dur="0.1s" begin="4.4s" fill="freeze"/>
-      </rect>
-      <rect x="40"  y="20" width="16" height="12" fill="#FFFFFF" fill-opacity="0">
-        <animate attributeName="fill-opacity" to="0.12" dur="0.1s" begin="4.5s" fill="freeze"/>
-      </rect>
-      <rect x="60"  y="20" width="16" height="12" fill="#FFFFFF" fill-opacity="0">
-        <animate attributeName="fill-opacity" to="0.12" dur="0.1s" begin="4.6s" fill="freeze"/>
-      </rect>
-      <rect x="80"  y="20" width="16" height="12" fill="#FFFFFF" fill-opacity="0">
-        <animate attributeName="fill-opacity" to="0.12" dur="0.1s" begin="4.7s" fill="freeze"/>
-      </rect>
-      <rect x="100" y="20" width="16" height="12" fill="#FFFFFF" fill-opacity="0">
-        <animate attributeName="fill-opacity" to="0.12" dur="0.1s" begin="4.8s" fill="freeze"/>
-      </rect>
-      <rect x="120" y="20" width="16" height="12" fill="#FFFFFF" fill-opacity="0">
-        <animate attributeName="fill-opacity" to="0.12" dur="0.1s" begin="4.9s" fill="freeze"/>
-      </rect>
-      <rect x="140" y="20" width="16" height="12" fill="#FFFFFF" fill-opacity="0">
-        <animate attributeName="fill-opacity" to="0.12" dur="0.1s" begin="5.0s" fill="freeze"/>
-      </rect>
-    </g>
-
-    <line x1="0" y1="190" x2="190" y2="190" stroke="#FFFFFF" stroke-opacity="0.1" stroke-width="0.5"/>
-
-    <text x="0" y="210" font-size="13" fill="#FFFFFF" fill-opacity="0.9">Bot vs Voronoi (Peak AF)</text>
-    <text x="0" y="224" font-size="11" fill="#888888">|d|=1.19  power=0.99 (sig)</text>
-
-    <text x="0" y="251" font-size="13" fill="#FFFFFF" fill-opacity="0.9">Bot vs Random (Peak AF)</text>
-    <text x="0" y="265" font-size="11" fill="#888888">|d|=0.86  power=0.91 (sig)</text>
+    <text x="0" y="272" font-size="12" fill="#00FF41">all 4 hits involve botanical</text>
   </g>
 
   <g transform="translate(825, 30)" font-family="Courier New, monospace" opacity="0">
@@ -225,24 +167,30 @@
       <animate attributeName="stroke-width" values="0.4;0.05;0;0" keyTimes="0;0.375;0.376;1" dur="4s" repeatCount="indefinite" begin="4.5s"/>
     </circle>
 
-    <text x="0" y="14" fill="#00FF00" font-weight="bold" letter-spacing="1.5" font-size="14">04 / ROBUSTNESS</text>
+    <text x="0" y="14" fill="#00FF00" font-weight="bold" letter-spacing="1.5" font-size="14">04 / INFERENCE</text>
     <line x1="0" y1="26" x2="210" y2="26" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1" stroke-dasharray="4,4">
       <animate attributeName="stroke-dashoffset" from="8" to="0" dur="3s" repeatCount="indefinite"/>
     </line>
 
-    <text x="0" y="46" font-size="12" fill="#888888">k0 × beta × Q grid · 125 points</text>
+    <text x="0" y="46" font-size="11" fill="#888888">N=30 seeds · 12 valid comparisons</text>
 
-    <text x="0" y="100" font-size="52" font-weight="bold" letter-spacing="-2" fill="#00FF00" filter="url(#glow)">125/125</text>
-    <text x="0" y="122" font-size="15" fill="#FFFFFF" fill-opacity="0.9" font-weight="bold">stability index</text>
+    <text x="0" y="82" font-size="11" font-weight="bold" fill="#FFFFFF" letter-spacing="1">MERIT SCALED</text>
+    <text x="0" y="97" font-size="13" fill="#FFFFFF" fill-opacity="0.9">Bot &lt; Random</text>
+    <text x="0" y="112" font-size="11" fill="#00FF41">d = −0.79 · power = 0.85</text>
+    <text x="0" y="127" font-size="13" fill="#FFFFFF" fill-opacity="0.9">Bot &lt; Voronoi</text>
+    <text x="0" y="142" font-size="11" fill="#00FF41">d = −1.05 · power = 0.97</text>
 
-    <line x1="0" y1="138" x2="210" y2="138" stroke="#FFFFFF" stroke-opacity="0.1" stroke-width="0.5"/>
+    <line x1="0" y1="156" x2="190" y2="156" stroke="#333333" stroke-width="0.5"/>
 
-    <text x="0" y="160" font-size="14" fill="#00FF00" font-weight="bold">Parametric Robustness</text>
-    <text x="0" y="176" font-size="12" fill="#FFFFFF" fill-opacity="0.8">Separation Ratio</text>
-    <text x="0" y="190" font-size="11" fill="#888888">0.45 – 0.49 (All Points)</text>
+    <text x="0" y="170" font-size="11" font-weight="bold" fill="#FFFFFF" letter-spacing="1">PEAK AF</text>
+    <text x="0" y="185" font-size="13" fill="#FFFFFF" fill-opacity="0.9">Bot &lt; Random</text>
+    <text x="0" y="200" font-size="11" fill="#00FF41">d = −0.86 · power = 0.91</text>
+    <text x="0" y="215" font-size="13" fill="#FFFFFF" fill-opacity="0.9">Bot &lt; Voronoi</text>
+    <text x="0" y="230" font-size="11" fill="#00FF41">d = −1.19 · power = 0.99</text>
 
-    <text x="0" y="225" font-size="13" fill="#FFFFFF" fill-opacity="0.9">Structural Variance</text>
-    <text x="0" y="245" font-size="11" fill="#888888">Botanical std ≈ 0.010</text>
-    <text x="0" y="265" font-size="11" fill="#888888">Fractal   std ≈ 0.0006</text>
+    <line x1="0" y1="244" x2="190" y2="244" stroke="#333333" stroke-width="0.5"/>
+
+    <text x="0" y="258" font-size="11" fill="#555555">125/125 robustness grid</text>
+    <text x="0" y="272" font-size="11" fill="#555555">sep. ratio 0.45–0.49</text>
   </g>
 </svg>

@@ -24,6 +24,8 @@ Procedural morphology generators (e.g., fractal and botanical structures) are st
 
 The system is strictly computational and interpretative. It does not represent a physical or biological implementation.
 
+*Historical note:* this project originated from the visual study of botanical iconography in MS 408 (Voynich Manuscript). The manuscript was the starting point for exploring botanical branching as a structural taxonomy; the generators and the benchmarking framework are independent of it.
+
 ---
 
 ## Requirements
@@ -44,7 +46,7 @@ To run the full computational simulation pipeline:
 python run.py
 ```
 
-This executes the complete 12-step workflow:
+This executes the complete computational workflow (12 steps — see [OVERVIEW.md](./OVERVIEW.md) for the full numbered breakdown):
 
 - Parameter derivation: closed-form L/C derivation from the target frequency (f_target → L → C → f_check at 12.5 Hz)
 - Node-level resonance baseline and external Schumann resonance comparison (NOAA/GFZ Potsdam, modes 1–5)
@@ -110,8 +112,6 @@ The five morphological types — fractal branching, botanical, random control, F
 The generators produce point-set geometries from mathematical rules. No external dataset is parsed or reproduced.
 
 Alternative morphologies with analogous structural properties are compatible with this framework.
-
-This project originated from the visual study of botanical iconography in MS 408 (Voynich Manuscript). The manuscript was the starting point for exploring botanical branching as a structural taxonomy; the generators and the benchmarking framework are independent of it.
 
 ---
 
