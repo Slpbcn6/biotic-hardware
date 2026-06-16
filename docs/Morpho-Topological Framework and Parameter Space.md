@@ -6,13 +6,13 @@ This repository implements a generative morpho-topological simulation framework 
 
 All electromagnetic and engineering terminology in this document is inherited domain vocabulary, used as structured labels for mathematical and topological relationships within a graph-based model. These terms do not correspond to physical systems and do not simulate physical behavior. Likewise, every equation written in classical scientific notation is an isomorphic mapping between graph-state transformations and legacy symbolic encodings; none represents a physical law, a causal mechanism, or a predictive model of a real-world system.
 
-Parameters are versioned symbolic artifacts. The active configuration lives in `parameters.json` (current: v1.2.4) and defines structural relationships within the computational pipeline. Individual values evolve across releases, but their status is constant: abstract structural identifiers, never physical quantities. No interpretative binding between versioned parameters and physical reality is defined or implied at any layer.
+Parameters are versioned symbolic artifacts. The active configuration lives in `parameters.json` (current: v1.2.5) and defines structural relationships within the computational pipeline. Individual values evolve across releases, but their status is constant: abstract structural identifiers, never physical quantities. No interpretative binding between versioned parameters and physical reality is defined or implied at any layer.
 
 ### Reproducible pipeline vs. conceptual reference (the key reading guide)
 
 The single most important distinction in this document:
 
-- The executable v1.2.4 pipeline reproduces a specific, minimal parameter set, defined and derived exactly in Appendix B (the resonance baseline: `L`, `C`, `f ≈ 12.5 Hz`, `Q`, `R`) and evaluated by `data/parameter_derivation.py`, `data/node_resonance.py`, and `data/node_coupling.py`.
+- The executable v1.2.5 pipeline reproduces a specific, minimal parameter set, defined and derived exactly in Appendix B (the resonance baseline: `L`, `C`, `f ≈ 12.5 Hz`, `Q`, `R`) and evaluated by `data/parameter_derivation.py`, `data/node_resonance.py`, and `data/node_coupling.py`.
 - Several constructs discussed in the narrative sections and consolidated in Appendix A — for example the coupling parameter `K_DIPOLE`, the permeability bound `mu_r ≈ 1.25 × 10^6`, and the plasma-frequency analogue — are conceptual reference quantities ONLY. They are NOT inputs to the executable pipeline and are not asserted as physically realizable.
 
 When in doubt about whether something is "real" in the code or "narrative scaffolding," Appendix B is the source of truth for what runs.
@@ -209,11 +209,11 @@ All parameters in this section are simulation inputs defining the abstract mater
 
 ## Appendix A: Quantitative Functional Isomorphism Table
 
-This appendix consolidates, as a single conceptual reference, the abstract metrics distributed across the preceding sections. It is a theoretical mapping layer: several entries — for example the coupling parameter `K_DIPOLE`, the permeability bound, and the plasma-frequency analogue — are conceptual constructs and are NOT active inputs to the executable v1.2.4 pipeline, whose reproducible parameter set is defined separately in Appendix B. All quantities are structural-coherence parameters defined within the graph-based abstraction system; none denotes a physical measurement.
+This appendix consolidates, as a single conceptual reference, the abstract metrics distributed across the preceding sections. It is a theoretical mapping layer: several entries — for example the coupling parameter `K_DIPOLE`, the permeability bound, and the plasma-frequency analogue — are conceptual constructs and are NOT active inputs to the executable v1.2.5 pipeline, whose reproducible parameter set is defined separately in Appendix B. All quantities are structural-coherence parameters defined within the graph-based abstraction system; none denotes a physical measurement.
 
 ### Foundational Modeling Parameters
 
-- Computational Coupling Parameter (`K_DIPOLE`): a conceptual scaling parameter for the abstract interaction kernel, used to discuss global coupling amplitude. It is a theoretical construct, not an active variable in the v1.2.4 pipeline — runtime node coupling is evaluated through a phased-array superposition (`data/node_coupling.py`) — and it does not represent a physical constant.
+- Computational Coupling Parameter (`K_DIPOLE`): a conceptual scaling parameter for the abstract interaction kernel, used to discuss global coupling amplitude. It is a theoretical construct, not an active variable in the v1.2.5 pipeline — runtime node coupling is evaluated through a phased-array superposition (`data/node_coupling.py`) — and it does not represent a physical constant.
 - Effective Permeability (`mu_r`): a phenomenological parameter representing combined structural amplification within the model. It is a modeling construct, independent of the geometric scaling constant `k`, and is not constrained to physically realizable limits.
 
 ### I. Structural and Inductive Parameters
@@ -240,7 +240,7 @@ This appendix consolidates, as a single conceptual reference, the abstract metri
 
 ## Appendix B: Minimum Reproducible Parameter Set (Simulation Baseline)
 
-This appendix defines the minimum parameter set required to reproduce the resonance results of the v1.2.4 pipeline. All quantities are internal coherence metrics of the abstraction system; the derivation is reproduced exactly by `data/parameter_derivation.py` and `data/node_resonance.py` (invoked from `run.py`).
+This appendix defines the minimum parameter set required to reproduce the resonance results of the v1.2.5 pipeline. All quantities are internal coherence metrics of the abstraction system; the derivation is reproduced exactly by `data/parameter_derivation.py` and `data/node_resonance.py` (invoked from `run.py`).
 
 ### I. Fixed Parameters
 
