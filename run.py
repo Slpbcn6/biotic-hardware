@@ -250,10 +250,6 @@ def main():
     _step(n + 7, f"Parametric robustness sweep ({len(K0_GRID)} x {len(BETA_GRID)} x {len(Q_GRID)} = {len(K0_GRID) * len(BETA_GRID) * len(Q_GRID)} grid points)...")
     run_parametric_sweep()
 
-    print("\n===================================================")
-    print(f" BENCHMARK COMPLETE - v{pipeline_version}")
-    print("===================================================")
-
     out_dir = ensure_output_dir()
     artifacts = sorted(
         p for p in out_dir.iterdir() if p.is_file() and p.name != ".gitkeep"
@@ -261,7 +257,12 @@ def main():
     print("\n  Artifacts written to outputs/:")
     for p in artifacts:
         print(f"    - {p.name}")
-    print("  (sensitivity_analysis.png is also copied to data/)")
+    print("    (sensitivity_analysis.png is also copied to data/)")
+
+    print("\n===================================================")
+    print(f" BENCHMARK COMPLETE - v{pipeline_version}")
+    print(f" {len(artifacts)} artifacts in outputs/ | all steps OK")
+    print("===================================================")
 
 
 if __name__ == "__main__":

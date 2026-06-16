@@ -55,6 +55,7 @@ def run_parametric_sweep(output_file=None):
     n_nodes     = int(sweep_cfg["n_nodes"])
     seed        = int(sweep_cfg["seed"])
     noise_level = float(sweep_cfg.get("noise_level", 0.15))
+    threshold   = float(sweep_cfg.get("curve_separation_threshold", 0.10))
     k_mod_coeff = float(af_cfg["k_modulation_coeff"])
     q_ref       = float(af_cfg["q_reference"])
 
@@ -83,7 +84,7 @@ def run_parametric_sweep(output_file=None):
                 )
                 sep_vs_random = _curve_separation(bot, rnd)
                 sep_vs_fractal = _curve_separation(bot, frac)
-                holds = bool(sep_vs_random >= 0.10)
+                holds = bool(sep_vs_random >= threshold)
                 rows_out.append([
                     k0, beta, Q0,
                     round(sep_vs_random, 4),
@@ -106,7 +107,7 @@ def run_parametric_sweep(output_file=None):
     frac_pct = n_holds / total * 100
     print(
         f"      Robustness: {n_holds}/{total} grid points — "
-        f"botanical separates from random (curve_sep >= 0.10) in {frac_pct:.1f}% of parameter space"
+        f"botanical separates from random (curve_sep >= {threshold}) in {frac_pct:.1f}% of parameter space"
     )
     print(f"      Written: {rel(output_file)}")
 

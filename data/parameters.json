@@ -38,8 +38,41 @@
     "noise_level_note": "Symmetric Gaussian perturbation (sigma) applied identically to every morphology at every sweep step. Single source of truth — read by node_coupling.py and parametric_sweep.py.",
     "connection_radius_m": 2.0,
     "connection_radius_note": "Union-find adjacency radius for topology validation. Matches the spatial extent of all morphologies (~[-1.5, 1.5] to ~[-2.0, 2.0] units).",
-    "multi_seed_list": [42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71],
-    "multi_seed_list_note": "30 consecutive seeds for multi-seed inference analysis. Per-morphology means computed per seed; Welch t-test + Holm-Bonferroni + bootstrap CI applied to the N=30 i.i.d. per-seed means in inference_analysis.py."
+    "multi_seed_list": [
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71
+    ],
+    "multi_seed_list_note": "30 consecutive seeds for multi-seed inference analysis. Per-morphology means computed per seed; Welch t-test + Holm-Bonferroni + bootstrap CI applied to the N=30 i.i.d. per-seed means in inference_analysis.py.",
+    "curve_separation_threshold": 0.1,
+    "curve_separation_threshold_note": "Minimum curve-separation ratio (botanical vs random mean difference / |random mean|) required for finding_holds=True in the parametric robustness sweep. Single source of truth for parametric_sweep.py."
   },
   "VII_array_factor_parameters": {
     "k0_base": 0.004,
@@ -49,11 +82,12 @@
   },
   "VIII_pipeline": {
     "version": "1.2.4",
-    "morphologies": ["fractal", "botanical", "random", "fibonacci", "voronoi"]
-  },
-  "IX_conceptual_reference_values": {
-    "note": "Theoretical/ontological reference values retained for context only. These are NOT read by any module in the pipeline and do not participate in any calculation. Separated from the active parameter sections so they are not mistaken for simulation inputs.",
-    "magnetic_permeability_ur": 1250000.0,
-    "resistivity_ohm_m": 0.01
+    "morphologies": [
+      "fractal",
+      "botanical",
+      "random",
+      "fibonacci",
+      "voronoi"
+    ]
   }
 }

@@ -233,20 +233,6 @@ def test_resonance_config_integrity():
         "multi_seed_list must contain at least 2 seeds"
 
 
-def test_conceptual_reference_values_are_separated():
-    with open(ROOT / "data" / "parameters.json") as f:
-        data = json.load(f)
-
-    fixed = data["I_simulation_fixed_parameters"]
-    assert "magnetic_permeability_ur" not in fixed, \
-        "Unused reference value must not live in active parameter section I"
-    assert "resistivity_ohm_m" not in fixed
-
-    ref = data["IX_conceptual_reference_values"]
-    assert "magnetic_permeability_ur" in ref
-    assert "resistivity_ohm_m"        in ref
-
-
 def test_determinism():
     with tempfile.TemporaryDirectory() as tmpdir:
         tmp_path = Path(tmpdir)
