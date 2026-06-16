@@ -1,6 +1,6 @@
 {
   "author": "Santi López Puiggené",
-  "source_document": "Computational parameter specification — v1.2.4. Parameter values define the abstract simulation space. They are not derived from or validated against HFSS, CST, or any other professional electromagnetic simulation tool.",
+  "source_document": "Computational parameter specification — v1.2.3. Parameter values define the abstract simulation space. They are not derived from or validated against HFSS, CST, or any other professional electromagnetic simulation tool.",
   "I_simulation_fixed_parameters": {
     "frequency_hz": 12.5,
     "scaling_constant_k": 100,
@@ -48,7 +48,7 @@
     "q_reference": 0.785
   },
   "VIII_pipeline": {
-    "version": "1.2.4",
+    "version": "1.2.3",
     "morphologies": ["fractal", "botanical", "random", "fibonacci", "voronoi"]
   },
   "IX_conceptual_reference_values": {

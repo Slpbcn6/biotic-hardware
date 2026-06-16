@@ -103,8 +103,6 @@ def run_sweep(mode, output_file, tensor_file, seed_override=None):
     if not valid:
         raise RuntimeError(f"Topology validation failed for {mode}: {report}")
 
-    # noise_level is applied identically to every morphology (symmetric regime).
-    # No conditional branch on mode — all morphologies receive the same perturbation.
     rng = np.random.default_rng(seed)
     distances = np.linspace(0.1, 2.0, 30)
 
