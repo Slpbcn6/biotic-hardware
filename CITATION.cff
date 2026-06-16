@@ -7,12 +7,12 @@ authors:
     orcid: "https://orcid.org/0009-0002-9922-1235"
 
 title: "Biotic Hardware Synthesis"
-version: 1.2.2
-date-released: 2026-06-11
+version: 1.2.4
+date-released: 2026-06-15
 
 identifiers:
   - type: doi
-    value: "10.17605/OSF.IO/N3PB7"
+    value: "10.5281/zenodo.20590864"
 
 url: "https://github.com/Slpbcn6/biotic-hardware"
 
@@ -24,22 +24,25 @@ abstract: >
   composite merit metric. Includes pre-simulation topology validation (union-find
   connectivity, degenerate structure detection), external Schumann resonance baseline
   comparison (NOAA/GFZ Potsdam, modes 1-5), multi-seed sensitivity analysis
-  (seeds 42-46), full statistical separation testing (Welch t-test, Cohen d) across
-  three metrics and ten morphology pairs (30 rows), and a parametric robustness sweep
-  (k0 x beta x Q, 48 grid points) confirming that the principal finding is structural
-  rather than a tuning artifact. Principal finding under symmetric noise regime
-  (v1.2.2): on Merit_Scaled, 9 of 10 morphology pairs separate at p < 0.05; the only
-  non-significant pair is fractal vs random control (p=0.484, d=0.182). Voronoi yields
-  the highest Merit_Scaled (multi-seed mean 0.0575) and Fibonacci the lowest (0.0089),
-  each separating from every other morphology with large effect (|d| > 1.1). Botanical
-  separates from fractal (p=0.026, d=-0.593, medium) and from random control
-  (p=0.008, d=0.714, medium). The previously reported extreme Cohen's d values in
-  Coherence_Ratio (e.g. d=-1398) were artifacts of near-zero within-group variance
-  caused by the asymmetric noise regime; under symmetric noise all effect sizes are
-  interpretable (max |d|=8.926). Parametric robustness: 48/48 grid points confirm
-  botanical separation from random at p < 0.05 (Cohen's d range 0.642-0.840).
-  All results are reproducible via explicit seed tracking, pinned dependencies,
-  and CI/CD. Note: all electromagnetic terminology (ELF, phased array, array factor)
+  (N=30 seeds, seeds 42-71), and formal statistical inference (Welch t-test on
+  per-seed means, Cohen's d, bootstrap CI 95%, Holm-Bonferroni correction, and
+  post-hoc power) computed in inference_analysis.py over independent i.i.d. samples.
+  A variance-collapse guard flags seed-frozen morphologies (per-seed std far below
+  the cross-morphology median) as n/a, so inflated effect sizes from near-zero
+  variance are never reported as findings; Holm correction runs over the valid pairs. Curve separation descriptors (Welch t-test + Cohen's d
+  on the 30 autocorrelated sweep steps) are separately documented in
+  curve_separation_summary.csv and distinguished from the inference results in
+  inference_summary.csv. Parametric robustness sweep (k0 x beta x Q, 125 grid points, 5x5x5)
+  uses a curve separation criterion (relative mean difference >= 10%) rather than a
+  p-value on autocorrelated data. Principal finding (v1.2.3, classical inference):
+  of the 30 metric x morphology pairs, 18 involving a seed-frozen morphology (fractal
+  or Fibonacci) are reported as n/a; of the 12 statistically valid pairs, 4 survive
+  Holm-Bonferroni correction, all of them botanical separating from a stochastic
+  control — versus random and versus Voronoi on Merit_Scaled (d=-0.79, -1.05) and
+  Peak_AF (d=-0.86, -1.19), post-hoc power 0.85-0.99. Botanical sits below both
+  stochastic controls; no claim is made about the seed-frozen morphologies. All
+  results are reproducible via explicit seed tracking, pinned dependencies, and CI/CD.
+  Note: all electromagnetic terminology (ELF, phased array, array factor)
   is used as a computational analogy; no physical system is modeled.
 
 keywords:
@@ -53,3 +56,5 @@ keywords:
   - Statistical morphology analysis
   - Multi-seed sensitivity analysis
   - Parametric robustness
+  - Holm-Bonferroni correction
+  - Bootstrap confidence intervals

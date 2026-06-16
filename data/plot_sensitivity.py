@@ -9,6 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
 import numpy as np
 
 from data.config import morphologies, ensure_output_dir, output_path, data_path, rel
@@ -26,12 +27,20 @@ NAMED_COLORS = {
 
 _FALLBACK = matplotlib.colormaps["tab10"]
 
+plt.rcParams.update({
+    "font.family":     "monospace",
+    "font.monospace":  ["Courier New", "Courier", "DejaVu Sans Mono"],
+    "axes.titleweight": "bold",
+})
+
 
 def color_for(mode, i):
     return NAMED_COLORS.get(mode, _FALLBACK(i % 10))
 
 
 METRICS = ["Merit_Scaled", "Coherence_Ratio", "Peak_AF"]
+METRIC_LABELS = ["Merit Scaled", "Coherence Ratio", "Peak AF"]
+
 PAIRS = [
     f"{a.capitalize()} vs {b.capitalize()}"
     for a, b in combinations(MORPHOLOGY_MODES, 2)
@@ -55,18 +64,43 @@ def load_mode_data(filepath):
     )
 
 
-def norm(x):
-    return (x - x.min()) / (x.max() - x.min() + 1e-12)
+def load_multi_seed_summary(filepath):
+    summary = {}
+    if not os.path.exists(filepath):
+        return summary
+    with open(filepath, "r") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            mode = row["Morphology"]
+            summary[mode] = {
+                "Merit_Scaled":    (float(row["Merit_Mean"]),     float(row["Merit_Std"])),
+                "Coherence_Ratio": (float(row["Coherence_Mean"]), float(row["Coherence_Std"])),
+                "Peak_AF":         (float(row["PeakAF_Mean"]),    float(row["PeakAF_Std"])),
+            }
+    return summary
 
 
-def load_statistical_summary(filepath):
-    p_matrix   = np.full((len(METRICS), len(PAIRS)), np.nan)
+def load_multi_seed_raw(filepath):
+    raw = {mode: {"Merit_Scaled": [], "Coherence_Ratio": [], "Peak_AF": []}
+           for mode in MORPHOLOGY_MODES}
+    if not os.path.exists(filepath):
+        return raw
+    with open(filepath, "r") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            mode = row["Morphology"]
+            if mode in raw:
+                raw[mode]["Merit_Scaled"].append(float(row["Merit_Scaled"]))
+                raw[mode]["Coherence_Ratio"].append(float(row["Coherence_Ratio"]))
+                raw[mode]["Peak_AF"].append(float(row["Peak_AF"]))
+    return raw
+
+
+def load_inference_summary(filepath):
     d_matrix   = np.full((len(METRICS), len(PAIRS)), np.nan)
     sig_matrix = [["" for _ in PAIRS] for _ in METRICS]
-
     if not os.path.exists(filepath):
-        return p_matrix, d_matrix, sig_matrix
-
+        return d_matrix, sig_matrix
     with open(filepath, "r") as f:
         reader = csv.DictReader(f)
         for row in reader:
@@ -76,74 +110,135 @@ def load_statistical_summary(filepath):
                 continue
             i = METRICS.index(metric)
             j = PAIRS.index(pair)
-            p_matrix[i, j]  = float(row["p_value"])
-            d_matrix[i, j]  = abs(float(row["Cohens_d"]))
-            sig_matrix[i][j] = row.get("Significant_p05", "")
+            d_val = row["Cohens_d"]
+            d_matrix[i, j] = abs(float(d_val)) if d_val not in ("n/a", "") else np.nan
+            sig_matrix[i][j] = row.get("Significant_holm", "")
+    return d_matrix, sig_matrix
 
-    return p_matrix, d_matrix, sig_matrix
+
+def _curve_values(data_tuple, metric_key):
+    if metric_key == "Merit_Scaled":
+        return data_tuple[5]
+    if metric_key == "Coherence_Ratio":
+        return data_tuple[2]
+    return data_tuple[1]
 
 
-def plot_sensitivity_curves(ax, mode_data):
-    for i, (mode, (d, p, c, mf, q, ms)) in enumerate(mode_data.items()):
-        color = color_for(mode, i)
-        ax.plot(d, norm(ms), label=f"{mode.capitalize()} - Merit Scaled",
-                linewidth=2, color=color)
-        ax.plot(d, norm(c),  label=f"{mode.capitalize()} - Coherence",
-                linestyle="--", color=color, alpha=0.5)
+def plot_curve_panel(ax, mode_data, seed_summary, metric_key, metric_label, show_legend):
+    for i, (mode, data_tuple) in enumerate(mode_data.items()):
+        dist   = data_tuple[0]
+        values = _curve_values(data_tuple, metric_key)
+        color  = color_for(mode, i)
 
-    ax.set_xlabel("Distance (m)", fontsize=10)
-    ax.set_ylabel("Normalized value", fontsize=10)
-    ax.set_title(
-        f"Morphological Sensitivity Benchmark v1.2.2 - {len(mode_data)} Morphologies",
-        fontsize=11,
+        ax.plot(dist, values, color=color, linewidth=2.4,
+                label=mode.capitalize(), zorder=3)
+
+        if mode in seed_summary and metric_key in seed_summary[mode]:
+            _, std_val = seed_summary[mode][metric_key]
+            lo = np.maximum(values - std_val, 0.0)
+            hi = values + std_val
+            ax.fill_between(dist, lo, hi, color=color, alpha=0.13, zorder=1)
+
+    ax.set_xlabel("Distance (m)", fontsize=14)
+    ax.set_ylabel(metric_label, fontsize=14)
+    ax.set_title(metric_label, fontsize=17)
+    ax.grid(True, alpha=0.22, linestyle="--")
+    ax.tick_params(labelsize=12)
+    if show_legend:
+        ax.legend(fontsize=12, framealpha=0.88, loc="upper left")
+
+
+def plot_boxplots(ax, raw_data):
+    data_by_mode = [raw_data[m]["Merit_Scaled"] for m in MORPHOLOGY_MODES]
+    labels = [m.capitalize() for m in MORPHOLOGY_MODES]
+    colors = [color_for(m, i) for i, m in enumerate(MORPHOLOGY_MODES)]
+
+    bp = ax.boxplot(
+        data_by_mode,
+        patch_artist=True,
+        notch=False,
+        showfliers=False,
+        medianprops=dict(color="black", linewidth=2.2),
+        boxprops=dict(linewidth=1.4),
+        whiskerprops=dict(color="#666666", linewidth=1.1),
+        capprops=dict(color="#666666", linewidth=1.1),
     )
-    ax.grid(True, alpha=0.3)
-    ax.legend(fontsize=8, ncol=2)
+    for patch, color in zip(bp["boxes"], colors):
+        patch.set_facecolor(color)
+        patch.set_alpha(0.55)
+
+    jitter_rng = np.random.default_rng(42)
+    for position, (values, color) in enumerate(zip(data_by_mode, colors), start=1):
+        points = np.asarray(values, dtype=float)
+        offsets = jitter_rng.uniform(-0.16, 0.16, size=points.shape[0])
+        ax.scatter(
+            np.full_like(points, position) + offsets,
+            points,
+            s=22,
+            color=color,
+            edgecolor="white",
+            linewidth=0.5,
+            alpha=0.85,
+            zorder=3,
+        )
+
+    n_seeds = max((len(raw_data[m]["Merit_Scaled"]) for m in MORPHOLOGY_MODES), default=0)
+    ax.set_xticklabels(labels, fontsize=12)
+    ax.set_ylabel("Merit Scaled", fontsize=14)
+    ax.set_title(
+        f"Merit Scaled — seed distribution\n(N={n_seeds} independent seeds per morphology)",
+        fontsize=14,
+    )
+    ax.grid(True, axis="y", alpha=0.22, linestyle="--")
+    ax.tick_params(labelsize=12)
 
 
-def plot_stat_heatmaps(ax_p, ax_d, p_matrix, d_matrix, sig_matrix):
-    short_metrics = ["Merit\nScaled", "Coherence\nRatio", "Peak\nAF"]
+def plot_inference_heatmap(ax, d_matrix, sig_matrix):
     short_pairs = [
         f"{a[:3]}/{b[:3]}"
         for a, b in combinations(MORPHOLOGY_MODES, 2)
     ]
+    short_metrics = ["Merit\nScaled", "Coherence\nRatio", "Peak\nAF"]
 
-    masked_p = np.where(np.isnan(p_matrix), 1.0, p_matrix)
-    im1 = ax_p.imshow(masked_p, cmap="RdYlGn_r", vmin=0, vmax=0.1, aspect="auto")
-    ax_p.set_xticks(range(len(PAIRS)))
-    ax_p.set_xticklabels(short_pairs, fontsize=7, rotation=45, ha="right")
-    ax_p.set_yticks(range(len(METRICS)))
-    ax_p.set_yticklabels(short_metrics, fontsize=8)
-    ax_p.set_title("p-value  (green = significant, p < 0.05)", fontsize=9)
-    for i in range(len(METRICS)):
-        for j in range(len(PAIRS)):
-            val = p_matrix[i, j]
-            if np.isnan(val):
-                label = "n/a"
-            else:
-                sig = "*" if sig_matrix[i][j] == "yes" else ""
-                label = f"{val:.3f}{sig}"
-            txt_color = "white" if (not np.isnan(val) and val < 0.01) else "black"
-            ax_p.text(j, i, label, ha="center", va="center",
-                      fontsize=6, color=txt_color, fontweight="bold")
-    plt.colorbar(im1, ax=ax_p, fraction=0.046, pad=0.04)
+    d_cap     = min(float(np.nanmax(d_matrix)) if not np.all(np.isnan(d_matrix)) else 3.0, 5.0)
+    d_display = np.where(np.isnan(d_matrix), 0.0, d_matrix)
 
-    d_max = max(float(np.nanmax(d_matrix)) if not np.all(np.isnan(d_matrix)) else 1.0, 1.0)
-    masked_d = np.where(np.isnan(d_matrix), 0.0, d_matrix)
-    im2 = ax_d.imshow(masked_d, cmap="Blues", vmin=0, vmax=d_max, aspect="auto")
-    ax_d.set_xticks(range(len(PAIRS)))
-    ax_d.set_xticklabels(short_pairs, fontsize=7, rotation=45, ha="right")
-    ax_d.set_yticks(range(len(METRICS)))
-    ax_d.set_yticklabels(short_metrics, fontsize=8)
-    ax_d.set_title("|Cohen's d|  (dark blue = large effect > 0.8)", fontsize=9)
+    im = ax.imshow(d_display, cmap="YlOrRd", vmin=0, vmax=d_cap, aspect="auto")
+
+    ax.set_xticks(range(len(PAIRS)))
+    ax.set_xticklabels(short_pairs, fontsize=12, rotation=45, ha="right")
+    ax.set_yticks(range(len(METRICS)))
+    ax.set_yticklabels(short_metrics, fontsize=13)
+    ax.set_title(
+        "Statistical inference — |Cohen's d|   (* = significant after Holm-Bonferroni)\n"
+        "Welch t-test on N=30 per-seed means · 30 simultaneous tests corrected",
+        fontsize=14,
+    )
+
     for i in range(len(METRICS)):
         for j in range(len(PAIRS)):
             val = d_matrix[i, j]
-            label = "n/a" if np.isnan(val) else f"{val:.2f}"
-            txt_color = "white" if (not np.isnan(val) and val > d_max * 0.6) else "black"
-            ax_d.text(j, i, label, ha="center", va="center",
-                      fontsize=6, color=txt_color, fontweight="bold")
-    plt.colorbar(im2, ax=ax_d, fraction=0.046, pad=0.04)
+            sig = " *" if sig_matrix[i][j] == "yes" else ""
+            if np.isnan(val):
+                label, txt_color = "n/a", "#888888"
+            else:
+                label     = f"{val:.2f}{sig}"
+                txt_color = "white" if val > d_cap * 0.62 else "black"
+            ax.text(j, i, label, ha="center", va="center",
+                    fontsize=14, color=txt_color, fontweight="bold")
+
+    cbar = plt.colorbar(im, ax=ax, fraction=0.030, pad=0.04)
+    cbar.set_label("|Cohen's d|", fontsize=13)
+    cbar.ax.yaxis.set_ticks_position("left")
+    cbar.ax.yaxis.set_label_position("left")
+    cbar.ax.tick_params(labelsize=11)
+    for threshold, lbl in [(0.2, "small"), (0.5, "medium"), (0.8, "large")]:
+        if threshold <= d_cap:
+            frac = threshold / d_cap
+            cbar.ax.axhline(y=frac, color="black", linewidth=0.9,
+                            linestyle="--", alpha=0.55)
+            cbar.ax.text(1.3, frac, lbl, va="center", ha="left", fontsize=10,
+                         color="#444444", transform=cbar.ax.transAxes)
 
 
 def plot():
@@ -151,39 +246,74 @@ def plot():
     for mode in MORPHOLOGY_MODES:
         path = output_path(f"simulation_results_{mode}.csv")
         if not os.path.exists(path):
-            print(f"[plot_sensitivity] Missing: {rel(path)} - skipping.")
+            print(f"[plot_sensitivity] Missing: {rel(path)} — skipping.")
             continue
         mode_data[mode] = load_mode_data(path)
 
     if len(mode_data) < 2:
-        print("[plot_sensitivity] Need at least 2 morphologies - aborting.")
+        print("[plot_sensitivity] Need at least 2 morphologies — aborting.")
         return
 
-    stat_path = output_path("statistical_summary.csv")
-    p_matrix, d_matrix, sig_matrix = load_statistical_summary(stat_path)
-    has_stats = not np.all(np.isnan(p_matrix))
+    seed_summary = load_multi_seed_summary(output_path("multi_seed_summary.csv"))
+    raw_data     = load_multi_seed_raw(output_path("multi_seed_raw.csv"))
+    d_matrix, sig_matrix = load_inference_summary(output_path("inference_summary.csv"))
+    has_inference = not np.all(np.isnan(d_matrix))
+    has_raw       = any(len(raw_data[m]["Merit_Scaled"]) > 0 for m in MORPHOLOGY_MODES)
 
-    if has_stats:
-        fig = plt.figure(figsize=(20, 11))
-        gs  = fig.add_gridspec(2, 2, height_ratios=[1.6, 1], hspace=0.48, wspace=0.38)
-        ax_curves = fig.add_subplot(gs[0, :])
-        ax_p      = fig.add_subplot(gs[1, 0])
-        ax_d      = fig.add_subplot(gs[1, 1])
-        plot_sensitivity_curves(ax_curves, mode_data)
-        plot_stat_heatmaps(ax_p, ax_d, p_matrix, d_matrix, sig_matrix)
-        fig.suptitle(
-            "Biotic Hardware Synthesis v1.2.2 - Morphological Benchmark & Statistical Validation",
-            fontsize=13, fontweight="bold", y=0.99,
+    fig = plt.figure(figsize=(22, 13))
+
+    if has_inference and has_raw:
+        gs = gridspec.GridSpec(
+            2, 3, figure=fig,
+            height_ratios=[1.0, 1.0],
+            hspace=0.46, wspace=0.26,
+        )
+        ax_merit     = fig.add_subplot(gs[0, 0])
+        ax_coherence = fig.add_subplot(gs[0, 1])
+        ax_peak      = fig.add_subplot(gs[0, 2])
+        ax_box       = fig.add_subplot(gs[1, 0])
+        ax_heatmap   = fig.add_subplot(gs[1, 1:])
+
+        for show_leg, (ax, key, label) in zip(
+            [True, False, False],
+            [
+                (ax_merit,     "Merit_Scaled",    "Merit Scaled"),
+                (ax_coherence, "Coherence_Ratio", "Coherence Ratio"),
+                (ax_peak,      "Peak_AF",         "Peak AF"),
+            ],
+        ):
+            plot_curve_panel(ax, mode_data, seed_summary, key, label, show_leg)
+
+        plot_boxplots(ax_box, raw_data)
+        plot_inference_heatmap(ax_heatmap, d_matrix, sig_matrix)
+
+        fig.text(
+            0.5, 0.005,
+            "Top row: single representative run (seed 42).  "
+            "Shaded bands: ±1 SD of per-seed means across N=30 independent seeds.  "
+            "Bottom right: Welch t-test corrected for 30 simultaneous comparisons (Holm-Bonferroni).",
+            ha="center", fontsize=11, color="#666666", style="italic",
         )
     else:
-        fig, ax_curves = plt.subplots(figsize=(14, 6))
-        plot_sensitivity_curves(ax_curves, mode_data)
+        gs = gridspec.GridSpec(1, 3, figure=fig, wspace=0.26)
+        for idx, (key, label) in enumerate([
+            ("Merit_Scaled",    "Merit Scaled"),
+            ("Coherence_Ratio", "Coherence Ratio"),
+            ("Peak_AF",         "Peak AF"),
+        ]):
+            ax = fig.add_subplot(gs[0, idx])
+            plot_curve_panel(ax, mode_data, seed_summary, key, label, idx == 0)
+
+    fig.suptitle(
+        "Biotic Hardware Synthesis  ·  Morphological Benchmark  ·  v1.2.4",
+        fontsize=24, fontweight="bold", y=1.02,
+    )
 
     ensure_output_dir()
-    out_png = output_path("sensitivity_analysis.png")
+    out_png  = output_path("sensitivity_analysis.png")
     data_png = data_path("sensitivity_analysis.png")
-    plt.savefig(out_png, dpi=300, bbox_inches="tight")
-    plt.savefig(data_png, dpi=300, bbox_inches="tight")
+    plt.savefig(out_png,  dpi=150, bbox_inches="tight")
+    plt.savefig(data_png, dpi=150, bbox_inches="tight")
     plt.close()
     print(f"[plot_sensitivity] Plot saved: {rel(out_png)}")
     print(f"[plot_sensitivity] Plot also saved: {rel(data_png)}")
