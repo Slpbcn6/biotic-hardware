@@ -12,26 +12,26 @@ Parameters are versioned symbolic artifacts. The active configuration lives in `
 
 The single most important distinction in this document:
 
-- The executable v1.2.6 pipeline reproduces the morphological benchmark — the five morphology sweeps, curve-separation descriptors, multi-seed inference, and the parametric robustness sweep — evaluated by `data/node_coupling.py` and the statistical modules. The minimal parameter set it actually consumes lives in `data/parameters.json` (sections VI and VII).
+- The executable v1.2.6 pipeline reproduces the morphological benchmark — the five morphology sweeps, curve-separation descriptors, multi-seed inference, and the parametric robustness sweep — evaluated by `data/node_coupling.py` and the statistical modules. The minimal parameter set it actually consumes lives in `data/parameters.json` (sections IV, VI and VII).
 - The resonance baseline consolidated in Appendix B (`L`, `C`, `f ≈ 12.5 Hz`, `Q`, `R`) and several constructs discussed in the narrative sections and consolidated in Appendix A — for example the coupling parameter `K_DIPOLE`, the permeability bound `mu_r ≈ 1.25 × 10^6`, and the plasma-frequency analogue — are conceptual reference quantities ONLY. They are NOT inputs to the executable pipeline and are not asserted as physically realizable.
 
-When in doubt about whether something is "real" in the code or "narrative scaffolding," `data/parameters.json` (sections VI and VII) is the source of truth for what runs.
+When in doubt about whether something is "real" in the code or "narrative scaffolding," `data/parameters.json` (sections IV, VI and VII) is the source of truth for what runs.
 
 ### Explicit mapping: implemented vs. conceptual reference
 
-The table below makes the distinction above explicit, construct by construct. "Implemented" means the quantity is consumed or computed by the executable v1.2.6 pipeline; "conceptual reference only" means it belongs to the narrative abstraction layer and is never read by the running code. The reproducible parameter set lives in `data/parameters.json` (sections VI and VII); everything marked as conceptual reference is documentation of the abstract design target, not a pipeline input.
+The table below makes the distinction above explicit, construct by construct. "Implemented" means the quantity is consumed or computed by the executable v1.2.6 pipeline; "conceptual reference only" means it belongs to the narrative abstraction layer and is never read by the running code. The reproducible parameter set lives in `data/parameters.json` (sections IV, VI and VII); everything marked as conceptual reference is documentation of the abstract design target, not a pipeline input.
 
-| Construct / quantity | In the executable v1.2.6 pipeline? | Where it lives |
+| Construct / quantity | Status in the executable v1.2.6 pipeline | Where it lives |
 |---|---|---|
 | Morphology generation (botanical, fractal, fibonacci, random, voronoi) | Implemented | `data/input_generator.py` |
 | Topology validation (connectivity, degeneracy, node count) | Implemented | `data/topology_validator.py` |
 | Array-factor / phased-array superposition | Implemented | `data/node_coupling.py` |
-| Swept coupling parameters (`k0_base`, `beta_loss_factor`, `Q_individual`) | Implemented | `data/parameters.json` sections VI–VII |
+| Base coupling parameters (`k0_base`, `k_modulation_coeff`, `q_reference`, `beta_loss_factor`) | Implemented | `data/parameters.json` sections VI–VII |
 | Individual quality factor (`individual_q_factor`) | Implemented | `data/parameters.json` section IV |
-| Connection radius | Implemented | `data/parameters.json` |
+| Connection radius (`connection_radius_m`) | Implemented | `data/parameters.json` section VI |
 | Noise level, multi-seed list, curve-separation threshold, variance-collapse fraction | Implemented | `data/parameters.json` section VI |
 | Multi-seed inference (Welch, Cohen's d, Hedges' g, Holm, bootstrap CI, power) | Implemented | `data/inference_analysis.py`, `data/stats_utils.py` |
-| Parametric robustness sweep (125-point grid) | Implemented | `data/parametric_sweep.py` |
+| Parametric robustness sweep (125-point grid: `K0_GRID` × `BETA_GRID` × `Q_GRID`) | Implemented | `data/parametric_sweep.py` (grids defined in-module, not in `parameters.json`) |
 | Abstract resistance `R = rho * (L / A)` | Conceptual reference only | Section I |
 | Geometric inductance `L = (mu_0 * mu_r * N^2 * A) / l_eff` | Conceptual reference only | Section II, Appendix A |
 | Capacitive coupling `C = (epsilon_r * epsilon_0 * A) / d` | Conceptual reference only | Section VII, Appendices A and B |
