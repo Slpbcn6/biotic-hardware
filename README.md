@@ -71,7 +71,7 @@ Outputs (generated artifacts are written to `outputs/`):
 
 ---
 
-## Principal Finding (v1.2.3)
+## Principal Finding
 
 v1.2.3 separates two analytical lenses that earlier versions conflated. The single-seed **curve-separation descriptor** (`curve_separation_summary.csv`) compares 30 autocorrelated sweep steps and is descriptive only — its Welch values are not independent-sample tests. The **classical inference** (`inference_summary.csv`) treats each seed's mean as one i.i.d. observation across N=30 seeds (seeds 42–71) and is the statistically valid test.
 
@@ -79,7 +79,7 @@ Crucially, the fractal and Fibonacci morphologies are seed-frozen: their per-see
 
 Of the 12 statistically valid pairs, 4 survive Holm–Bonferroni correction — and all four are the same result: **botanical separates from both stochastic controls**, versus random and versus Voronoi, on Merit_Scaled (d = −0.79 and −1.05) and on Peak_AF (d = −0.86 and −1.19), with post-hoc power 0.85–0.99. Botanical sits consistently *below* the random and Voronoi controls; no claim is made about any comparison involving the seed-frozen morphologies. Merit_Scaled is an internal structural indicator within the abstract simulation space, not a physical performance measure.
 
-Parametric robustness (v1.2.3, symmetric noise): under the symmetric noise regime (`noise_level=0.15` applied identically to all morphologies), botanical's curve separation from the random control holds across **100% of the 125-point k0 × beta × Q parameter grid** (5×5×5; see `outputs/robustness_matrix.csv`), with the botanical-vs-random separation ratio staying between 0.45 and 0.49 (well above the 0.10 threshold) at every grid point. The matrix also records the botanical-vs-fractal ratio (0.34–0.36) at each point for reference. The persistence under fair comparison conditions confirms the separation is a structural property of botanical morphology, not an artefact of perturbation or parameter tuning.
+Parametric robustness (symmetric noise): under the symmetric noise regime (`noise_level=0.15` applied identically to all morphologies), botanical's curve separation from the random control holds across **100% of the 125-point k0 × beta × Q parameter grid** (5×5×5; see `outputs/robustness_matrix.csv`), with the botanical-vs-random separation ratio staying between 0.45 and 0.49 (well above the 0.10 threshold) at every grid point. The matrix also records the botanical-vs-fractal ratio (0.34–0.36) at each point for reference. The persistence under fair comparison conditions confirms the separation is a structural property of botanical morphology, not an artefact of perturbation or parameter tuning.
 
 ---
 

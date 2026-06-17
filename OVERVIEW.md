@@ -80,11 +80,11 @@ All generated artifacts are written to `outputs/` (regenerated on each run); `se
 
 ## Key Results
 
-Principal finding (v1.2.3): v1.2.3 distinguishes the descriptive single-seed curve-separation lens from the classical multi-seed inference. In the inference, fractal and Fibonacci are seed-frozen (per-seed std ≈ 0.0005), so every pair involving them is reported as **n/a** (18 of 30 pairs) rather than as a spurious large-effect finding. Of the 12 statistically valid pairs, **4 survive Holm–Bonferroni correction, all of them botanical separating from a stochastic control**: vs random and vs Voronoi on Merit_Scaled (d = −0.79, −1.05) and on Peak_AF (d = −0.86, −1.19), with post-hoc power 0.85–0.99. Botanical sits consistently below both stochastic controls.
+Principal finding: v1.2.3 distinguishes the descriptive single-seed curve-separation lens from the classical multi-seed inference. In the inference, fractal and Fibonacci are seed-frozen (per-seed std ≈ 0.0005), so every pair involving them is reported as **n/a** (18 of 30 pairs) rather than as a spurious large-effect finding. Of the 12 statistically valid pairs, **4 survive Holm–Bonferroni correction, all of them botanical separating from a stochastic control**: vs random and vs Voronoi on Merit_Scaled (d = −0.79, −1.05) and on Peak_AF (d = −0.86, −1.19), with post-hoc power 0.85–0.99. Botanical sits consistently below both stochastic controls.
 
 Multi-seed analysis explains why the guard is required: botanical, random, and Voronoi carry seed-dependent variance (std ≈ 0.012–0.020), while fractal and Fibonacci are seed-stable (std ≈ 0.0005–0.0009). No claim is made about comparisons involving the seed-frozen morphologies. Merit_Scaled is an internal structural indicator within the abstract simulation space, not a physical performance measure.
 
-Robustness finding (v1.2.3): botanical's curve separation from the random control holds in **100% of the 125-point k0 × beta × Q grid** (`outputs/robustness_matrix.csv`), with the botanical-vs-random separation ratio between 0.45 and 0.49 at every point. The finding is a structural property of botanical morphology, not a configuration artifact.
+Robustness finding: botanical's curve separation from the random control holds in **100% of the 125-point k0 × beta × Q grid** (`outputs/robustness_matrix.csv`), with the botanical-vs-random separation ratio between 0.45 and 0.49 at every point. The finding is a structural property of botanical morphology, not a configuration artifact.
 
 ![Sensitivity Analysis](./data/sensitivity_analysis.png)
 
