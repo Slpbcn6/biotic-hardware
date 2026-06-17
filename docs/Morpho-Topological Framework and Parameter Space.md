@@ -17,6 +17,34 @@ The single most important distinction in this document:
 
 When in doubt about whether something is "real" in the code or "narrative scaffolding," `data/parameters.json` (sections VI and VII) is the source of truth for what runs.
 
+### Explicit mapping: implemented vs. conceptual reference
+
+The table below makes the distinction above explicit, construct by construct. "Implemented" means the quantity is consumed or computed by the executable v1.2.6 pipeline; "conceptual reference only" means it belongs to the narrative abstraction layer and is never read by the running code. The reproducible parameter set lives in `data/parameters.json` (sections VI and VII); everything marked as conceptual reference is documentation of the abstract design target, not a pipeline input.
+
+| Construct / quantity | In the executable v1.2.6 pipeline? | Where it lives |
+|---|---|---|
+| Morphology generation (botanical, fractal, fibonacci, random, voronoi) | Implemented | `data/input_generator.py` |
+| Topology validation (connectivity, degeneracy, node count) | Implemented | `data/topology_validator.py` |
+| Array-factor / phased-array superposition | Implemented | `data/node_coupling.py` |
+| Swept coupling parameters (`k0_base`, `beta_loss_factor`, `Q_individual`) | Implemented | `data/parameters.json` sections VI–VII |
+| Individual quality factor (`individual_q_factor`) | Implemented | `data/parameters.json` section IV |
+| Connection radius | Implemented | `data/parameters.json` |
+| Noise level, multi-seed list, curve-separation threshold, variance-collapse fraction | Implemented | `data/parameters.json` section VI |
+| Multi-seed inference (Welch, Cohen's d, Hedges' g, Holm, bootstrap CI, power) | Implemented | `data/inference_analysis.py`, `data/stats_utils.py` |
+| Parametric robustness sweep (125-point grid) | Implemented | `data/parametric_sweep.py` |
+| Abstract resistance `R = rho * (L / A)` | Conceptual reference only | Section I |
+| Geometric inductance `L = (mu_0 * mu_r * N^2 * A) / l_eff` | Conceptual reference only | Section II, Appendix A |
+| Capacitive coupling `C = (epsilon_r * epsilon_0 * A) / d` | Conceptual reference only | Section VII, Appendices A and B |
+| Scaling constant `k = 100` | Conceptual reference only | Sections II–III, Appendix B |
+| Coupling parameter `K_DIPOLE` | Conceptual reference only | Appendix A |
+| Permeability bound `mu_r ≈ 1.25 × 10^6` | Conceptual reference only | Section VII, Appendix A |
+| Resonance baseline (`L`, `C`, `f ≈ 12.5 Hz`, `Q`, `R`) | Conceptual reference only | Appendix B |
+| Charge-carrier density `n = sigma / (e * mu_e)` | Conceptual reference only | Section VII, Appendix A |
+| Energy-harvesting analogue `V = g * S * t` | Conceptual reference only | Section II, Appendix A |
+| Thermal dissipation `dQ/dt = (dm/dt) * C_p * (T_out - T_in)` | Conceptual reference only | Section IV, Appendix A |
+| Phase modulation `Phi_n = (2 * pi * n) / M` (N-PSK) | Conceptual reference only | Section VI, Appendix A |
+| Plasma-frequency analogue `f_p = 9 * sqrt(N_e)` | Conceptual reference only | Appendix A |
+
 ---
 
 ## I. STRUCTURAL MAPPING PREMISE

@@ -26,7 +26,7 @@ The system executes a deterministic 10-step computational workflow for abstract 
 2. Botanical morphology sweep — same pipeline as step 1.
 3. Random control morphology sweep — same pipeline as step 1.
 4. Fibonacci spiral morphology sweep (golden-angle 137.508°) — same pipeline as step 1.
-5. Voronoi control morphology sweep — same pipeline as step 1. Invalid topologies are rejected before any sweep executes.
+5. Voronoi control morphology sweep — same pipeline as step 1. Invalid topologies are rejected before any sweep executes. The Voronoi nodes are the finite Voronoi vertices of a uniform random seed set that fall within the domain bounds; if fewer than the target node count qualify, the remainder is filled with uniform random points, keeping the control a fixed-size, reproducible point set.
 6. Curve-separation descriptors: Welch t-test + Cohen's d across 3 metrics × 10 morphology pairs on autocorrelated sweep steps (descriptive only — 30 rows).
 7. Parametric sensitivity analysis and visualization across all five morphologies.
 8. Multi-seed analysis (N=30 seeds, seeds 42–71 per morphology), producing mean ± std distributions and a machine-readable exploration summary.

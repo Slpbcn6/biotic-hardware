@@ -25,6 +25,28 @@ def _connected_components(positions, connection_radius):
 
 
 def validate_topology(nodes, connection_radius=2.0, min_nodes=8):
+    """Validate a morphology's graph topology before it enters a sweep.
+
+    Runs three rejection checks in order: minimum node count, degenerate
+    (all-coincident) structure, and graph connectivity at the given radius.
+    A graph passing all three is accepted.
+
+    Parameters
+    ----------
+    nodes : ndarray, shape (n, 3)
+        Node coordinates; only the x, y columns are used.
+    connection_radius : float
+        Distance threshold (meters) for two nodes to count as connected.
+    min_nodes : int
+        Minimum acceptable node count.
+
+    Returns
+    -------
+    valid : bool
+        True when the topology passes every check.
+    report : list of str
+        Human-readable PASS or FAIL lines describing the outcome.
+    """
     report = []
     positions = nodes[:, :2]
     n = len(positions)
