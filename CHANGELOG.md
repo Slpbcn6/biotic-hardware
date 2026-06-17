@@ -2,8 +2,6 @@
 
 ## [1.2.6] - 2026-06-17
 
-This is a hardening and cleanup release. No scientific result changes: the principal finding (botanical separating from both stochastic controls) is identical to v1.2.5. The release removes the resonance-baseline scaffolding that the simulation never consumed, adds a small-sample-corrected effect size and a second stochastic control to the robustness criterion, externalizes the last hardcoded statistical constant, and expands unit-test coverage.
-
 ### Removed
 
 - **`data/parameter_derivation.py`, `data/node_resonance.py`, `data/schumann_reference.py`** (deleted): the analytic L/C derivation, the stored RLC resonance baseline, and the external Schumann mode comparison (NOAA/GFZ Potsdam, modes 1-5). These produced reference values (`f ≈ 12.5 Hz`, `f_res ≈ 12.99 Hz`, deviation 9.13% from mode 2) that were never inputs to the morphological benchmark; the coupling solver and statistics never read them. The pipeline drops from 12 to 10 steps.
@@ -24,6 +22,12 @@ This is a hardening and cleanup release. No scientific result changes: the princ
 - **`tests/test_integrity.py`**: `ESSENTIAL_FILES` trimmed to the surviving modules; asserts the `Hedges_g` and `curve_sep_botanical_vs_voronoi` columns and version `1.2.6`; the resonance-config integrity test is replaced by a config integrity test that no longer references the removed frequency parameter.
 - **`README.md`, `OVERVIEW.md`, `docs/Morpho-Topological Framework and Parameter Space.md`, `notebook/demo.ipynb`, `CITATION.cff`**: updated to v1.2.6; the resonance/Schumann sections are removed or reclassified as conceptual reference only; Hedges' g and the Voronoi robustness control are documented.
 
+### Fixed
+
+- **`data/stats_utils.py`**: `cohens_d` now uses the general pooled standard deviation `sqrt(((n_a - 1) * s_a^2 + (n_b - 1) * s_b^2) / (n_a + n_b - 2))` instead of the equal-sample shortcut. The value is identical for the N=30 per-group design the pipeline uses, but the effect size is now correct for unequal group sizes and consistent with the degrees of freedom already used by `hedges_g`.
+- **`data/parametric_sweep.py`**: `_curve_separation` now divides by `abs(other_mean) + 1e-12` instead of `abs(other_mean + 1e-12)`, so the denominator can no longer collapse toward zero for a small negative mean. No effect on the reported results (merit values are positive); it removes a latent division edge case.
+- **`tests/test_stats_utils.py`**: the bootstrap CI bracket test now runs at `n_bootstrap=10000` (the production default) so it brackets the observed mean difference reliably regardless of seed.
+
 
 ## [1.2.5] - 2026-06-16
 
@@ -33,6 +37,11 @@ This is a hardening and cleanup release. No scientific result changes: the princ
 - **`data/parametric_sweep.py`**: threshold read from `parameters.json` via `.get("curve_separation_threshold", 0.10)` instead of a hardcoded literal; log message now reflects the configured value dynamically.
 - **`run.py`**: `BENCHMARK COMPLETE` banner moved to after the artifact listing, with artifact count (`N artifacts in outputs/ | all steps OK`).
 - **`tests/test_integrity.py`**: removed `test_conceptual_reference_values_are_separated` (section IX no longer exists); 3 tests remain.
+
+### Fixed
+
+- **`data/stats_utils.py`**: `cohens_d` now uses the general pooled standard deviation `sqrt(((n_a - 1) * s_a^2 + (n_b - 1) * s_b^2) / (n_a + n_b - 2))` instead of the equal-sample shortcut. The value is identical for the N=30 per-group design the pipeline uses, but the effect size is now correct for unequal group sizes and consistent with the degrees of freedom already used by `hedges_g`.
+- **`data/parametric_sweep.py`**: `_curve_separation` now divides by `abs(other_mean) + 1e-12` instead of `abs(other_mean + 1e-12)`, so the denominator can no longer collapse toward zero for a small negative mean. No effect on the reported results (merit values are positive); it removes a latent division edge case.
 
 ### Added
 
@@ -198,7 +207,6 @@ carry comparable variance and all effect sizes are interpretable.
 Voronoi highest (0.0575), Fibonacci lowest (0.0089). Fractal and Fibonacci seed-stable
 (std ≈ 0.0005–0.0009); botanical, random, and Voronoi seed-sensitive (std ≈ 0.007–0.012).
 
----
 
 ## [1.2.1] - 2026-06-09
 
@@ -231,6 +239,7 @@ Voronoi highest (0.0575), Fibonacci lowest (0.0089). Fractal and Fibonacci seed-
 - Multi-seed (seeds 42-46): Voronoi highest Merit_Scaled (mean 0.0567, std 0.0117) and Fibonacci lowest (0.0070, std 0.0006); botanical and random seed-sensitive (std ~0.008-0.011), fractal and fibonacci seed-stable (std ~0.0006).
 - Scope: `Merit_Scaled` is an internal structural indicator within the abstract simulation space, not a physical performance metric; figures describe this metric only, not general properties of the geometries.
 
+
 ## [1.2.0] - 2026-06-08
 
 ### Added
@@ -256,6 +265,7 @@ Voronoi highest (0.0575), Fibonacci lowest (0.0089). Fractal and Fibonacci seed-
 - Peak_AF: Botanical vs Random p=0.002, d=0.913 (large); Fractal vs Random p=0.009, d=0.764 (medium); Fractal vs Botanical not significant (p=0.913).
 - Multi-seed confirms botanical Merit variance is structural (std 0.0106) vs fractal stability (std 0.0006). Fractal morphology does not separate from random control on Merit_Scaled — principal finding of v1.2.
 
+
 ## [1.1.2] - 2026-06-05
 
 ### Changed
@@ -269,7 +279,6 @@ Voronoi highest (0.0575), Fibonacci lowest (0.0089). Fractal and Fibonacci seed-
 - Pinned dependency versions in `requirements.txt`  
 - Added cell `id` fields to `notebook/demo.ipynb` (nbformat 5.1.4+ compliance)  
 
----
 
 ## [1.1.1] - 2026-06-04
 
@@ -285,7 +294,6 @@ Voronoi highest (0.0575), Fibonacci lowest (0.0089). Fractal and Fibonacci seed-
 
 Establishes a falsifiable structural baseline: bio-inspired morphologies (fractal, botanical) are now evaluated against an unstructured random topology of identical node count and seed. This constitutes the minimum control baseline required for comparative morphological analysis.
 
----
 
 ## [1.1.0] - 2026-06-02
 

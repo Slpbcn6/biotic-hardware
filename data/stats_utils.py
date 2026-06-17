@@ -4,7 +4,11 @@ from scipy.stats import nct, t as t_dist
 
 def cohens_d(a, b):
     a, b = np.array(a, dtype=float), np.array(b, dtype=float)
-    pooled = np.sqrt((np.std(a, ddof=1) ** 2 + np.std(b, ddof=1) ** 2) / 2)
+    n_a, n_b = len(a), len(b)
+    df = n_a + n_b - 2
+    if df < 1:
+        return float("nan")
+    pooled = np.sqrt(((n_a - 1) * np.std(a, ddof=1) ** 2 + (n_b - 1) * np.std(b, ddof=1) ** 2) / df)
     if pooled < 1e-4:
         return float("nan")
     return float((np.mean(a) - np.mean(b)) / pooled)

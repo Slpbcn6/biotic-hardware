@@ -77,7 +77,7 @@ def test_bootstrap_ci_brackets_mean_difference():
     rng = np.random.default_rng(0)
     a = rng.normal(5.0, 1.0, 50)
     b = rng.normal(0.0, 1.0, 50)
-    lower, upper = bootstrap_ci(a, b, n_bootstrap=2000, seed=1)
+    lower, upper = bootstrap_ci(a, b, n_bootstrap=10000, seed=1)
     assert lower < upper
     assert lower <= (np.mean(a) - np.mean(b)) <= upper
 

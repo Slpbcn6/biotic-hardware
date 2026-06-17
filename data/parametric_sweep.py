@@ -49,7 +49,7 @@ def _merit_scaled_series(
 def _curve_separation(reference, other):
     ref_mean = float(np.mean(reference))
     other_mean = float(np.mean(other))
-    return (ref_mean - other_mean) / abs(other_mean + 1e-12)
+    return (ref_mean - other_mean) / (abs(other_mean) + 1e-12)
 
 
 def run_parametric_sweep(output_file=None):
