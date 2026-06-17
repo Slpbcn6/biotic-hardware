@@ -38,11 +38,6 @@
 - **`run.py`**: `BENCHMARK COMPLETE` banner moved to after the artifact listing, with artifact count (`N artifacts in outputs/ | all steps OK`).
 - **`tests/test_integrity.py`**: removed `test_conceptual_reference_values_are_separated` (section IX no longer exists); 3 tests remain.
 
-### Fixed
-
-- **`data/stats_utils.py`**: `cohens_d` now uses the general pooled standard deviation `sqrt(((n_a - 1) * s_a^2 + (n_b - 1) * s_b^2) / (n_a + n_b - 2))` instead of the equal-sample shortcut. The value is identical for the N=30 per-group design the pipeline uses, but the effect size is now correct for unequal group sizes and consistent with the degrees of freedom already used by `hedges_g`.
-- **`data/parametric_sweep.py`**: `_curve_separation` now divides by `abs(other_mean) + 1e-12` instead of `abs(other_mean + 1e-12)`, so the denominator can no longer collapse toward zero for a small negative mean. No effect on the reported results (merit values are positive); it removes a latent division edge case.
-
 ### Added
 
 - **`tests/conftest.py`** (new): animated dot progress indicator for `pytest -v`; writes directly to `sys.stdout` to avoid corrupting pytest's column tracker and prevent `[NN%]` from wrapping to a new line on Windows terminals.
