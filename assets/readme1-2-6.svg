@@ -40,7 +40,7 @@
       <animate attributeName="stroke-dashoffset" from="8" to="0" dur="3s" repeatCount="indefinite"/>
     </line>
 
-    <text x="0" y="46" font-size="12" fill="#888888">v1.2.5 · deterministic</text>
+    <text x="0" y="46" font-size="12" fill="#888888">v1.2.6 · deterministic</text>
     <text x="0" y="72" font-size="19" font-weight="bold" letter-spacing="-0.5" fill="#FFFFFF" fill-opacity="0.95">Biotic Hardware</text>
     <text x="0" y="94" font-size="19" font-weight="bold" letter-spacing="-0.5" fill="#FFFFFF" fill-opacity="0.95">Synthesis</text>
 
@@ -52,7 +52,7 @@
     <text x="0" y="218" font-size="15" fill="#00FF41">3 metrics · seeds 42–71</text>
     <text x="0" y="238" font-size="15" fill="#00FF41">64 nodes · 30 sweep steps</text>
 
-    <text x="0" y="272" font-size="12" fill="#888888">Welch t-test + Cohen's d</text>
+    <text x="0" y="272" font-size="12" fill="#888888">Welch t + Cohen's d + Hedges' g</text>
   </g>
 
   <g transform="translate(295, 30)" font-family="Courier New, monospace" opacity="0">
@@ -191,6 +191,6 @@
     <line x1="0" y1="244" x2="190" y2="244" stroke="#333333" stroke-width="0.5"/>
 
     <text x="0" y="258" font-size="11" fill="#555555">125/125 robustness grid</text>
-    <text x="0" y="272" font-size="11" fill="#555555">sep. ratio 0.45–0.49</text>
+    <text x="0" y="272" font-size="11" fill="#555555">botanical vs random + Voronoi</text>
   </g>
 </svg>

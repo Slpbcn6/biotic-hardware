@@ -10,6 +10,18 @@ def cohens_d(a, b):
     return float((np.mean(a) - np.mean(b)) / pooled)
 
 
+def hedges_g(a, b):
+    a, b = np.array(a, dtype=float), np.array(b, dtype=float)
+    d = cohens_d(a, b)
+    if np.isnan(d):
+        return float("nan")
+    df = len(a) + len(b) - 2
+    if df < 1:
+        return float("nan")
+    correction = 1.0 - 3.0 / (4.0 * df - 1.0)
+    return float(d * correction)
+
+
 def near_zero_variance(group_std, reference_std, fraction=0.1):
     if reference_std <= 0:
         return True

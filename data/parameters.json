@@ -1,35 +1,10 @@
 {
   "author": "Santi López Puiggené",
-  "source_document": "Computational parameter specification — v1.2.5. Parameter values define the abstract simulation space. They are not derived from or validated against HFSS, CST, or any other professional electromagnetic simulation tool.",
-  "I_simulation_fixed_parameters": {
-    "frequency_hz": 12.5,
-    "scaling_constant_k": 100,
-    "note": "Active inputs only. 1 unit in simulation space corresponds to 1 meter in the abstract spatial domain. No physical hardware exists or is implied."
-  },
-  "II_geometric_instance_planar_fractal_spiral": {
-    "turns_n": 50,
-    "conductor_section_cm2": 1.0,
-    "physical_length_m": 100.0,
-    "note": "l_eff via fractal filling"
-  },
-  "III_derived_electrical_values": {
-    "inductance_h": "0.3 - 1.0",
-    "capacitance_f": "1.5e-4 - 1.7e-4",
-    "capacitance_uf_approx": 162.0,
-    "resonance_match_hz": 12.5,
-    "ohmic_losses_ohm": "100 - 1000",
-    "inductance_derivation_note": "L_H = scaling_constant_k * 1e-2. With k=100 this gives L=1.0 H. Combined with C=1.5e-4 F yields omega_0=81.65 rad/s, f_res=12.99 Hz, matching the target 12.5 Hz range."
-  },
+  "source_document": "Computational parameter specification — v1.2.6. Parameter values define the abstract simulation space. They are not derived from or validated against HFSS, CST, or any other professional electromagnetic simulation tool.",
   "IV_network_performance_metrics": {
     "individual_q_factor": 0.8,
-    "individual_q_factor_note": "Q < 1 places the model in the overdamped regime. Coherence and merit metrics remain valid as comparative structural indicators across morphologies.",
-    "systemic_gain": "Collective Phased Array gain — computational analogy, not a physical measurement.",
-    "synchronization_effect": "Power-summation over high-damping abstract network medium"
+    "individual_q_factor_note": "Q < 1 places the model in the overdamped regime. Coherence and merit metrics remain valid as comparative structural indicators across morphologies."
   },
-  "V_simulation_benchmarks": [
-    "Quality Factor (Q) impact of substrate",
-    "Beamforming Profile (Rr -> 0 vs Rloss)"
-  ],
   "VI_experimental_sweep_parameters": {
     "n_nodes": 64,
     "seed": 42,
@@ -37,7 +12,9 @@
     "noise_level": 0.15,
     "noise_level_note": "Symmetric Gaussian perturbation (sigma) applied identically to every morphology at every sweep step. Single source of truth — read by node_coupling.py and parametric_sweep.py.",
     "connection_radius_m": 2.0,
-    "connection_radius_note": "Union-find adjacency radius for topology validation. Matches the spatial extent of all morphologies (~[-1.5, 1.5] to ~[-2.0, 2.0] units).",
+    "connection_radius_note": "Union-find adjacency radius for topology validation. The botanical morphology reaches the widest extent (max |coordinate| around 4.05 units); the radius is the local adjacency scale, not the full bounding box.",
+    "variance_collapse_fraction": 0.15,
+    "variance_collapse_fraction_note": "A morphology whose per-seed std falls below this fraction of the cross-morphology median std is flagged as seed-frozen and reported as n/a in inference_analysis.py. Single source of truth for the variance-collapse guard.",
     "multi_seed_list": [
       42,
       43,
@@ -72,16 +49,16 @@
     ],
     "multi_seed_list_note": "30 consecutive seeds for multi-seed inference analysis. Per-morphology means computed per seed; Welch t-test + Holm-Bonferroni + bootstrap CI applied to the N=30 i.i.d. per-seed means in inference_analysis.py.",
     "curve_separation_threshold": 0.1,
-    "curve_separation_threshold_note": "Minimum curve-separation ratio (botanical vs random mean difference / |random mean|) required for finding_holds=True in the parametric robustness sweep. Single source of truth for parametric_sweep.py."
+    "curve_separation_threshold_note": "Minimum curve-separation ratio (botanical mean difference vs a stochastic control, relative to |control mean|) required for finding_holds=True in the parametric robustness sweep. Applied to both the random and the Voronoi controls. Single source of truth for parametric_sweep.py."
   },
   "VII_array_factor_parameters": {
     "k0_base": 0.004,
-    "k0_base_note": "Heuristic spatial scaling coefficient. Not the electromagnetic wave number k0 = 2*pi*f/c. At 12.99 Hz the physical value would be ~2.72e-7 rad/m. This parameter operates in abstract simulation space.",
+    "k0_base_note": "Heuristic spatial scaling coefficient. Not the electromagnetic wave number k0 = 2*pi*f/c. This parameter operates in abstract simulation space and has no physical-frequency interpretation.",
     "k_modulation_coeff": 0.15,
     "q_reference": 0.785
   },
   "VIII_pipeline": {
-    "version": "1.2.5",
+    "version": "1.2.6",
     "morphologies": [
       "fractal",
       "botanical",

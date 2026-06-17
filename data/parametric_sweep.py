@@ -12,10 +12,18 @@ Q_GRID    = [0.5, 0.8, 1.2, 2.0, 3.0]
 
 DISTANCES = np.linspace(0.1, 2.0, 30)
 
+
+def effective_grids():
+    if os.environ.get("PIPELINE_FAST") == "1":
+        return K0_GRID[:2], BETA_GRID[:2], Q_GRID[:2]
+    return K0_GRID, BETA_GRID, Q_GRID
+
+
 GENERATORS = {
     "botanical": input_generator.generate_botanical_graph,
     "random":    input_generator.generate_random_control,
     "fractal":   input_generator.generate_fractal_morphology,
+    "voronoi":   input_generator.generate_voronoi_control,
 }
 
 
@@ -59,10 +67,7 @@ def run_parametric_sweep(output_file=None):
     k_mod_coeff = float(af_cfg["k_modulation_coeff"])
     q_ref       = float(af_cfg["q_reference"])
 
-    fast_mode = os.environ.get("PIPELINE_FAST") == "1"
-    k0_grid   = K0_GRID[:2]   if fast_mode else K0_GRID
-    beta_grid = BETA_GRID[:2] if fast_mode else BETA_GRID
-    q_grid    = Q_GRID[:2]    if fast_mode else Q_GRID
+    k0_grid, beta_grid, q_grid = effective_grids()
 
     rows_out = []
     total = len(k0_grid) * len(beta_grid) * len(q_grid)
@@ -82,13 +87,21 @@ def run_parametric_sweep(output_file=None):
                     "fractal", n_nodes, seed, noise_level,
                     k0, beta, Q0, k_mod_coeff, q_ref,
                 )
+                vor = _merit_scaled_series(
+                    "voronoi", n_nodes, seed, noise_level,
+                    k0, beta, Q0, k_mod_coeff, q_ref,
+                )
                 sep_vs_random = _curve_separation(bot, rnd)
                 sep_vs_fractal = _curve_separation(bot, frac)
-                holds = bool(sep_vs_random >= threshold)
+                sep_vs_voronoi = _curve_separation(bot, vor)
+                holds = bool(
+                    abs(sep_vs_random) >= threshold and abs(sep_vs_voronoi) >= threshold
+                )
                 rows_out.append([
                     k0, beta, Q0,
                     round(sep_vs_random, 4),
                     round(sep_vs_fractal, 4),
+                    round(sep_vs_voronoi, 4),
                     holds,
                 ])
 
@@ -99,15 +112,17 @@ def run_parametric_sweep(output_file=None):
             "k0_base", "beta_loss_factor", "Q_individual",
             "curve_sep_botanical_vs_random",
             "curve_sep_botanical_vs_fractal",
+            "curve_sep_botanical_vs_voronoi",
             "finding_holds",
         ])
         writer.writerows(rows_out)
 
-    n_holds = sum(1 for r in rows_out if r[5])
+    n_holds = sum(1 for r in rows_out if r[6])
     frac_pct = n_holds / total * 100
     print(
         f"      Robustness: {n_holds}/{total} grid points — "
-        f"botanical separates from random (curve_sep >= {threshold}) in {frac_pct:.1f}% of parameter space"
+        f"botanical separates from both stochastic controls (|curve_sep| >= {threshold} "
+        f"vs random and vs voronoi) in {frac_pct:.1f}% of parameter space"
     )
     print(f"      Written: {rel(output_file)}")
 

@@ -1,0 +1,126 @@
+{
+  "pipeline_version": "1.2.6",
+  "experimental_configuration": {
+    "n_nodes": 64,
+    "reference_seed": 42,
+    "beta_loss_factor": 0.25,
+    "noise_level": 0.15,
+    "connection_radius_m": 2.0,
+    "k0_base": 0.004,
+    "k_modulation_coeff": 0.15,
+    "q_reference": 0.785
+  },
+  "morphologies": [
+    "fractal",
+    "botanical",
+    "random",
+    "fibonacci",
+    "voronoi"
+  ],
+  "multi_seed_analysis": {
+    "seeds": [
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71
+    ],
+    "morphologies": {
+      "fractal": {
+        "Merit_Scaled": {
+          "mean": 0.022128,
+          "std": 0.000474
+        },
+        "Coherence_Ratio": {
+          "mean": 1.113139,
+          "std": 0.010371
+        },
+        "Peak_AF": {
+          "mean": 0.029485,
+          "std": 0.000682
+        }
+      },
+      "botanical": {
+        "Merit_Scaled": {
+          "mean": 0.027425,
+          "std": 0.011938
+        },
+        "Coherence_Ratio": {
+          "mean": 1.432069,
+          "std": 0.082103
+        },
+        "Peak_AF": {
+          "mean": 0.028236,
+          "std": 0.011615
+        }
+      },
+      "random": {
+        "Merit_Scaled": {
+          "mean": 0.037068,
+          "std": 0.012538
+        },
+        "Coherence_Ratio": {
+          "mean": 1.433293,
+          "std": 0.125023
+        },
+        "Peak_AF": {
+          "mean": 0.038176,
+          "std": 0.011476
+        }
+      },
+      "fibonacci": {
+        "Merit_Scaled": {
+          "mean": 0.009079,
+          "std": 0.000832
+        },
+        "Coherence_Ratio": {
+          "mean": 1.417764,
+          "std": 0.034041
+        },
+        "Peak_AF": {
+          "mean": 0.009522,
+          "std": 0.00085
+        }
+      },
+      "voronoi": {
+        "Merit_Scaled": {
+          "mean": 0.04462,
+          "std": 0.019768
+        },
+        "Coherence_Ratio": {
+          "mean": 1.397318,
+          "std": 0.13602
+        },
+        "Peak_AF": {
+          "mean": 0.047286,
+          "std": 0.019532
+        }
+      }
+    }
+  }
+}

@@ -20,7 +20,7 @@ from data.stats_utils import cohens_d
 ROOT = Path(__file__).parent
 
 MORPHOLOGY_MODES = morphologies()
-TOTAL_STEPS = len(MORPHOLOGY_MODES) + 7
+TOTAL_STEPS = len(MORPHOLOGY_MODES) + 5
 
 
 def _step(n, label):
@@ -114,12 +114,6 @@ def compute_statistical_summary(output_file=None):
     return rows_out
 
 
-def schumann_comparison(f_simulated):
-    from data.schumann_reference import schumann_report
-    for line in schumann_report(f_simulated):
-        print(f"      {line}")
-
-
 def multi_seed_step():
     from data.multi_seed_analysis import run_multi_seed
     results = run_multi_seed(output_path("multi_seed_summary.csv"))
@@ -140,10 +134,7 @@ def inference_step():
     return records
 
 
-def write_exploration_summary(resonance_data, derivation_data, multi_seed_results,
-                               output_file=None):
-    from data.schumann_reference import nearest_schumann_mode
-
+def write_exploration_summary(multi_seed_results, output_file=None):
     if output_file is None:
         output_file = output_path("exploration_summary.json")
 
@@ -151,25 +142,8 @@ def write_exploration_summary(resonance_data, derivation_data, multi_seed_result
     seeds = params["VI_experimental_sweep_parameters"]["multi_seed_list"]
     pipeline_version = params["VIII_pipeline"]["version"]
 
-    f_sim = resonance_data["f_resonance_Hz"]
-    nearest_hz, mode_n, deviation_pct = nearest_schumann_mode(f_sim)
-
     summary = {
         "pipeline_version": pipeline_version,
-        "parameter_derivation": {
-            "f_target_hz":  derivation_data["f_target_hz"],
-            "L_H":          derivation_data["L_H"],
-            "C_derived_F":  derivation_data["C_F"],
-            "f_check_hz":   derivation_data["f_actual_hz"],
-        },
-        "resonance_baseline": {
-            "f_simulated_hz":           round(f_sim, 4),
-            "Q_factor":                 round(resonance_data["Q_factor"], 4),
-            "schumann_nearest_mode_hz": nearest_hz,
-            "schumann_mode_index":      mode_n,
-            "deviation_pct":            deviation_pct,
-            "reference":                "NOAA/GFZ Potsdam (published reference values)",
-        },
         "experimental_configuration": {
             "n_nodes":             params["VI_experimental_sweep_parameters"]["n_nodes"],
             "reference_seed":      params["VI_experimental_sweep_parameters"]["seed"],
@@ -196,8 +170,8 @@ def write_exploration_summary(resonance_data, derivation_data, multi_seed_result
         },
     }
 
-    with open(output_file, "w") as f:
-        json.dump(summary, f, indent=2)
+    with open(output_file, "w", encoding="utf-8") as f:
+        json.dump(summary, f, indent=2, ensure_ascii=False)
 
     print(f"      Written: {rel(output_file)}")
 
@@ -216,38 +190,28 @@ def main():
     print(f" {n} morphologies | {total_pairs} pairs | N={len(seeds)} seeds ({seeds[0]}–{seeds[-1]})")
     print("===================================================")
 
-    _step(1, "Parameter derivation (f_target -> L, C)...")
-    from data.parameter_derivation import report as derive_report
-    derivation_data = derive_report()
-
-    _step(2, "Node resonance baseline (simulation)....")
-    run("data/node_resonance.py")
-    with open(output_path("resonance_params.json")) as f:
-        resonance_data = json.load(f)
-    print("\n      Schumann resonance external comparison:")
-    schumann_comparison(resonance_data["f_resonance_Hz"])
-
-    for idx, mode in enumerate(MORPHOLOGY_MODES, start=3):
+    for idx, mode in enumerate(MORPHOLOGY_MODES, start=1):
         _step(idx, f"{mode.upper()} sweep...")
         run_coupling(mode)
 
-    _step(n + 3, f"Curve separation descriptors (Welch t + Cohen d, 3 metrics x {total_pairs} pairs)...")
+    _step(n + 1, f"Curve separation descriptors (Welch t + Cohen d, 3 metrics x {total_pairs} pairs)...")
     compute_statistical_summary()
 
-    _step(n + 4, f"Multi-seed analysis (N={len(seeds)} seeds x {n} morphologies)...")
+    _step(n + 2, f"Multi-seed analysis (N={len(seeds)} seeds x {n} morphologies)...")
     multi_seed_results = multi_seed_step()
 
     print("\n      Writing exploration_summary.json...")
-    write_exploration_summary(resonance_data, derivation_data, multi_seed_results)
+    write_exploration_summary(multi_seed_results)
 
-    _step(n + 5, "Inference analysis (Welch + Holm-Bonferroni + bootstrap CI 95% + power)...")
+    _step(n + 3, "Inference analysis (Welch + Holm-Bonferroni + bootstrap CI 95% + power)...")
     inference_step()
 
-    _step(n + 6, "Sensitivity plot (curves + stat heatmaps)...")
+    _step(n + 4, "Sensitivity plot (curves + stat heatmaps)...")
     run("data/plot_sensitivity.py")
 
-    from data.parametric_sweep import run_parametric_sweep, K0_GRID, BETA_GRID, Q_GRID
-    _step(n + 7, f"Parametric robustness sweep ({len(K0_GRID)} x {len(BETA_GRID)} x {len(Q_GRID)} = {len(K0_GRID) * len(BETA_GRID) * len(Q_GRID)} grid points)...")
+    from data.parametric_sweep import run_parametric_sweep, effective_grids
+    k0_grid, beta_grid, q_grid = effective_grids()
+    _step(n + 5, f"Parametric robustness sweep ({len(k0_grid)} x {len(beta_grid)} x {len(q_grid)} = {len(k0_grid) * len(beta_grid) * len(q_grid)} grid points)...")
     run_parametric_sweep()
 
     out_dir = ensure_output_dir()

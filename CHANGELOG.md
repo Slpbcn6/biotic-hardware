@@ -1,5 +1,30 @@
 # Changelog
 
+## [1.2.6] - 2026-06-17
+
+This is a hardening and cleanup release. No scientific result changes: the principal finding (botanical separating from both stochastic controls) is identical to v1.2.5. The release removes the resonance-baseline scaffolding that the simulation never consumed, adds a small-sample-corrected effect size and a second stochastic control to the robustness criterion, externalizes the last hardcoded statistical constant, and expands unit-test coverage.
+
+### Removed
+
+- **`data/parameter_derivation.py`, `data/node_resonance.py`, `data/schumann_reference.py`** (deleted): the analytic L/C derivation, the stored RLC resonance baseline, and the external Schumann mode comparison (NOAA/GFZ Potsdam, modes 1-5). These produced reference values (`f ≈ 12.5 Hz`, `f_res ≈ 12.99 Hz`, deviation 9.13% from mode 2) that were never inputs to the morphological benchmark; the coupling solver and statistics never read them. The pipeline drops from 12 to 10 steps.
+- **`outputs/resonance_params.json`**: no longer produced (the modules that wrote it are gone).
+- **`data/parameters.json`**: removed the fixed-parameter sections tied to the resonance derivation (target frequency, stored RLC). Section VI now also carries `variance_collapse_fraction` (see Changed).
+
+### Added
+
+- **`data/inference_analysis.py`**: `Hedges_g` column in `inference_summary.csv` — Cohen's d corrected by the small-sample factor `1 - 3 / (4 * df - 1)`, reported alongside Cohen's d for every valid pair.
+- **`data/parametric_sweep.py`**: a Voronoi stochastic control generator and a `curve_sep_botanical_vs_voronoi` column in `robustness_matrix.csv`. `finding_holds` now requires botanical to separate from **both** the random and the Voronoi controls (each `abs(separation) >= curve_separation_threshold`) at every grid point, hardening the robustness claim against a second independent stochastic baseline.
+- **`data/parameters.json` (section VI)**: `variance_collapse_fraction: 0.15` — externalizes the variance-collapse guard threshold that was previously a hardcoded constant in `inference_analysis.py`.
+- **`tests/test_stats_utils.py`, `tests/test_input_generator.py`, `tests/test_topology_validator.py`** (new): focused unit tests for the effect-size and Holm/bootstrap/power helpers, the five morphology generators, and the union-find topology validator.
+- **`results/`** (new): reference results from the maintainer's run — the deterministic CSV/JSON outputs behind the reported findings, committed so reviewers can read the numbers without running the pipeline and forks can diff their own `outputs/` against them; see `results/README.md`.
+
+### Changed
+
+- **`run.py`**: pipeline reduced to 10 steps (resonance derivation and Schumann comparison steps removed); `TOTAL_STEPS` and the step loop adjusted accordingly; `exploration_summary.json` now records experimental configuration and multi-seed results only (no parameter-derivation or resonance-baseline blocks), written with `ensure_ascii=False`.
+- **`tests/test_integrity.py`**: `ESSENTIAL_FILES` trimmed to the surviving modules; asserts the `Hedges_g` and `curve_sep_botanical_vs_voronoi` columns and version `1.2.6`; the resonance-config integrity test is replaced by a config integrity test that no longer references the removed frequency parameter.
+- **`README.md`, `OVERVIEW.md`, `docs/Morpho-Topological Framework and Parameter Space.md`, `notebook/demo.ipynb`, `CITATION.cff`**: updated to v1.2.6; the resonance/Schumann sections are removed or reclassified as conceptual reference only; Hedges' g and the Voronoi robustness control are documented.
+
+
 ## [1.2.5] - 2026-06-16
 
 ### Changed

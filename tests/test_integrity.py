@@ -19,15 +19,12 @@ ESSENTIAL_FILES = [
     "data/__init__.py",
     "data/config.py",
     "data/parameters.json",
-    "data/node_resonance.py",
     "data/node_coupling.py",
     "data/plot_sensitivity.py",
     "data/input_generator.py",
     "data/topology_validator.py",
-    "data/schumann_reference.py",
     "data/multi_seed_analysis.py",
     "data/inference_analysis.py",
-    "data/parameter_derivation.py",
     "data/parametric_sweep.py",
     "data/stats_utils.py",
 ]
@@ -140,7 +137,7 @@ def test_morphological_divergence():
         df_inf = pd.read_csv(inference_csv)
         required_inf_cols = [
             "Metric", "Pair", "N", "mean_diff",
-            "CI_lower", "CI_upper", "Cohens_d",
+            "CI_lower", "CI_upper", "Cohens_d", "Hedges_g",
             "p_raw", "p_holm", "Significant_holm", "power",
         ]
         for col in required_inf_cols:
@@ -153,11 +150,9 @@ def test_morphological_divergence():
             summary = json.load(fj)
 
         assert "pipeline_version"           in summary
-        assert "parameter_derivation"       in summary
-        assert "resonance_baseline"         in summary
         assert "experimental_configuration" in summary
         assert "multi_seed_analysis"        in summary
-        assert summary["pipeline_version"] == "1.2.5"
+        assert summary["pipeline_version"] == "1.2.6"
         assert set(summary["morphologies"]) == set(MORPHOLOGY_MODES)
 
         exp_cfg = summary["experimental_configuration"]
@@ -168,16 +163,11 @@ def test_morphological_divergence():
         assert "noise_botanical" not in exp_cfg, \
             "Stale key 'noise_botanical' still present in experimental_configuration"
 
-        deriv = summary["parameter_derivation"]
-        assert deriv["f_target_hz"] == 12.5
-        assert deriv["f_check_hz"]  == 12.5
-        assert 1.5e-4 <= deriv["C_derived_F"] <= 1.7e-4
-
         df_rob = pd.read_csv(robustness_csv)
         required_rob_cols = [
             "k0_base", "beta_loss_factor", "Q_individual",
             "curve_sep_botanical_vs_random", "curve_sep_botanical_vs_fractal",
-            "finding_holds",
+            "curve_sep_botanical_vs_voronoi", "finding_holds",
         ]
         for col in required_rob_cols:
             assert col in df_rob.columns, \
@@ -194,24 +184,20 @@ def test_morphological_divergence():
         )
 
 
-def test_resonance_config_integrity():
+def test_config_integrity():
     with open(ROOT / "data" / "parameters.json") as f:
         data = json.load(f)
 
-    freq   = data["I_simulation_fixed_parameters"]["frequency_hz"]
     q      = data["IV_network_performance_metrics"]["individual_q_factor"]
     radius = data["VI_experimental_sweep_parameters"]["connection_radius_m"]
 
-    assert isinstance(freq,   (int, float))
     assert isinstance(q,      (int, float))
     assert isinstance(radius, (int, float))
 
-    assert freq   > 0
     assert q      > 0
     assert radius > 0
 
     assert 0 < q      < 100
-    assert 1 < freq   < 1e6
     assert 0 < radius <= 10.0
 
     assert "morphologies" in data["VIII_pipeline"]

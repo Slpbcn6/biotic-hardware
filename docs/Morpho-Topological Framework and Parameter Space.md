@@ -6,16 +6,16 @@ This repository implements a generative morpho-topological simulation framework 
 
 All electromagnetic and engineering terminology in this document is inherited domain vocabulary, used as structured labels for mathematical and topological relationships within a graph-based model. These terms do not correspond to physical systems and do not simulate physical behavior. Likewise, every equation written in classical scientific notation is an isomorphic mapping between graph-state transformations and legacy symbolic encodings; none represents a physical law, a causal mechanism, or a predictive model of a real-world system.
 
-Parameters are versioned symbolic artifacts. The active configuration lives in `parameters.json` (current: v1.2.5) and defines structural relationships within the computational pipeline. Individual values evolve across releases, but their status is constant: abstract structural identifiers, never physical quantities. No interpretative binding between versioned parameters and physical reality is defined or implied at any layer.
+Parameters are versioned symbolic artifacts. The active configuration lives in `parameters.json` (current: v1.2.6) and defines structural relationships within the computational pipeline. Individual values evolve across releases, but their status is constant: abstract structural identifiers, never physical quantities. No interpretative binding between versioned parameters and physical reality is defined or implied at any layer.
 
 ### Reproducible pipeline vs. conceptual reference (the key reading guide)
 
 The single most important distinction in this document:
 
-- The executable v1.2.5 pipeline reproduces a specific, minimal parameter set, defined and derived exactly in Appendix B (the resonance baseline: `L`, `C`, `f ≈ 12.5 Hz`, `Q`, `R`) and evaluated by `data/parameter_derivation.py`, `data/node_resonance.py`, and `data/node_coupling.py`.
-- Several constructs discussed in the narrative sections and consolidated in Appendix A — for example the coupling parameter `K_DIPOLE`, the permeability bound `mu_r ≈ 1.25 × 10^6`, and the plasma-frequency analogue — are conceptual reference quantities ONLY. They are NOT inputs to the executable pipeline and are not asserted as physically realizable.
+- The executable v1.2.6 pipeline reproduces the morphological benchmark — the five morphology sweeps, curve-separation descriptors, multi-seed inference, and the parametric robustness sweep — evaluated by `data/node_coupling.py` and the statistical modules. The minimal parameter set it actually consumes lives in `data/parameters.json` (sections VI and VII).
+- The resonance baseline consolidated in Appendix B (`L`, `C`, `f ≈ 12.5 Hz`, `Q`, `R`) and several constructs discussed in the narrative sections and consolidated in Appendix A — for example the coupling parameter `K_DIPOLE`, the permeability bound `mu_r ≈ 1.25 × 10^6`, and the plasma-frequency analogue — are conceptual reference quantities ONLY. They are NOT inputs to the executable pipeline and are not asserted as physically realizable.
 
-When in doubt about whether something is "real" in the code or "narrative scaffolding," Appendix B is the source of truth for what runs.
+When in doubt about whether something is "real" in the code or "narrative scaffolding," `data/parameters.json` (sections VI and VII) is the source of truth for what runs.
 
 ---
 
@@ -193,11 +193,11 @@ Abstract substance-analogue parameters in the model are mapped to abstract modif
 C = (epsilon_r * epsilon_0 * A) / d
 ```
 
-Where `epsilon_r` is the abstract relative-permittivity parameter, `epsilon_0` the vacuum permittivity constant used as a scaling reference, `A` the abstract plate-area parameter, and `d` the abstract separation parameter. This parameter balances the inductive parameter of the root analogues, forming the resonant LC pair evaluated in the parameter-derivation step (Appendix B).
+Where `epsilon_r` is the abstract relative-permittivity parameter, `epsilon_0` the vacuum permittivity constant used as a scaling reference, `A` the abstract plate-area parameter, and `d` the abstract separation parameter. This parameter balances the inductive parameter of the root analogues, forming the resonant LC pair documented as a conceptual reference in Appendix B.
 
 ### Magnetic Permeability and Scaling Rationale (Abstract Parameter Bound)
 
-Within the conceptual framework, sustaining the `12.5 Hz` resonance condition over the abstract macroscopic aperture defined by the scaling constant `k = 100` would imply an effective relative-permeability parameter of `mu_r ≈ 1.25 × 10^6`. This value is presented strictly as a theoretical parameter bound — a conceptual-reference quantity that delimits the extreme region of the parameter space associated with the abstract NFMI-inspired topology. It is NOT an active input to the executable pipeline, whose runtime resonance derivation uses only `k`, `L`, `C`, and `R` (see Appendix B), and it is not asserted as a physically realizable material property. In the same conceptual layer, `k = 100` is motivated by the phase-velocity reduction needed for internal topological coherence, notionally compensating a high abstract permittivity parameter (`epsilon_r ≈ 80`) so that the effective wavelength parameter contracts to the modeled structural scale.
+Within the conceptual framework, sustaining the `12.5 Hz` resonance condition over the abstract macroscopic aperture defined by the scaling constant `k = 100` would imply an effective relative-permeability parameter of `mu_r ≈ 1.25 × 10^6`. This value is presented strictly as a theoretical parameter bound — a conceptual-reference quantity that delimits the extreme region of the parameter space associated with the abstract NFMI-inspired topology. It is NOT an active input to the executable pipeline, and it is not asserted as a physically realizable material property. In the same conceptual layer, `k = 100` is motivated by the phase-velocity reduction needed for internal topological coherence, notionally compensating a high abstract permittivity parameter (`epsilon_r ≈ 80`) so that the effective wavelength parameter contracts to the modeled structural scale.
 
 ### Fractal Scaling Limits (Abstract Constraint)
 
@@ -209,11 +209,11 @@ All parameters in this section are simulation inputs defining the abstract mater
 
 ## Appendix A: Quantitative Functional Isomorphism Table
 
-This appendix consolidates, as a single conceptual reference, the abstract metrics distributed across the preceding sections. It is a theoretical mapping layer: several entries — for example the coupling parameter `K_DIPOLE`, the permeability bound, and the plasma-frequency analogue — are conceptual constructs and are NOT active inputs to the executable v1.2.5 pipeline, whose reproducible parameter set is defined separately in Appendix B. All quantities are structural-coherence parameters defined within the graph-based abstraction system; none denotes a physical measurement.
+This appendix consolidates, as a single conceptual reference, the abstract metrics distributed across the preceding sections. It is a theoretical mapping layer: several entries — for example the coupling parameter `K_DIPOLE`, the permeability bound, and the plasma-frequency analogue — are conceptual constructs and are NOT active inputs to the executable v1.2.6 pipeline, whose reproducible parameter set lives in `data/parameters.json`. All quantities are structural-coherence parameters defined within the graph-based abstraction system; none denotes a physical measurement.
 
 ### Foundational Modeling Parameters
 
-- Computational Coupling Parameter (`K_DIPOLE`): a conceptual scaling parameter for the abstract interaction kernel, used to discuss global coupling amplitude. It is a theoretical construct, not an active variable in the v1.2.5 pipeline — runtime node coupling is evaluated through a phased-array superposition (`data/node_coupling.py`) — and it does not represent a physical constant.
+- Computational Coupling Parameter (`K_DIPOLE`): a conceptual scaling parameter for the abstract interaction kernel, used to discuss global coupling amplitude. It is a theoretical construct, not an active variable in the v1.2.6 pipeline — runtime node coupling is evaluated through a phased-array superposition (`data/node_coupling.py`) — and it does not represent a physical constant.
 - Effective Permeability (`mu_r`): a phenomenological parameter representing combined structural amplification within the model. It is a modeling construct, independent of the geometric scaling constant `k`, and is not constrained to physically realizable limits.
 
 ### I. Structural and Inductive Parameters
@@ -238,16 +238,16 @@ This appendix consolidates, as a single conceptual reference, the abstract metri
 
 ---
 
-## Appendix B: Minimum Reproducible Parameter Set (Simulation Baseline)
+## Appendix B: Conceptual Resonance-Baseline Reference
 
-This appendix defines the minimum parameter set required to reproduce the resonance results of the v1.2.5 pipeline. All quantities are internal coherence metrics of the abstraction system; the derivation is reproduced exactly by `data/parameter_derivation.py` and `data/node_resonance.py` (invoked from `run.py`).
+This appendix documents the conceptual resonance-baseline reference of the framework. All quantities are internal coherence metrics of the abstraction system. As of v1.2.6 they are conceptual reference values only: the executable pipeline no longer derives or stores a resonance baseline, and these closed-form relations are retained here purely to document the abstract design target. The reproducible pipeline consumes the parameter set in `data/parameters.json` and evaluates the morphological benchmark through `data/node_coupling.py`.
 
-### I. Fixed Parameters
+### I. Fixed Reference Parameters
 
-- Target frequency: `f_target ≈ 12.5 Hz` (Schumann-band reference).
+- Target frequency: `f_target ≈ 12.5 Hz` (abstract ELF-band reference).
 - Scaling constant: `k = 100`.
 
-### II. Analytic Parameter Derivation (f_target -> L -> C)
+### II. Analytic Parameter Relation (f_target -> L -> C)
 
 ```
 L      = k * 10^-2          = 1.0000 H
@@ -256,20 +256,14 @@ C      = 1 / (omega0^2 * L) = 1.6211e-4 F  ≈ 162 uF
 f      = 1 / (2 * pi * sqrt(L * C)) = 12.5000 Hz  (= f_target)
 ```
 
-### III. Node Resonance Baseline (Stored RLC)
+### III. Conceptual RLC Reference
 
 ```
 Parameters:          L = 1.0 H, C = 1.50e-4 F, R = 100 ohm
-Resonant frequency:  f_res = 12.9949 Hz
 Quality factor:      Q = (omega_res * L) / R = 0.8165
 Bandwidth:           BW = 15.9155 Hz
 Effective coupling:  k_eff = 2.9230
 ```
-
-### IV. External Comparison (Non-Causal Reference)
-
-- Nearest Schumann mode (mode 2) ≈ `14.30 Hz`; deviation `9.13%`.
-- This comparison is descriptive only. No causal or physical correspondence is claimed between the abstract model and the geophysical Schumann resonances.
 
 ---
 

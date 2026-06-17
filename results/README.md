@@ -1,0 +1,9 @@
+# Reference results
+
+This folder contains the reference results produced by the maintainer's own run of the pipeline. They are committed so that anyone browsing the repository, or reviewing the associated release, can read the exact numbers behind the reported findings without having to execute anything.
+
+The pipeline is fully deterministic: given the pinned dependencies and the seeds recorded in `data/parameters.json`, running it reproduces these files exactly. To regenerate them yourself, clone the repository and run `python run.py`. Your run writes its artifacts to `outputs/`, which is intentionally not committed, so you can compare your own `outputs/` against this `results/` folder and confirm that you obtain identical numbers.
+
+The headline statistical inference is in `inference_summary.csv` (Welch t-test on per-seed means, Cohen's d, Hedges' g, bootstrap 95% confidence interval, Holm-Bonferroni correction, and post-hoc power). The per-morphology means across the 30 seeds are in `multi_seed_summary.csv`, with the underlying per-seed samples in `multi_seed_raw.csv`. The parametric robustness grid (125 points) is in `robustness_matrix.csv`, and the curve-separation descriptors over the sweep are in `curve_separation_summary.csv`. The raw per-node simulation tables are in `simulation_results_<morphology>.csv`, and `exploration_summary.json` is a machine-readable record of the experimental configuration and the multi-seed results.
+
+Every file here is plain text (CSV or JSON) so it can be read, diffed, and version-controlled directly. Binary and intermediate artifacts (the per-node array-factor tensors written as `.npz`) are not committed; they are regenerated into `outputs/` on each run. The sensitivity plot is committed separately under `data/`, where the repository overview links it.

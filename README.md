@@ -4,12 +4,12 @@
   <a href="https://github.com/Slpbcn6/biotic-hardware/actions/workflows/ci.yml"><img src="https://github.com/Slpbcn6/biotic-hardware/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://www.python.org"><img src="https://img.shields.io/badge/python-3.12-blue?logo=python&logoColor=white" alt="Python 3.12"></a>
   <a href="https://creativecommons.org/licenses/by/4.0/"><img src="https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey" alt="License: CC BY 4.0"></a>
-  <a href="https://github.com/Slpbcn6/biotic-hardware/blob/main/CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.2.5-green" alt="Version"></a>
+  <a href="https://github.com/Slpbcn6/biotic-hardware/blob/main/CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.2.6-green" alt="Version"></a>
   <a href="https://doi.org/10.5281/zenodo.20590864"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.20590864.svg" alt="DOI"></a>
 </p>
 
 
-![Biotic Hardware Synthesis](assets/readme1-2-5.svg)
+![Biotic Hardware Synthesis](assets/readme1-2-6.svg)
 
 
 This repository provides a reproducible computational framework for simulating structured network dynamics inspired by morphological datasets. It implements a full pipeline for parameter-driven simulation of coherence metrics, phase-based interference behavior (complex-valued phasor summation), sensitivity analysis under parametric variation, and formal statistical separation testing — producing numerical outputs, statistical artifacts, and visualization from a single executable workflow.
@@ -46,10 +46,8 @@ To run the full computational simulation pipeline:
 python run.py
 ```
 
-This executes the complete computational workflow (12 steps — see [OVERVIEW.md](./OVERVIEW.md) for the full numbered breakdown):
+This executes the complete computational workflow (10 steps — see [OVERVIEW.md](./OVERVIEW.md) for the full numbered breakdown):
 
-- Parameter derivation: closed-form L/C derivation from the target frequency (f_target → L → C → f_check at 12.5 Hz)
-- Node-level resonance baseline and external Schumann resonance comparison (NOAA/GFZ Potsdam, modes 1–5)
 - Pre-simulation topology validation per sweep (connectivity, node count, degenerate structure detection)
 - Distributed Phased Array simulation (phase-based interference superposition) across five morphologies: fractal, botanical, random control, Fibonacci spiral, and Voronoi control
 - Statistical separation testing: Welch t-test + Cohen's d across 3 metrics and 10 morphology pairs
@@ -61,7 +59,6 @@ This executes the complete computational workflow (12 steps — see [OVERVIEW.md
 Outputs (generated artifacts are written to `outputs/`):
 
 - Console logs of simulation results with per-sweep summary metrics
-- `outputs/resonance_params.json` (node resonance baseline: f_resonance, Q factor)
 - `outputs/simulation_results_{fractal,botanical,random,fibonacci,voronoi}.csv` (Scalar Benchmark Contract)
 - `outputs/af_tensors_{fractal,botanical,random,fibonacci,voronoi}.npz` (Tensor Research Layer)
 - `outputs/curve_separation_summary.csv` (curve separation descriptors: Welch t-test + Cohen's d on 30 autocorrelated sweep steps, 30 rows)
@@ -70,7 +67,7 @@ Outputs (generated artifacts are written to `outputs/`):
 - `outputs/inference_summary.csv` (classical inference: Welch t-test, Cohen's d, bootstrap CI, Holm-corrected p, post-hoc power; near-zero-variance pairs reported as n/a)
 - `outputs/exploration_summary.json` (machine-readable experiment record)
 - `outputs/sensitivity_analysis.png` — sensitivity curves + statistical heatmaps (also written to `data/sensitivity_analysis.png`)
-- `outputs/robustness_matrix.csv` (parametric robustness grid: 125 combinations of k0, beta, Q; records the botanical-vs-random and botanical-vs-fractal curve-separation ratios and whether the botanical separation holds at each point)
+- `outputs/robustness_matrix.csv` (parametric robustness grid: 125 combinations of k0, beta, Q; records the botanical-vs-random, botanical-vs-fractal, and botanical-vs-voronoi curve-separation ratios and whether the botanical separation holds against both stochastic controls at each point)
 
 ---
 
@@ -91,7 +88,7 @@ Parametric robustness (v1.2.3, symmetric noise): under the symmetric noise regim
 - **Perspective:** Application of signal processing, wave-interference modeling, and bio-inspired computational design to synthetic morphologies inspired by natural botanical branching structures.
 - **Model:** Network-based representation using coupled oscillator systems, with Near-Field Magnetic Induction (NFMI) used strictly as conceptual inspiration for interaction topology design — not as a physical implementation or performance target.
 - **Methodology:** Mapping of morphological geometry into abstract electromagnetic network representations for simulation, parameter exploration, and statistical comparison.
-- **Validation:** Pre-simulation topology validation rejects degenerate structures before execution. Results are cross-validated against published Schumann resonance modes and stress-tested across five seeds per morphology.
+- **Validation:** Pre-simulation topology validation rejects degenerate structures before execution. Results are stress-tested across N=30 seeds per morphology and a 125-point parametric robustness grid.
 
 Simulation baseline: [/data/parameters.json](./data/parameters.json)
 
@@ -129,44 +126,6 @@ These mappings are used strictly for computational simulation. No physical signa
 
 ---
 
-## Numerical Validation: Resonance and Response Structure
-
-The repository includes a reproducible numerical model located at: [/data/node_resonance.py](./data/node_resonance.py)
-
-This script evaluates resonance behavior and normalized response structure under ELF-inspired parameter regimes using lumped-element approximations.
-
-### Model Definition
-
-The resonance module evaluates normalized response behavior in a lumped-element RLC-inspired model using inductive, capacitive, and resistive parameters extracted from the simulation configuration. These parameters are treated as abstract numerical inputs for a simplified computational representation of oscillatory behavior.
-
-The implemented metrics include:
-
-- Resonance frequency (f_res)
-- Quality factor (Q)
-- Bandwidth estimation
-- Peak-to-mean normalized response ratios
-
-These quantities are used as comparative indicators within the simulation framework and are not interpreted as direct measurements of physical electromagnetic efficiency.
-
-### External Baseline: Schumann Resonance
-
-The simulated resonance frequency is compared against published Schumann resonance modes (NOAA/GFZ Potsdam). The simulated value of 12.9949 Hz positions at 9.13% deviation from mode 2 (14.30 Hz). References: Schumann 1952, Williams 1992, Nickolaenko & Hayakawa 2002.
-
-**Note on baseline comparison:** The simulated resonance frequency follows from the stored RLC baseline in `data/parameters.json` (L ≈ 1.0 H, C ≈ 150 µF i.e. 1.5×10⁻⁴ F, R = 100 Ω), evaluated by `data/node_resonance.py`. Separately, `data/parameter_derivation.py` documents the closed-form f_target → L → C → f_check chain for the 12.5 Hz target (yielding C ≈ 162 µF i.e. 1.62×10⁻⁴ F); that derivation is documentation only and does not feed the simulation. The comparison to Schumann modes serves as an external reference frame for contextualizing the frequency regime of the model, not as a claim of physical equivalence or empirical proximity to natural ELF phenomena.
-
-### Output
-
-The simulation produces parametric baseline metrics. Typical numerical outputs include:
-
-- Resonance frequency: **12.99 Hz**
-- Quality factor (Q): **0.81**
-- Bandwidth: **15.91 Hz**
-- Effective transfer (k_eff): **2.92**
-
-These values represent structural indicators derived from the simulated signal structure. **Note on Q:** A value of Q = 0.81 places the model in the overdamped regime (Q < 1), meaning the system does not sustain free oscillation in the strict physical sense. The coherence and merit metrics computed by the pipeline remain valid as comparative structural indicators across morphologies. The term "resonance frequency" here refers to the frequency of peak transfer function magnitude, not to sustained oscillation.
-
----
-
 ## Numerical Model: Distributed Phased Array (Beamforming)
 
 The system is extended into a spatial network model: [/data/node_coupling.py](./data/node_coupling.py)
@@ -191,7 +150,7 @@ Before each sweep executes, `data/topology_validator.py` validates the generated
 
 ### Scaling Parameter k0
 
-The variable `k0_base` is a heuristic spatial scaling coefficient used to modulate the phase contribution of each node in the array factor computation. It is **not** the electromagnetic wave number k₀ = 2πf/c. At 12.99 Hz, the physical wave number would be k₀ ≈ 2.72×10⁻⁷ rad/m — several orders of magnitude smaller than the value used here. The discrepancy is intentional: the model operates in an abstract simulation space, not in physical electromagnetic space.
+The variable `k0_base` is a heuristic spatial scaling coefficient used to modulate the phase contribution of each node in the array factor computation. It is **not** the electromagnetic wave number k₀ = 2πf/c. In any ELF-inspired regime the physical wave number would be many orders of magnitude smaller than the value used here. The discrepancy is intentional: the model operates in an abstract simulation space, not in physical electromagnetic space.
 
 ### Data Export Architecture (Dual Layer)
 
@@ -264,8 +223,6 @@ Modules related to energy conversion are treated as architectural specifications
 The parameter **k** is defined as a schematic spatial scaling factor representing the mapping between normalized geometric space and simulation space. It is not derived from electromagnetic wave propagation constants. Consequently, it is not directly coupled to material parameters such as permeability (μr); both operate as independent parameters within the modeling abstraction.
 
 The implementation uses a hierarchical set of derived scaling variables (e.g. k0, k, k_eff) that operate at different stages of the simulation pipeline: base scaling initialization, coherence-modulated scaling, and post-response normalization. These variables are computational constructs used for numerical stability and do not represent a physically derived parameter hierarchy.
-
-Within the resonance module, the scaling parameter is used as a direct linear scaling factor applied to the base inductance value (`L = scaling_constant_k * 1e-2`), producing L = 1.0 H as the effective inductance for the RLC model. This value is a design choice within the abstract simulation space, not a measured or derived physical quantity.
 
 ---
 

@@ -1,4 +1,4 @@
-# Overview: Biotic Hardware Synthesis (v1.2.5)
+# Overview: Biotic Hardware Synthesis (v1.2.6)
 
 ## What this is
 
@@ -14,27 +14,24 @@ The framework answers one question rigorously: does the geometry of a morphology
 
 - reproducible morphological benchmarking — five morphologies, fixed seeds, pinned dependencies, single-command execution;
 - formal statistical comparison (Welch t-test + Cohen's d) instead of visual inspection;
-- falsifiability — an unstructured random control plus two synthetic controls (Fibonacci spiral, Voronoi) bound the result so structure can be distinguished from noise;
-- external anchoring — the model's frequency regime is compared against published Schumann resonance modes (NOAA/GFZ Potsdam).
+- falsifiability — an unstructured random control plus two synthetic controls (Fibonacci spiral, Voronoi) bound the result so structure can be distinguished from noise.
 
 ---
 
 ## Pipeline
 
-The system executes a deterministic 12-step computational workflow for abstract complex-valued interference modeling over the angular domain across multiple structural inputs:
+The system executes a deterministic 10-step computational workflow for abstract complex-valued interference modeling over the angular domain across multiple structural inputs:
 
-1. Parameter derivation — closed-form L/C derivation from the target frequency (f_target → L → C → f_check at 12.5 Hz), documenting the resonance configuration without altering the simulation.
-2. Node-level resonance baseline and external Schumann resonance comparison (NOAA/GFZ Potsdam reference modes 1–5).
-3. Fractal morphology sweep — geometry → pre-simulation topology validation (union-find with path-halving, minimum node count, degenerate-structure rejection) → array factor → coherence → merit.
-4. Botanical morphology sweep — same pipeline as step 3.
-5. Random control morphology sweep — same pipeline as step 3.
-6. Fibonacci spiral morphology sweep (golden-angle 137.508°) — same pipeline as step 3.
-7. Voronoi control morphology sweep — same pipeline as step 3. Invalid topologies are rejected before any sweep executes.
-8. Curve-separation descriptors: Welch t-test + Cohen's d across 3 metrics × 10 morphology pairs on autocorrelated sweep steps (descriptive only — 30 rows).
-9. Parametric sensitivity analysis and visualization across all five morphologies.
-10. Multi-seed analysis (N=30 seeds, seeds 42–71 per morphology), producing mean ± std distributions and a machine-readable exploration summary.
-11. Multi-seed classical inference: `data/inference_analysis.py` runs Welch t-test, Cohen's d, bootstrap CI, Holm-Bonferroni, and post-hoc power over the N=30 per-seed means. Morphologies with near-zero seed variance (fractal, Fibonacci) are flagged n/a to prevent variance-collapse artefacts. Output: `outputs/inference_summary.csv`.
-12. Parametric robustness sweep: `data/parametric_sweep.py` runs botanical vs random vs fractal across a 5×5×5 grid of k0_base × beta_loss_factor × Q_individual (125 combinations), recording the curve-separation ratios at each point. Output: `outputs/robustness_matrix.csv`.
+1. Fractal morphology sweep — geometry → pre-simulation topology validation (union-find with path-halving, minimum node count, degenerate-structure rejection) → array factor → coherence → merit.
+2. Botanical morphology sweep — same pipeline as step 1.
+3. Random control morphology sweep — same pipeline as step 1.
+4. Fibonacci spiral morphology sweep (golden-angle 137.508°) — same pipeline as step 1.
+5. Voronoi control morphology sweep — same pipeline as step 1. Invalid topologies are rejected before any sweep executes.
+6. Curve-separation descriptors: Welch t-test + Cohen's d across 3 metrics × 10 morphology pairs on autocorrelated sweep steps (descriptive only — 30 rows).
+7. Parametric sensitivity analysis and visualization across all five morphologies.
+8. Multi-seed analysis (N=30 seeds, seeds 42–71 per morphology), producing mean ± std distributions and a machine-readable exploration summary.
+9. Multi-seed classical inference: `data/inference_analysis.py` runs Welch t-test, Cohen's d, Hedges' g, bootstrap CI, Holm-Bonferroni, and post-hoc power over the N=30 per-seed means. Morphologies with near-zero seed variance (fractal, Fibonacci) are flagged n/a to prevent variance-collapse artefacts. Output: `outputs/inference_summary.csv`.
+10. Parametric robustness sweep: `data/parametric_sweep.py` runs botanical vs random vs fractal vs Voronoi across a 5×5×5 grid of k0_base × beta_loss_factor × Q_individual (125 combinations), recording the curve-separation ratios at each point. Output: `outputs/robustness_matrix.csv`.
 
 Run:
 
@@ -68,13 +65,12 @@ All generated artifacts are written to `outputs/` (regenerated on each run); `se
 
 ### Statistical Outputs
 
-- `outputs/resonance_params.json` — node resonance baseline (simulated f_resonance and Q factor).
 - `outputs/curve_separation_summary.csv` — Welch t-test + Cohen's d curve-separation descriptors across 3 metrics × 10 morphology pairs on autocorrelated sweep steps (descriptive only, not independent-sample tests).
 - `outputs/multi_seed_summary.csv` — per-morphology mean ± std across N=30 seeds (seeds 42–71).
 - `outputs/multi_seed_raw.csv` — per-seed means per morphology × metric; raw input to the inference step.
-- `outputs/inference_summary.csv` — classical inference over N=30 per-seed means: Welch t-test, Cohen's d, bootstrap CI, Holm-corrected p, post-hoc power. Pairs involving a seed-frozen morphology are reported as n/a (variance collapse).
-- `outputs/exploration_summary.json` — machine-readable record of parameter derivation, resonance baseline, experimental configuration, and multi-seed results per morphology.
-- `outputs/robustness_matrix.csv` — parametric robustness grid: 125 combinations (5×5×5) of k0_base × beta_loss_factor × Q_individual; columns: k0_base, beta_loss_factor, Q_individual, curve_sep_botanical_vs_random, curve_sep_botanical_vs_fractal, finding_holds.
+- `outputs/inference_summary.csv` — classical inference over N=30 per-seed means: Welch t-test, Cohen's d, Hedges' g, bootstrap CI, Holm-corrected p, post-hoc power. Pairs involving a seed-frozen morphology are reported as n/a (variance collapse).
+- `outputs/exploration_summary.json` — machine-readable record of experimental configuration and multi-seed results per morphology.
+- `outputs/robustness_matrix.csv` — parametric robustness grid: 125 combinations (5×5×5) of k0_base × beta_loss_factor × Q_individual; columns: k0_base, beta_loss_factor, Q_individual, curve_sep_botanical_vs_random, curve_sep_botanical_vs_fractal, curve_sep_botanical_vs_voronoi, finding_holds (botanical separates from both random and Voronoi controls).
 
 ### Visualization Artifacts
 
@@ -103,6 +99,8 @@ This system is strictly computational. It does not model or validate physical sy
 ---
 
 ## Version History
+
+v1.2.6 is a hardening and cleanup release with no change to the scientific result. It removes the resonance-baseline scaffolding (`data/node_resonance.py`, `data/schumann_reference.py`, `data/parameter_derivation.py`) and the corresponding Schumann external-comparison and L/C derivation steps, shortening the pipeline from 12 to 10 steps; the simulation never depended on those values. It adds a Hedges' g column (small-sample-corrected effect size) alongside Cohen's d in `inference_summary.csv`, extends the parametric robustness sweep so botanical separation must hold against both stochastic controls (random and Voronoi) at every grid point, externalises `variance_collapse_fraction` to `parameters.json` section VI, and adds focused unit tests for `stats_utils`, `input_generator`, and `topology_validator`.
 
 v1.2.5 externalises `curve_separation_threshold` from a hardcoded literal in `data/parametric_sweep.py` into `data/parameters.json` section VI as the single source of truth; removes the unused `IX_conceptual_reference_values` section from `parameters.json`; moves the `BENCHMARK COMPLETE` banner in `run.py` to after the artifact listing with an artifact count; drops the corresponding integrity test (section IX no longer exists, 3 tests remain); and adds `tests/conftest.py` with an animated dot progress indicator that writes to `sys.stdout` to avoid column corruption on Windows terminals.
 

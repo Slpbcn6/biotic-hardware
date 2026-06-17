@@ -6,6 +6,7 @@ from scipy.stats import ttest_ind
 from data.config import load_parameters, output_path, rel
 from data.stats_utils import (
     cohens_d,
+    hedges_g,
     holm_correction,
     bootstrap_ci,
     power_from_d,
@@ -13,8 +14,6 @@ from data.stats_utils import (
 )
 
 METRICS = ["Merit_Scaled", "Coherence_Ratio", "Peak_AF"]
-
-VARIANCE_FRACTION = 0.15
 
 
 def run_inference(raw_file=None, output_file=None):
@@ -25,6 +24,9 @@ def run_inference(raw_file=None, output_file=None):
 
     params = load_parameters()
     modes = list(params["VIII_pipeline"]["morphologies"])
+    variance_fraction = float(
+        params["VI_experimental_sweep_parameters"].get("variance_collapse_fraction", 0.15)
+    )
 
     per_seed = {mode: {m: [] for m in METRICS} for mode in modes}
 
@@ -43,7 +45,7 @@ def run_inference(raw_file=None, output_file=None):
         reference_std[metric] = float(np.median(list(group_std[metric].values())))
         for mode in modes:
             if near_zero_variance(
-                group_std[metric][mode], reference_std[metric], VARIANCE_FRACTION
+                group_std[metric][mode], reference_std[metric], variance_fraction
             ):
                 degenerate[metric].add(mode)
 
@@ -51,7 +53,7 @@ def run_inference(raw_file=None, output_file=None):
         for mode in sorted(degenerate[metric]):
             print(
                 f"      WARNING: {mode} has near-zero seed variance for {metric} "
-                f"(std={group_std[metric][mode]:.2e} < {VARIANCE_FRACTION:.0%} of "
+                f"(std={group_std[metric][mode]:.2e} < {variance_fraction:.0%} of "
                 f"median {reference_std[metric]:.2e}); multi-seed inference reported as n/a"
             )
 
@@ -75,6 +77,7 @@ def run_inference(raw_file=None, output_file=None):
                 "CI_lower": round(ci_lower, 6),
                 "CI_upper": round(ci_upper, 6),
                 "Cohens_d": "n/a",
+                "Hedges_g": "n/a",
                 "p_raw": "n/a",
                 "p_holm": "n/a",
                 "Significant_holm": "n/a",
@@ -87,8 +90,10 @@ def run_inference(raw_file=None, output_file=None):
 
             _, p_raw = ttest_ind(vals_a, vals_b, equal_var=False)
             d = cohens_d(vals_a, vals_b)
+            g = hedges_g(vals_a, vals_b)
             power = power_from_d(d, n)
             rec["Cohens_d"] = round(d, 4) if not np.isnan(d) else "n/a"
+            rec["Hedges_g"] = round(g, 4) if not np.isnan(g) else "n/a"
             rec["p_raw"] = round(float(p_raw), 6)
             rec["power"] = round(power, 4) if not np.isnan(power) else "n/a"
             records.append(rec)
@@ -102,7 +107,7 @@ def run_inference(raw_file=None, output_file=None):
 
     fieldnames = [
         "Metric", "Pair", "N", "mean_diff",
-        "CI_lower", "CI_upper", "Cohens_d",
+        "CI_lower", "CI_upper", "Cohens_d", "Hedges_g",
         "p_raw", "p_holm", "Significant_holm", "power",
     ]
 
