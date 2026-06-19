@@ -222,7 +222,7 @@ Modules related to energy conversion are treated as architectural specifications
 
 The parameter **k** is defined as a schematic spatial scaling factor representing the mapping between normalized geometric space and simulation space. It is not derived from electromagnetic wave propagation constants. Consequently, it is not directly coupled to material parameters such as permeability (μr); both operate as independent parameters within the modeling abstraction.
 
-The implementation uses a hierarchical set of derived scaling variables (e.g. k0, k, k_eff) that operate at different stages of the simulation pipeline: base scaling initialization, coherence-modulated scaling, and post-response normalization. These variables are computational constructs used for numerical stability and do not represent a physically derived parameter hierarchy.
+The implementation uses a small set of derived scaling variables (`k0_base` and the coherence-modulated wave number `k = k0_base · (1 + k_mod_coeff · (Q − q_ref))`) that operate at different stages of the simulation pipeline: base scaling initialization and coherence-modulated scaling. These variables are computational constructs used for numerical stability and do not represent a physically derived parameter hierarchy.
 
 ---
 
