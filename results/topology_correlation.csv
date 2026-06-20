@@ -1,0 +1,13 @@
+Hypothesis,Metric,Target,k,N,r,p,threshold_abs_r,passes_threshold,loocv_mean_r,loocv_min_r,loocv_max_r,loocv_sign_stable
+H1,eigenratio_R,Merit_Scaled,6,10,-0.091781,0.800913,0.632,no,-0.088604,-0.254259,0.11438,no
+H2,algebraic_connectivity_lambda_2,Merit_Scaled,6,10,-0.280438,0.432554,0.632,no,-0.27848,-0.494595,-0.055219,yes
+H3,clustering_coefficient,Merit_Scaled,6,10,0.33664,0.341533,0.632,no,0.342727,0.171942,0.590587,yes
+H1,eigenratio_R,Merit_Scaled,3,9,0.461437,0.211197,0.632,no,0.464875,0.292037,0.853355,yes
+H2,algebraic_connectivity_lambda_2,Merit_Scaled,3,9,-0.655955,0.05505,0.632,no,-0.65574,-0.876432,-0.545689,yes
+H3,clustering_coefficient,Merit_Scaled,3,10,0.264789,0.459706,0.632,no,0.28143,0.052478,0.651408,yes
+H1,eigenratio_R,Merit_Scaled,10,10,-0.046956,0.897509,0.632,no,-0.019523,-0.201433,0.532609,no
+H2,algebraic_connectivity_lambda_2,Merit_Scaled,10,10,-0.186761,0.605415,0.632,no,-0.188104,-0.513116,0.050328,no
+H3,clustering_coefficient,Merit_Scaled,10,10,0.276052,0.440088,0.632,no,0.281426,0.07731,0.674351,yes
+H1,eigenratio_R,Merit_Scaled,15,10,-0.038369,0.916192,0.632,no,-0.016211,-0.203947,0.485244,no
+H2,algebraic_connectivity_lambda_2,Merit_Scaled,15,10,-0.0564,0.877016,0.632,no,-0.061287,-0.421593,0.212784,no
+H3,clustering_coefficient,Merit_Scaled,15,10,0.031517,0.931125,0.632,no,0.054338,-0.153122,0.596386,no

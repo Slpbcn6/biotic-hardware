@@ -49,7 +49,7 @@ def run_sweep(mode, output_file, tensor_file, seed_override=None):
     Parameters
     ----------
     mode : str
-        One of: 'fractal', 'botanical', 'random', 'fibonacci', 'voronoi'.
+        Any morphology name accepted by input_generator.load_morphology.
     output_file : str
         Path for the scalar CSV output.
     tensor_file : str
@@ -86,18 +86,7 @@ def run_sweep(mode, output_file, tensor_file, seed_override=None):
     k_mod_coeff = float(af_cfg["k_modulation_coeff"])
     q_ref = float(af_cfg["q_reference"])
 
-    generators = {
-        "fractal":   input_generator.generate_fractal_morphology,
-        "botanical": input_generator.generate_botanical_graph,
-        "random":    input_generator.generate_random_control,
-        "fibonacci": input_generator.generate_fibonacci_spiral,
-        "voronoi":   input_generator.generate_voronoi_control,
-    }
-
-    if mode not in generators:
-        raise ValueError(f"Unknown mode: {mode}")
-
-    base_nodes = generators[mode](n_nodes=n_nodes, seed=seed)
+    base_nodes = input_generator.load_morphology(mode=mode, n_nodes=n_nodes, seed=seed)
 
     valid, report = validate_topology(base_nodes, connection_radius=connection_radius)
     if not valid:

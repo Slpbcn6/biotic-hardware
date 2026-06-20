@@ -23,6 +23,8 @@ ESSENTIAL_FILES = [
     "data/plot_sensitivity.py",
     "data/input_generator.py",
     "data/topology_validator.py",
+    "data/graph_topology.py",
+    "data/topology_analysis.py",
     "data/multi_seed_analysis.py",
     "data/inference_analysis.py",
     "data/parametric_sweep.py",
@@ -76,6 +78,8 @@ def test_morphological_divergence():
         inference_csv  = tmp_path / "outputs/inference_summary.csv"
         summary_json   = tmp_path / "outputs/exploration_summary.json"
         robustness_csv = tmp_path / "outputs/robustness_matrix.csv"
+        topo_summary_csv     = tmp_path / "outputs/graph_topology_summary.csv"
+        topo_correlation_csv = tmp_path / "outputs/topology_correlation.csv"
 
         assert stat_csv.exists(),       "curve_separation_summary.csv missing"
         assert multi_csv.exists(),      "multi_seed_summary.csv missing"
@@ -83,6 +87,8 @@ def test_morphological_divergence():
         assert inference_csv.exists(),  "inference_summary.csv missing"
         assert summary_json.exists(),   "exploration_summary.json missing"
         assert robustness_csv.exists(), "robustness_matrix.csv missing"
+        assert topo_summary_csv.exists(),     "graph_topology_summary.csv missing"
+        assert topo_correlation_csv.exists(), "topology_correlation.csv missing"
 
         out_png  = tmp_path / "outputs/sensitivity_analysis.png"
         data_png = tmp_path / "data/sensitivity_analysis.png"
@@ -146,13 +152,38 @@ def test_morphological_divergence():
             f"Expected {expected_rows} rows in inference_summary, got {len(df_inf)}"
         )
 
+        df_topo = pd.read_csv(topo_summary_csv)
+        required_topo_cols = [
+            "Morphology", "k", "n_seeds",
+            "lambda_2_mean", "eigenratio_mean", "clustering_mean",
+            "mean_degree", "Merit_Mean",
+        ]
+        for col in required_topo_cols:
+            assert col in df_topo.columns, f"Missing column in graph_topology_summary: {col}"
+        topo_modes = set(df_topo["Morphology"].unique())
+        assert topo_modes == set(MORPHOLOGY_MODES), (
+            "graph_topology_summary must cover every morphology"
+        )
+
+        df_corr = pd.read_csv(topo_correlation_csv)
+        required_corr_cols = [
+            "Hypothesis", "Metric", "k", "N", "r", "p",
+            "threshold_abs_r", "passes_threshold",
+            "loocv_mean_r", "loocv_sign_stable",
+        ]
+        for col in required_corr_cols:
+            assert col in df_corr.columns, f"Missing column in topology_correlation: {col}"
+        assert set(df_corr["Hypothesis"].unique()) == {"H1", "H2", "H3"}, (
+            "topology_correlation must report H1, H2 and H3"
+        )
+
         with open(summary_json) as fj:
             summary = json.load(fj)
 
         assert "pipeline_version"           in summary
         assert "experimental_configuration" in summary
         assert "multi_seed_analysis"        in summary
-        assert summary["pipeline_version"] == "1.2.6"
+        assert summary["pipeline_version"] == "1.3.0"
         assert set(summary["morphologies"]) == set(MORPHOLOGY_MODES)
 
         exp_cfg = summary["experimental_configuration"]

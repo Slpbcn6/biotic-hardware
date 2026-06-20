@@ -3,13 +3,13 @@
 <p align="center">
   <a href="https://github.com/Slpbcn6/biotic-hardware/actions/workflows/ci.yml"><img src="https://github.com/Slpbcn6/biotic-hardware/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://www.python.org"><img src="https://img.shields.io/badge/python-3.12-blue?logo=python&logoColor=white" alt="Python 3.12"></a>
-  <a href="https://creativecommons.org/licenses/by/4.0/"><img src="https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey" alt="License: CC BY 4.0"></a>
-  <a href="https://github.com/Slpbcn6/biotic-hardware/blob/main/CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.2.6-green" alt="Version"></a>
+  <a href="https://github.com/Slpbcn6/biotic-hardware/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow" alt="License: MIT"></a>
+  <a href="https://github.com/Slpbcn6/biotic-hardware/blob/main/CHANGELOG.md"><img src="https://img.shields.io/badge/version-1.3.0-green" alt="Version"></a>
   <a href="https://doi.org/10.5281/zenodo.20590864"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.20590864.svg" alt="DOI"></a>
 </p>
 
 
-![Biotic Hardware Synthesis](assets/readme1-2-6.svg)
+![Biotic Hardware Synthesis](assets/readme1-3-0.svg)
 
 
 This repository provides a reproducible computational framework for simulating structured network dynamics inspired by morphological datasets. It implements a full pipeline for parameter-driven simulation of coherence metrics, phase-based interference behavior (complex-valued phasor summation), sensitivity analysis under parametric variation, and formal statistical separation testing — producing numerical outputs, statistical artifacts, and visualization from a single executable workflow.
@@ -46,25 +46,28 @@ To run the full computational simulation pipeline:
 python run.py
 ```
 
-This executes the complete computational workflow (10 steps — see [OVERVIEW.md](./OVERVIEW.md) for the full numbered breakdown):
+This executes the complete computational workflow (16 steps — ten morphology sweeps plus six analysis stages; see [OVERVIEW.md](./OVERVIEW.md) for the full numbered breakdown):
 
 - Pre-simulation topology validation per sweep (connectivity, node count, degenerate structure detection)
-- Distributed Phased Array simulation (phase-based interference superposition) across five morphologies: fractal, botanical, random control, Fibonacci spiral, and Voronoi control
-- Statistical separation testing: Welch t-test + Cohen's d across 3 metrics and 10 morphology pairs
+- Distributed Phased Array simulation (phase-based interference superposition) across ten morphologies: fractal, botanical, random control, Fibonacci spiral, Voronoi control, hexagonal lattice, diffusion-limited aggregation (DLA), Gaussian clusters, concentric rings, and reticulate vein growth
+- Statistical separation testing: Welch t-test + Cohen's d across 3 metrics and 45 morphology pairs
 - Parametric sensitivity analysis and visualization of system response under geometric scaling
 - Multi-seed analysis: mean ± std distributions across N=30 seeds (seeds 42–71)
 - Multi-seed classical inference: Welch t-test, Cohen's d, bootstrap CI, Holm-Bonferroni correction, and post-hoc power over N=30 per-seed means; morphologies with near-zero seed variance are flagged n/a instead of being reported as findings
+- Graph-topology analysis: per-morphology k-nearest-neighbour graphs, spectral descriptors (algebraic connectivity lambda_2, eigenratio R, clustering coefficient), and pre-specified topology-vs-merit correlations with leave-one-out cross-validation
 - Parametric robustness sweep: k0 × beta × Q grid (5×5×5 = 125 combinations) confirming botanical separation is structural, not a tuning artifact
 
 Outputs (generated artifacts are written to `outputs/`):
 
 - Console logs of simulation results with per-sweep summary metrics
-- `outputs/simulation_results_{fractal,botanical,random,fibonacci,voronoi}.csv` (Scalar Benchmark Contract)
-- `outputs/af_tensors_{fractal,botanical,random,fibonacci,voronoi}.npz` (Tensor Research Layer)
-- `outputs/curve_separation_summary.csv` (curve separation descriptors: Welch t-test + Cohen's d on 30 autocorrelated sweep steps, 30 rows)
+- `outputs/simulation_results_{fractal,botanical,random,fibonacci,voronoi,hexagonal,dla,clusters,concentric,reticulate}.csv` (Scalar Benchmark Contract)
+- `outputs/af_tensors_{...}.npz` (Tensor Research Layer, one per morphology)
+- `outputs/curve_separation_summary.csv` (curve separation descriptors: Welch t-test + Cohen's d on the autocorrelated sweep steps, 3 metrics × 45 pairs)
 - `outputs/multi_seed_summary.csv` (mean ± std per morphology, N=30 seeds (seeds 42–71))
 - `outputs/multi_seed_raw.csv` (per-seed means per morphology × metric; raw input consumed by the inference step)
-- `outputs/inference_summary.csv` (classical inference: Welch t-test, Cohen's d, bootstrap CI, Holm-corrected p, post-hoc power; near-zero-variance pairs reported as n/a)
+- `outputs/inference_summary.csv` (classical inference: Welch t-test, Cohen's d, Hedges' g, bootstrap CI, Holm-corrected p, post-hoc power; near-zero-variance pairs reported as n/a)
+- `outputs/graph_topology_summary.csv` (per-morphology spectral and classical graph descriptors averaged over the 30 seeds, with mean merit)
+- `outputs/topology_correlation.csv` (H1/H2/H3 topology-vs-merit Pearson correlations across the ten morphologies, with LOOCV and the pre-specified significance threshold flag, at each k)
 - `outputs/exploration_summary.json` (machine-readable experiment record)
 - `outputs/sensitivity_analysis.png` — sensitivity curves + statistical heatmaps (also written to `data/sensitivity_analysis.png`)
 - `outputs/robustness_matrix.csv` (parametric robustness grid: 125 combinations of k0, beta, Q; records the botanical-vs-random, botanical-vs-fractal, and botanical-vs-voronoi curve-separation ratios and whether the botanical separation holds against both stochastic controls at each point)
@@ -73,13 +76,15 @@ Outputs (generated artifacts are written to `outputs/`):
 
 ## Principal Finding
 
-v1.2.3 separates two analytical lenses that earlier versions conflated. The single-seed **curve-separation descriptor** (`curve_separation_summary.csv`) compares 30 autocorrelated sweep steps and is descriptive only — its Welch values are not independent-sample tests. The **classical inference** (`inference_summary.csv`) treats each seed's mean as one i.i.d. observation across N=30 seeds (seeds 42–71) and is the statistically valid test.
+The benchmark separates two analytical lenses that earlier versions conflated. The single-seed **curve-separation descriptor** (`curve_separation_summary.csv`) compares autocorrelated sweep steps and is descriptive only — its Welch values are not independent-sample tests. The **classical inference** (`inference_summary.csv`) treats each seed's mean as one i.i.d. observation across N=30 seeds (seeds 42–71) and is the statistically valid test.
 
-Crucially, the fractal and Fibonacci morphologies are seed-frozen: their per-seed standard deviation is ≈ 0.0005, roughly two orders of magnitude below the seed-variable morphologies (botanical, random, Voronoi: std ≈ 0.012–0.020). Any multi-seed test involving a seed-frozen morphology divides by a near-zero variance and produces spurious, astronomically large effect sizes (|d| up to ≈ 26). v1.2.3 detects this with a variance-floor guard and reports every such pair as **n/a** (18 of the 30 pairs) instead of as a finding.
+Three of the ten morphologies are seed-frozen by construction — fractal, Fibonacci, and hexagonal — with per-seed standard deviation ≈ 0.0005–0.001, roughly two orders of magnitude below the seed-variable morphologies. Any multi-seed test involving a seed-frozen morphology divides by a near-zero variance and produces spurious, astronomically large effect sizes. A variance-floor guard detects this per metric and reports every such pair as **n/a** (24 of the 45 pairs on Merit_Scaled and Peak_AF; 9 of 45 on Coherence_Ratio, where only fractal collapses) instead of as a finding.
 
-Of the 12 statistically valid pairs, 4 survive Holm–Bonferroni correction — and all four are the same result: **botanical separates from both stochastic controls**, versus random and versus Voronoi, on Merit_Scaled (d = −0.79 and −1.05) and on Peak_AF (d = −0.86 and −1.19), with post-hoc power 0.85–0.99. Botanical sits consistently *below* the random and Voronoi controls; no claim is made about any comparison involving the seed-frozen morphologies. Merit_Scaled is an internal structural indicator within the abstract simulation space, not a physical performance measure.
+v1.3.0 raises the benchmark from five morphologies to ten, which more than triples the multiple-comparison burden: Holm–Bonferroni now corrects across **21 valid pairs per metric** instead of the earlier handful. The botanical result survives this heavier burden. On both Merit_Scaled and Peak_AF, botanical separates with Holm-corrected significance from four of the six other seed-variable morphologies, sitting **below the two high-merit stochastic controls** — Voronoi (d = −1.05 on Merit, −1.19 on Peak_AF) and reticulate vein growth (d = −1.04, −1.22) — and **above the two low-merit regular controls** — Gaussian clusters (d = +1.64, +1.66) and concentric rings (d = +1.52, +1.57) — with post-hoc power 0.98–1.0. Under the larger correction family botanical is no longer separable from the random control or from DLA (both fall below significance after Holm), so v1.3.0 reports botanical's signature as a robust mid-merit position relative to ordered and stochastic extremes rather than a blanket "below all controls" claim. Merit_Scaled is an internal structural indicator within the abstract simulation space, not a physical performance measure.
 
-Parametric robustness (symmetric noise): under the symmetric noise regime (`noise_level=0.15` applied identically to all morphologies), botanical's curve separation from the random control holds across **100% of the 125-point k0 × beta × Q parameter grid** (5×5×5; see `outputs/robustness_matrix.csv`), with the botanical-vs-random separation ratio staying between 0.45 and 0.49 (well above the 0.10 threshold) at every grid point. The matrix also records the botanical-vs-fractal ratio (0.34–0.36) at each point for reference. The persistence under fair comparison conditions confirms the separation is a structural property of botanical morphology, not an artefact of perturbation or parameter tuning.
+**Topology lens (exploratory).** A graph-topology layer builds k-nearest-neighbour graphs per morphology and tests three pre-specified hypotheses across the ten morphologies — H1 (eigenratio R vs merit), H2 (algebraic connectivity lambda_2 vs merit), H3 (clustering coefficient vs merit) — by Pearson correlation with leave-one-out cross-validation, against a pre-specified threshold of |r| ≥ 0.632. The test is anchored on the pre-specified primary neighbourhood size k = 6, with k = 3, 10, and 15 swept as a robustness check that no relationship is an artefact of a single graph resolution. **None of the three reaches the pre-specified significance criterion (|r| ≥ 0.632 with p < 0.05) at any k.** At the primary resolution (k = 6, all N = 10 morphologies connected) the strongest hypothesis, H2, gives r = −0.28 (p ≈ 0.43) — no linear relationship between spectral structure and merit. Across the robustness sweep the strongest correlation is at k = 3: there H2 reaches r = −0.66, exceeding the |r| bar, but it still falls short of significance (p ≈ 0.055) and rests on only N = 9 morphologies, because one graph disconnects at k = 3 and is dropped. The 0.632 bar is the critical Pearson r for ten points, and across all k the |r| values range roughly 0.03–0.66. At the available sample size the simple spectral descriptors do not linearly predict merit; this is reported honestly as a null result and the framework is provided so the hypothesis can be revisited with a larger morphology set.
+
+Parametric robustness (symmetric noise): under the symmetric noise regime (`noise_level=0.15` applied identically to all morphologies), botanical's curve separation from the random control holds across **100% of the 125-point k0 × beta × Q parameter grid** (5×5×5; see `outputs/robustness_matrix.csv`), with the botanical-vs-random separation ratio staying well above the 0.10 threshold at every grid point. The matrix also records the botanical-vs-fractal and botanical-vs-voronoi ratios at each point for reference. The persistence under fair comparison conditions confirms the separation is a structural property of botanical morphology, not an artefact of perturbation or parameter tuning.
 
 ---
 
@@ -104,7 +109,7 @@ Simulation baseline: [/data/parameters.json](./data/parameters.json)
 
 ## Morphological Taxonomy Rationale
 
-The five morphological types — fractal branching, botanical, random control, Fibonacci spiral, and Voronoi — are synthetic abstractions of structural patterns observable in nature. Each represents a distinct topology class: deterministic recursive structures, branching plant networks, unstructured spatial distributions, golden-ratio angular distributions, and proximity-based tessellations.
+The ten morphological types — fractal branching, botanical, random control, Fibonacci spiral, Voronoi, hexagonal lattice, diffusion-limited aggregation (DLA), Gaussian clusters, concentric rings, and reticulate vein growth — are synthetic abstractions of structural patterns observable in nature. Each represents a distinct topology class: deterministic recursive structures, branching plant networks, unstructured spatial distributions, golden-ratio angular distributions, proximity-based tessellations, regular crystalline packing, stochastic dendritic growth, locally dense clumping, radial banding, and anastomosing filament networks. Three of the ten — fractal, Fibonacci, and hexagonal — are seed-frozen by construction (their generators ignore the seed beyond cosmetic jitter) and act as deterministic reference structures; the other seven carry genuine seed-to-seed variance.
 
 The generators produce point-set geometries from mathematical rules. No external dataset is parsed or reproduced.
 
@@ -136,7 +141,7 @@ The coupling model includes phenomenological scaling coefficients used to modula
 
 ### Spatial Configuration
 
-Nodes are distributed dynamically based on the selected morphology (fractal, botanical, random control, Fibonacci spiral, or Voronoi control), comprising an array of N = 64 nodes.
+Nodes are distributed dynamically based on the selected morphology (one of the ten: fractal, botanical, random control, Fibonacci spiral, Voronoi control, hexagonal lattice, DLA, Gaussian clusters, concentric rings, or reticulate vein growth), comprising an array of N = 64 nodes.
 
 **Geometric Treatment:** The transformation is strictly homotetic. The base topology remains fixed while the global scale is modulated continuously by a spacing parameter d from 0.1 to 2.0 meters (`positions = base_nodes * d`).
 
@@ -178,12 +183,28 @@ Exported as `outputs/af_tensors_*.npz`. Contains the preserved latent state of t
 
 ## Statistical Analysis
 
-After all five sweeps complete, the pipeline executes formal statistical separation testing:
+After all ten sweeps complete, the pipeline executes formal statistical separation testing:
 
-- **Curve-separation descriptor** (`outputs/curve_separation_summary.csv`, 7 columns: Metric, Pair, t_statistic, p_value, Significant_p05, Cohens_d, Effect_size): a Welch t-test + Cohen's d computed over the autocorrelated sweep steps for all 3 metric × 10 pair combinations (30 rows). This is a descriptive separation measure, not an independent-sample test.
-- **Formal multi-seed inference** (`outputs/inference_summary.csv`): Welch t-test, Cohen's d, bootstrap CI, Holm-Bonferroni and post-hoc power over the N=30 per-seed means, with a variance-collapse guard that marks seed-frozen morphologies (fractal, Fibonacci) as `n/a`.
+- **Curve-separation descriptor** (`outputs/curve_separation_summary.csv`, 7 columns: Metric, Pair, t_statistic, p_value, Significant_p05, Cohens_d, Effect_size): a Welch t-test + Cohen's d computed over the autocorrelated sweep steps for all 3 metric × 45 pair combinations. This is a descriptive separation measure, not an independent-sample test.
+- **Formal multi-seed inference** (`outputs/inference_summary.csv`): Welch t-test, Cohen's d, Hedges' g, bootstrap CI, Holm-Bonferroni and post-hoc power over the N=30 per-seed means, with a variance-collapse guard that marks seed-frozen morphologies (fractal, Fibonacci, hexagonal) as `n/a`.
 
 Multi-seed analysis runs each morphology through N=30 seeds (seeds 42–71) and reports mean ± std per metric, confirming result stability across random initializations.
+
+---
+
+## Graph Topology Analysis
+
+In addition to the field-coherence metrics, `data/graph_topology.py` reduces each morphology's node geometry to a graph and characterizes its structure independently of the array-factor computation. For each morphology and seed it builds a symmetric k-nearest-neighbour graph, forms the combinatorial Laplacian `L = D − A`, and computes its eigenspectrum with `scipy.linalg.eigh`. From the spectrum it derives the algebraic connectivity (lambda_2, the smallest non-zero eigenvalue), the largest eigenvalue (lambda_max), and the eigenratio `R = lambda_max / lambda_2`, together with the average clustering coefficient and classical descriptors (mean degree, density, characteristic path length). Disconnected graphs (more than one near-zero eigenvalue) are reported as `n/a` for the connectivity-dependent quantities — the module never emits a silent `inf` or `NaN`.
+
+`data/topology_analysis.py` aggregates these per-seed descriptors into `outputs/graph_topology_summary.csv` (one row per morphology × k, averaged over the 30 seeds) and tests three pre-specified hypotheses about whether structure predicts the merit metric across the ten morphologies:
+
+- **H1** — eigenratio R vs Merit_Scaled
+- **H2** — algebraic connectivity lambda_2 vs Merit_Scaled
+- **H3** — clustering coefficient vs Merit_Scaled
+
+Each hypothesis is evaluated by Pearson correlation with leave-one-out cross-validation at several neighbourhood sizes (k = 3, 6, 10, 15), against a pre-specified threshold of |r| ≥ 0.632, and written to `outputs/topology_correlation.csv` (r, p, LOOCV mean/min/max r, sign stability, threshold flag).
+
+**Result:** none of the three reaches the pre-specified criterion (|r| ≥ 0.632 with p < 0.05) at any k. At the pre-specified primary resolution (k = 6, all N = 10 morphologies connected) the strongest hypothesis is H2 at r = −0.28 (p ≈ 0.43) — no linear structure-to-merit relationship. Across the robustness sweep (k = 3, 10, 15) the strongest correlation is at k = 3, where H2 reaches r = −0.66, exceeding the |r| bar but failing significance at p ≈ 0.055 on N = 9 (one graph disconnects at k = 3 and is dropped). At N = 10 morphologies the test is underpowered and the simple spectral descriptors do not linearly predict merit; the layer is reported as an exploratory null and is intended to be revisited with a larger morphology set. This is the analytical reason v1.3.0 expands the benchmark to ten morphologies — to give the topology lens enough distinct structures to be meaningful.
 
 ---
 
@@ -191,11 +212,15 @@ Multi-seed analysis runs each morphology through N=30 seeds (seeds 42–71) and 
 
 A parametric sweep evaluates system response under continuous variation of the global spatial scale d. The visual analysis extracts and normalizes specific variables from the scalar CSV datasets.
 
-The visualization generates a combined figure with two sections:
+The visualization generates a combined figure with four sections:
 
-**Section 1 — Sensitivity Curves:** Normalized Coherence Ratio (`norm(c)`) and Normalized Merit Scaled (`norm(ms)`) across all five morphologies.
+**Section 1 — Sensitivity curves:** Merit Scaled, Coherence Ratio, and Peak AF across the continuous distance sweep for all ten morphologies, with shaded ±1 SD bands from the per-seed means.
 
-**Section 2 — Statistical Heatmaps:** p-value matrix (3 metrics × 10 pairs) where green = significant at p < 0.05, and |Cohen's d| matrix where blue intensity = effect size magnitude.
+**Section 2 — Seed distribution:** per-morphology box plots of Merit Scaled over the N = 30 independent seeds, with the individual seed values overlaid.
+
+**Section 3 — Topology vs merit:** two scatter panels of algebraic connectivity lambda_2 against mean Merit Scaled across the ten morphologies — the pre-specified primary resolution (k = 6, N = 10) and a robustness-sweep resolution (k = 3, N = 9). Each panel reports its Pearson r, p-value, and the pre-specified |r| ≥ 0.632 / p < 0.05 verdict; both are null (see the topology lens above).
+
+**Section 4 — Pairwise effect size:** |Cohen's d| matrices (lower triangle per metric: Merit Scaled, Coherence Ratio, Peak AF), with colour intensity encoding effect-size magnitude, an asterisk marking pairs that remain significant after Holm–Bonferroni, and seed-frozen pairs shown as n/a.
 
 Output: `outputs/sensitivity_analysis.png` (also written to `data/sensitivity_analysis.png`)
 

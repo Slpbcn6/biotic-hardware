@@ -1,7 +1,11 @@
+import contextlib
+import csv
+import io
+import json
 import subprocess
 import sys
-import csv
-import json
+import threading
+import time
 from itertools import combinations
 from pathlib import Path
 
@@ -20,16 +24,58 @@ from data.stats_utils import cohens_d
 ROOT = Path(__file__).parent
 
 MORPHOLOGY_MODES = morphologies()
-TOTAL_STEPS = len(MORPHOLOGY_MODES) + 5
+TOTAL_STEPS = len(MORPHOLOGY_MODES) + 6
 
 
-def _step(n, label):
-    print(f"\n[{n}/{TOTAL_STEPS}] {label}")
+def _step(n, label, func):
+    title = f"[{n}/{TOTAL_STEPS}] {label}"
+    print()
+    if not sys.__stdout__.isatty():
+        print(title)
+        return func()
+
+    stop = threading.Event()
+
+    def _animate():
+        frames = (" .", " ..", " ...")
+        i = 0
+        while not stop.is_set():
+            sys.__stdout__.write("\r" + title + frames[i % len(frames)] + "   ")
+            sys.__stdout__.flush()
+            time.sleep(0.4)
+            i += 1
+
+    buffer = io.StringIO()
+    spinner = threading.Thread(target=_animate, daemon=True)
+    spinner.start()
+    try:
+        with contextlib.redirect_stdout(buffer):
+            result = func()
+    finally:
+        stop.set()
+        spinner.join()
+        sys.__stdout__.write("\r" + title + "    \n")
+        sys.__stdout__.flush()
+        captured = buffer.getvalue()
+        if captured:
+            sys.__stdout__.write(captured)
+            sys.__stdout__.flush()
+    return result
 
 
 def run(script):
     print(f"\n[RUN] {script}")
-    subprocess.run([sys.executable, str(ROOT / script)], check=True)
+    result = subprocess.run(
+        [sys.executable, str(ROOT / script)],
+        capture_output=True,
+        text=True,
+    )
+    if result.stdout:
+        print(result.stdout, end="")
+    if result.returncode != 0:
+        if result.stderr:
+            print(result.stderr, end="")
+        raise subprocess.CalledProcessError(result.returncode, script)
 
 
 def run_coupling(mode):
@@ -134,6 +180,12 @@ def inference_step():
     return records
 
 
+def topology_step():
+    from data.topology_analysis import run_topology_analysis
+    results = run_topology_analysis()
+    return results
+
+
 def write_exploration_summary(multi_seed_results, output_file=None):
     if output_file is None:
         output_file = output_path("exploration_summary.json")
@@ -191,28 +243,24 @@ def main():
     print("===================================================")
 
     for idx, mode in enumerate(MORPHOLOGY_MODES, start=1):
-        _step(idx, f"{mode.upper()} sweep...")
-        run_coupling(mode)
+        _step(idx, f"{mode.upper()} sweep", lambda mode=mode: run_coupling(mode))
 
-    _step(n + 1, f"Curve separation descriptors (Welch t + Cohen d, 3 metrics x {total_pairs} pairs)...")
-    compute_statistical_summary()
+    _step(n + 1, f"Curve separation descriptors (Welch t + Cohen d, 3 metrics x {total_pairs} pairs)", compute_statistical_summary)
 
-    _step(n + 2, f"Multi-seed analysis (N={len(seeds)} seeds x {n} morphologies)...")
-    multi_seed_results = multi_seed_step()
+    multi_seed_results = _step(n + 2, f"Multi-seed analysis (N={len(seeds)} seeds x {n} morphologies)", multi_seed_step)
 
     print("\n      Writing exploration_summary.json...")
     write_exploration_summary(multi_seed_results)
 
-    _step(n + 3, "Inference analysis (Welch + Holm-Bonferroni + bootstrap CI 95% + power)...")
-    inference_step()
+    _step(n + 3, "Inference analysis (Welch + Holm-Bonferroni + bootstrap CI 95% + power)", inference_step)
 
-    _step(n + 4, "Sensitivity plot (curves + stat heatmaps)...")
-    run("data/plot_sensitivity.py")
+    _step(n + 4, "Graph-topology analysis (union k-NN spectra + clustering vs merit, N=10)", topology_step)
+
+    _step(n + 5, "Sensitivity plot (curves + stat heatmaps)", lambda: run("data/plot_sensitivity.py"))
 
     from data.parametric_sweep import run_parametric_sweep, effective_grids
     k0_grid, beta_grid, q_grid = effective_grids()
-    _step(n + 5, f"Parametric robustness sweep ({len(k0_grid)} x {len(beta_grid)} x {len(q_grid)} = {len(k0_grid) * len(beta_grid) * len(q_grid)} grid points)...")
-    run_parametric_sweep()
+    _step(n + 6, f"Parametric robustness sweep ({len(k0_grid)} x {len(beta_grid)} x {len(q_grid)} = {len(k0_grid) * len(beta_grid) * len(q_grid)} grid points)", run_parametric_sweep)
 
     out_dir = ensure_output_dir()
     artifacts = sorted(

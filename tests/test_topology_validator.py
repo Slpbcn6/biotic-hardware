@@ -54,10 +54,13 @@ def test_connected_components_two():
     assert _connected_components(positions, 0.4) == 2
 
 
-@pytest.mark.parametrize("mode", ["fractal", "botanical", "random", "fibonacci", "voronoi"])
+@pytest.mark.parametrize("mode", [
+    "fractal", "botanical", "random", "fibonacci", "voronoi",
+    "hexagonal", "dla", "clusters", "concentric", "reticulate",
+])
 def test_generated_morphologies_validate(mode):
     from data.input_generator import load_morphology
     nodes = load_morphology(mode=mode, n_nodes=64, seed=42)
-    ok, report = validate_topology(nodes, connection_radius=4.05, min_nodes=8)
-    assert isinstance(ok, bool)
+    ok, report = validate_topology(nodes, connection_radius=2.0, min_nodes=8)
+    assert ok, report
     assert len(report) >= 1

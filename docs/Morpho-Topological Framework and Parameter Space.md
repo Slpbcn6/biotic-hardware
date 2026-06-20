@@ -6,26 +6,29 @@ This repository implements a generative morpho-topological simulation framework 
 
 All electromagnetic and engineering terminology in this document is inherited domain vocabulary, used as structured labels for mathematical and topological relationships within a graph-based model. These terms do not correspond to physical systems and do not simulate physical behavior. Likewise, every equation written in classical scientific notation is an isomorphic mapping between graph-state transformations and legacy symbolic encodings; none represents a physical law, a causal mechanism, or a predictive model of a real-world system.
 
-Parameters are versioned symbolic artifacts. The active configuration lives in `parameters.json` (current: v1.2.6) and defines structural relationships within the computational pipeline. Individual values evolve across releases, but their status is constant: abstract structural identifiers, never physical quantities. No interpretative binding between versioned parameters and physical reality is defined or implied at any layer.
+Parameters are versioned symbolic artifacts. The active configuration lives in `parameters.json` (current: v1.3.0) and defines structural relationships within the computational pipeline. Individual values evolve across releases, but their status is constant: abstract structural identifiers, never physical quantities. No interpretative binding between versioned parameters and physical reality is defined or implied at any layer.
 
 ### Reproducible pipeline vs. conceptual reference (the key reading guide)
 
 The single most important distinction in this document:
 
-- The executable v1.2.6 pipeline reproduces the morphological benchmark — the five morphology sweeps, curve-separation descriptors, multi-seed inference, and the parametric robustness sweep — evaluated by `data/node_coupling.py` and the statistical modules. The minimal parameter set it actually consumes lives in `data/parameters.json` (sections IV, VI and VII).
+- The executable v1.3.0 pipeline reproduces the morphological benchmark — the ten morphology sweeps, curve-separation descriptors, multi-seed inference, the parametric robustness sweep, and the graph-topology analysis — evaluated by `data/node_coupling.py`, `data/graph_topology.py`, and the statistical modules. The minimal parameter set it actually consumes lives in `data/parameters.json` (sections IV, VI, VII and the topology section).
 - The resonance baseline consolidated in Appendix B ($L$, $C$, $f \approx 12.5$ Hz, $Q$, $R$) and several constructs discussed in the narrative sections and consolidated in Appendix A — for example the coupling parameter $K_{\text{DIPOLE}}$, the permeability bound $\mu_r \approx 1.25 \times 10^6$, and the plasma-frequency analogue — are conceptual reference quantities ONLY. They are NOT inputs to the executable pipeline and are not asserted as physically realizable.
 
-When in doubt about whether something is "real" in the code or "narrative scaffolding," `data/parameters.json` (sections IV, VI and VII) is the source of truth for what runs.
+When in doubt about whether something is "real" in the code or "narrative scaffolding," `data/parameters.json` (sections IV, VI, VII and the topology section) is the source of truth for what runs.
 
 ### Explicit mapping: implemented vs. conceptual reference
 
-The table below makes the distinction above explicit, construct by construct. "Implemented" means the quantity is consumed or computed by the executable v1.2.6 pipeline; "conceptual reference only" means it belongs to the narrative abstraction layer and is never read by the running code. The reproducible parameter set lives in `data/parameters.json` (sections IV, VI and VII); everything marked as conceptual reference is documentation of the abstract design target, not a pipeline input.
+The table below makes the distinction above explicit, construct by construct. "Implemented" means the quantity is consumed or computed by the executable v1.3.0 pipeline; "conceptual reference only" means it belongs to the narrative abstraction layer and is never read by the running code. The reproducible parameter set lives in `data/parameters.json` (sections IV, VI, VII and the topology section); everything marked as conceptual reference is documentation of the abstract design target, not a pipeline input.
 
-| Construct / quantity | Status in the executable v1.2.6 pipeline | Where it lives |
+| Construct / quantity | Status in the executable v1.3.0 pipeline | Where it lives |
 |---|---|---|
-| Morphology generation (botanical, fractal, fibonacci, random, voronoi) | Implemented | `data/input_generator.py` |
+| Morphology generation (botanical, fractal, fibonacci, random, voronoi, hexagonal, dla, clusters, concentric, reticulate) | Implemented | `data/input_generator.py` |
 | Topology validation (connectivity, degeneracy, node count) | Implemented | `data/topology_validator.py` |
 | Array-factor / phased-array superposition | Implemented | `data/node_coupling.py` |
+| Graph-topology descriptors (k-NN graph, algebraic connectivity lambda_2, eigenratio R, clustering coefficient, classical metrics) | Implemented | `data/graph_topology.py` |
+| Topology-vs-merit hypotheses (H1 R, H2 lambda_2, H3 clustering; Pearson + LOOCV) | Implemented | `data/topology_analysis.py`, `data/stats_utils.py` |
+| Topology parameters (`k_primary`, `k_robustness`, `correlation_threshold`) | Implemented | `data/parameters.json` topology section |
 | Base coupling parameters (`k0_base`, `k_modulation_coeff`, `q_reference`, `beta_loss_factor`) | Implemented | `data/parameters.json` sections VI–VII |
 | Individual quality factor (`individual_q_factor`) | Implemented | `data/parameters.json` section IV |
 | Connection radius (`connection_radius_m`) | Implemented | `data/parameters.json` section VI |
@@ -223,11 +226,11 @@ All parameters in this section are simulation inputs defining the abstract mater
 
 ## Appendix A: Quantitative Functional Isomorphism Table
 
-This appendix consolidates, as a single conceptual reference, the abstract metrics distributed across the preceding sections. It is a theoretical mapping layer: several entries — for example the coupling parameter $K_{\text{DIPOLE}}$, the permeability bound, and the plasma-frequency analogue — are conceptual constructs and are NOT active inputs to the executable v1.2.6 pipeline, whose reproducible parameter set lives in `data/parameters.json`. All quantities are structural-coherence parameters defined within the graph-based abstraction system; none denotes a physical measurement.
+This appendix consolidates, as a single conceptual reference, the abstract metrics distributed across the preceding sections. It is a theoretical mapping layer: several entries — for example the coupling parameter $K_{\text{DIPOLE}}$, the permeability bound, and the plasma-frequency analogue — are conceptual constructs and are NOT active inputs to the executable v1.3.0 pipeline, whose reproducible parameter set lives in `data/parameters.json`. All quantities are structural-coherence parameters defined within the graph-based abstraction system; none denotes a physical measurement.
 
 ### Foundational Modeling Parameters
 
-- Computational Coupling Parameter ($K_{\text{DIPOLE}}$): a conceptual scaling parameter for the abstract interaction kernel, used to discuss global coupling amplitude. It is a theoretical construct, not an active variable in the v1.2.6 pipeline — runtime node coupling is evaluated through a phased-array superposition (`data/node_coupling.py`) — and it does not represent a physical constant.
+- Computational Coupling Parameter ($K_{\text{DIPOLE}}$): a conceptual scaling parameter for the abstract interaction kernel, used to discuss global coupling amplitude. It is a theoretical construct, not an active variable in the v1.3.0 pipeline — runtime node coupling is evaluated through a phased-array superposition (`data/node_coupling.py`) — and it does not represent a physical constant.
 - Effective Permeability ($\mu_r$): a phenomenological parameter representing combined structural amplification within the model. It is a modeling construct, independent of the geometric scaling constant $k$, and is not constrained to physically realizable limits.
 
 ### I. Structural and Inductive Parameters
@@ -254,7 +257,7 @@ This appendix consolidates, as a single conceptual reference, the abstract metri
 
 ## Appendix B: Conceptual Resonance-Baseline Reference
 
-This appendix documents the conceptual resonance-baseline reference of the framework. All quantities are internal coherence metrics of the abstraction system. As of v1.2.6 they are conceptual reference values only: the executable pipeline no longer derives or stores a resonance baseline, and these closed-form relations are retained here purely to document the abstract design target. The reproducible pipeline consumes the parameter set in `data/parameters.json` and evaluates the morphological benchmark through `data/node_coupling.py`.
+This appendix documents the conceptual resonance-baseline reference of the framework. All quantities are internal coherence metrics of the abstraction system. As of v1.3.0 they are conceptual reference values only: the executable pipeline no longer derives or stores a resonance baseline, and these closed-form relations are retained here purely to document the abstract design target. The reproducible pipeline consumes the parameter set in `data/parameters.json` and evaluates the morphological benchmark through `data/node_coupling.py`.
 
 ### I. Fixed Reference Parameters
 

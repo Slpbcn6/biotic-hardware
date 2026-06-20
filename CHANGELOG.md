@@ -1,5 +1,36 @@
 # Changelog
 
+## [1.3.0] - 2026-06-19
+
+### Added
+
+- **`data/input_generator.py`** — five new morphology generators, expanding the benchmark from five morphologies to ten: `hexagonal` (a regular triangular/hexagonal lattice, seed-frozen apart from cosmetic jitter), `dla` (diffusion-limited aggregation, stochastic dendritic growth), `clusters` (Gaussian blobs around random centroids), `concentric` (radial rings), and `reticulate` (branching/anastomosing vein growth from four seed tips). All ten generators produce 64-node point sets that pass `validate_topology` at connection radius 2.0. Three morphologies are seed-frozen by construction (fractal, Fibonacci, hexagonal); the other seven carry genuine seed-to-seed variance.
+- **`data/graph_topology.py`** (new module): reduces a morphology's node geometry to a symmetric union k-nearest-neighbour graph, forms the combinatorial Laplacian `L = D - A`, and computes its eigenspectrum with `scipy.linalg.eigh`. Reports algebraic connectivity (`lambda_2`), largest eigenvalue (`lambda_max`), eigenratio `R = lambda_max / lambda_2`, average clustering coefficient, and classical descriptors (mean degree, density, characteristic path length). Disconnected graphs (more than one near-zero eigenvalue) return `lambda_2` and `R` as `n/a` — never a silent `inf` or `NaN`.
+- **`data/topology_analysis.py`** (new module): aggregates the per-seed graph descriptors into `outputs/graph_topology_summary.csv` (one row per morphology × k, averaged over the 30 seeds, with the mean merit) and tests three pre-specified topology-vs-merit hypotheses across the ten morphologies — H1 (eigenratio R vs Merit_Scaled), H2 (algebraic connectivity lambda_2 vs Merit_Scaled), H3 (clustering coefficient vs Merit_Scaled) — by Pearson correlation with leave-one-out cross-validation at k = 3, 6, 10, 15, against a pre-specified threshold of `|r| >= 0.632`. Output: `outputs/topology_correlation.csv` (r, p, LOOCV mean/min/max r, sign stability, threshold flag).
+- **`data/stats_utils.py`**: `pearson_r` and `loocv_pearson` helpers driving the topology correlation step.
+- **`data/parameters.json`**: the ten-morphology list and a topology section (`k_primary = 6`, `k_robustness = [3, 10, 15]`, `correlation_threshold = 0.632`); `version` bumped to `1.3.0`.
+- **`outputs/graph_topology_summary.csv`, `outputs/topology_correlation.csv`** (new outputs), also committed under `results/`.
+- **`tests/test_graph_topology.py`** (new): validates the spectral metrics against known graphs (cycle C_n, complete K_n, disconnected). `tests/test_input_generator.py` and `tests/test_topology_validator.py` extended to all ten morphologies; `tests/test_stats_utils.py` extended with `pearson_r` and `loocv_pearson` cases.
+
+### Changed
+
+- **`run.py`**: ten morphology sweeps plus a new graph-topology analysis step; `TOTAL_STEPS` is now `len(MORPHOLOGY_MODES) + 6 = 16`. The header and completion banners report the morphology count, pair count, and seed range dynamically.
+- **`data/node_coupling.py`**: now sources its node geometries from `input_generator.load_morphology`, removing the duplicated generator dictionary so the generators have a single source of truth.
+- **Principal finding reframed under the heavier multiple-comparison burden.** With ten morphologies, Holm-Bonferroni corrects across 21 statistically valid pairs per metric instead of the earlier handful. Botanical's Merit_Scaled and Peak_AF separation survives: it sits below the high-merit stochastic controls (Voronoi d = -1.05 / -1.19, reticulate d = -1.04 / -1.22) and above the low-merit regular controls (clusters d = +1.64 / +1.66, concentric d = +1.52 / +1.57), post-hoc power 0.98-1.0. Botanical is no longer separable from the random control or DLA after the larger correction, so the reported claim is a robust mid-merit position rather than a blanket "below all controls". The topology-vs-merit correlations are an exploratory null — none reach the pre-specified criterion (`|r| >= 0.632` and p < 0.05) at any k: the strongest, H2, gives r = -0.28 at the primary k = 6 (N = 10) and r = -0.66 at k = 3 (p = 0.055, N = 9, one graph disconnects), crossing the |r| bar only there and still failing significance.
+- **`data/inference_analysis.py`**: the variance-collapse guard now flags three seed-frozen morphologies (fractal, Fibonacci, hexagonal); on Merit_Scaled and Peak_AF this marks 24 of 45 pairs as `n/a`, and 9 of 45 on Coherence_Ratio (where only fractal collapses).
+- **`data/plot_sensitivity.py`**: reads the version from `parameters.json` and assigns a distinct colour per morphology for the ten-morphology curves and heatmaps.
+- **`tests/test_integrity.py`**: asserts version `1.3.0` and the presence of `graph_topology_summary.csv` and `topology_correlation.csv`.
+- **`README.md`, `OVERVIEW.md`, `docs/Morpho-Topological Framework and Parameter Space.md`, `CITATION.cff`, `results/README.md`**: updated to v1.3.0 — ten morphologies, the 16-step pipeline, the graph-topology layer, and the reframed findings.
+
+### Documentation (post-1.2.6, folded into this release)
+
+- Reconciled the RLC reference wording and removed an undefined `k_eff` symbol from `README.md` and the Morpho-Topological framework document; corrected the implemented-vs-conceptual table; added NumPy-style docstrings to the public API surface (`data/input_generator.py`, `data/stats_utils.py`, `data/topology_validator.py`) and a Voronoi-fallback note in `OVERVIEW.md`.
+
+### License
+
+- **`LICENSE`**: changed from CC BY 4.0 to the MIT License (copyright Santi López Puiggené, 2026).
+
+
 ## [1.2.6] - 2026-06-17
 
 ### Removed

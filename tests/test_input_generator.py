@@ -7,6 +7,11 @@ from data.input_generator import (
     generate_random_control,
     generate_fibonacci_spiral,
     generate_voronoi_control,
+    generate_hexagonal_lattice,
+    generate_dla_aggregate,
+    generate_clustered_morphology,
+    generate_concentric_rings,
+    generate_reticulate_mesh,
     load_morphology,
 )
 
@@ -16,9 +21,17 @@ GENERATORS = [
     generate_random_control,
     generate_fibonacci_spiral,
     generate_voronoi_control,
+    generate_hexagonal_lattice,
+    generate_dla_aggregate,
+    generate_clustered_morphology,
+    generate_concentric_rings,
+    generate_reticulate_mesh,
 ]
 
-MODES = ["fractal", "botanical", "random", "fibonacci", "voronoi"]
+MODES = [
+    "fractal", "botanical", "random", "fibonacci", "voronoi",
+    "hexagonal", "dla", "clusters", "concentric", "reticulate",
+]
 
 
 @pytest.mark.parametrize("generator", GENERATORS)

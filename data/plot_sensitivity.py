@@ -11,26 +11,41 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import numpy as np
+from matplotlib.patches import Rectangle
 
-from data.config import morphologies, ensure_output_dir, output_path, data_path, rel
+from data.config import morphologies, load_parameters, ensure_output_dir, output_path, data_path, rel
+from data.stats_utils import pearson_r
 
 
 MORPHOLOGY_MODES = morphologies()
+PIPELINE_VERSION = load_parameters()["VIII_pipeline"]["version"]
+CORRELATION_THRESHOLD = float(
+    load_parameters().get("IX_topology_parameters", {}).get("correlation_threshold", 0.632)
+)
 
 NAMED_COLORS = {
-    "fractal":   "#2196F3",
-    "botanical": "#4CAF50",
-    "random":    "#FF5722",
-    "fibonacci": "#9C27B0",
-    "voronoi":   "#FF9800",
+    "fractal":    "#2196F3",
+    "botanical":  "#4CAF50",
+    "random":     "#FF5722",
+    "fibonacci":  "#9C27B0",
+    "voronoi":    "#FF9800",
+    "hexagonal":  "#00BCD4",
+    "dla":        "#795548",
+    "clusters":   "#E91E63",
+    "concentric": "#607D8B",
+    "reticulate": "#8BC34A",
 }
 
 _FALLBACK = matplotlib.colormaps["tab10"]
 
 plt.rcParams.update({
-    "font.family":     "monospace",
-    "font.monospace":  ["Courier New", "Courier", "DejaVu Sans Mono"],
+    "font.family":      "sans-serif",
+    "font.sans-serif":  ["DejaVu Sans", "Arial", "Helvetica"],
     "axes.titleweight": "bold",
+    "axes.edgecolor":   "#bbbbbb",
+    "axes.linewidth":   1.0,
+    "figure.facecolor": "white",
+    "savefig.facecolor": "white",
 })
 
 
@@ -40,6 +55,10 @@ def color_for(mode, i):
 
 METRICS = ["Merit_Scaled", "Coherence_Ratio", "Peak_AF"]
 METRIC_LABELS = ["Merit Scaled", "Coherence Ratio", "Peak AF"]
+
+TOPOLOGY_FOCUS_HYP = "H2"
+TOPOLOGY_PRIMARY_K = 6
+TOPOLOGY_FAVORABLE_K = 3
 
 PAIRS = [
     f"{a.capitalize()} vs {b.capitalize()}"
@@ -116,6 +135,46 @@ def load_inference_summary(filepath):
     return d_matrix, sig_matrix
 
 
+def load_topology_points(filepath, k):
+    points = []
+    if not os.path.exists(filepath):
+        return points
+    with open(filepath, "r") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            try:
+                if int(float(row["k"])) != k:
+                    continue
+                x = float(row["lambda_2_mean"])
+                y = float(row["Merit_Mean"])
+                name = row["Morphology"]
+            except (ValueError, KeyError, TypeError):
+                continue
+            if np.isfinite(x) and np.isfinite(y):
+                points.append((name, x, y))
+    return points
+
+
+def load_topology_stat(filepath, hypothesis, k):
+    if not os.path.exists(filepath):
+        return None
+    with open(filepath, "r") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            try:
+                if row.get("Hypothesis") != hypothesis or int(float(row["k"])) != k:
+                    continue
+                return {
+                    "r":      float(row["r"]),
+                    "p":      float(row["p"]),
+                    "n":      int(float(row["N"])),
+                    "passes": row.get("passes_threshold", "no"),
+                }
+            except (ValueError, KeyError, TypeError):
+                continue
+    return None
+
+
 def _curve_values(data_tuple, metric_key):
     if metric_key == "Merit_Scaled":
         return data_tuple[5]
@@ -142,6 +201,8 @@ def plot_curve_panel(ax, mode_data, seed_summary, metric_key, metric_label, show
     ax.set_xlabel("Distance (m)", fontsize=14)
     ax.set_ylabel(metric_label, fontsize=14)
     ax.set_title(metric_label, fontsize=17)
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
     ax.grid(True, alpha=0.22, linestyle="--")
     ax.tick_params(labelsize=12)
     if show_legend:
@@ -183,62 +244,191 @@ def plot_boxplots(ax, raw_data):
         )
 
     n_seeds = max((len(raw_data[m]["Merit_Scaled"]) for m in MORPHOLOGY_MODES), default=0)
-    ax.set_xticklabels(labels, fontsize=12)
+    ax.set_xticklabels(labels, fontsize=11, rotation=35, ha="right")
     ax.set_ylabel("Merit Scaled", fontsize=14)
     ax.set_title(
         f"Merit Scaled — seed distribution\n(N={n_seeds} independent seeds per morphology)",
         fontsize=14,
     )
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
     ax.grid(True, axis="y", alpha=0.22, linestyle="--")
     ax.tick_params(labelsize=12)
 
 
-def plot_inference_heatmap(ax, d_matrix, sig_matrix):
-    short_pairs = [
-        f"{a[:3]}/{b[:3]}"
-        for a, b in combinations(MORPHOLOGY_MODES, 2)
-    ]
-    short_metrics = ["Merit\nScaled", "Coherence\nRatio", "Peak\nAF"]
+def plot_inference_matrices(fig, spec, d_matrix, sig_matrix):
+    n      = len(MORPHOLOGY_MODES)
+    names  = [m.capitalize() for m in MORPHOLOGY_MODES]
+    combos = list(combinations(range(n), 2))
 
-    d_cap     = min(float(np.nanmax(d_matrix)) if not np.all(np.isnan(d_matrix)) else 3.0, 5.0)
-    d_display = np.where(np.isnan(d_matrix), 0.0, d_matrix)
+    cubes, flags = [], []
+    for mi in range(len(METRICS)):
+        mat = np.full((n, n), np.nan)
+        sg  = np.zeros((n, n), dtype=bool)
+        for k, (ia, ib) in enumerate(combos):
+            mat[ib, ia] = d_matrix[mi, k]
+            sg[ib, ia]  = sig_matrix[mi][k] == "yes"
+        cubes.append(mat)
+        flags.append(sg)
 
-    im = ax.imshow(d_display, cmap="YlOrRd", vmin=0, vmax=d_cap, aspect="auto")
+    finite = [c[np.isfinite(c)] for c in cubes]
+    finite = np.concatenate(finite) if any(v.size for v in finite) else np.array([1.0])
+    d_cap  = min(float(np.nanmax(finite)), 5.0)
 
-    ax.set_xticks(range(len(PAIRS)))
-    ax.set_xticklabels(short_pairs, fontsize=12, rotation=45, ha="right")
-    ax.set_yticks(range(len(METRICS)))
-    ax.set_yticklabels(short_metrics, fontsize=13)
-    ax.set_title(
-        "Statistical inference — |Cohen's d|   (* = significant after Holm-Bonferroni)\n"
-        "Welch t-test on N=30 per-seed means · 30 simultaneous tests corrected",
-        fontsize=14,
+    cmap = matplotlib.colormaps["YlOrRd"].with_extremes(bad="white")
+
+    inner = spec.subgridspec(3, 3, height_ratios=[0.10, 1.0, 0.06],
+                             hspace=0.04, wspace=0.04)
+
+    ax_head = fig.add_subplot(inner[0, :])
+    ax_head.axis("off")
+    ax_head.text(
+        0.5, 0.4,
+        "Pairwise effect size  ·  |Cohen's d|  ·  lower triangle per metric",
+        ha="center", va="center", fontsize=18, fontweight="bold",
     )
 
-    for i in range(len(METRICS)):
-        for j in range(len(PAIRS)):
-            val = d_matrix[i, j]
-            sig = " *" if sig_matrix[i][j] == "yes" else ""
-            if np.isnan(val):
-                label, txt_color = "n/a", "#888888"
-            else:
-                label     = f"{val:.2f}{sig}"
-                txt_color = "white" if val > d_cap * 0.62 else "black"
-            ax.text(j, i, label, ha="center", va="center",
-                    fontsize=14, color=txt_color, fontweight="bold")
+    im = None
+    for j in range(len(METRICS)):
+        ax  = fig.add_subplot(inner[1, j])
+        mat = cubes[j]
+        sg  = flags[j]
+        masked = np.ma.masked_invalid(mat)
+        im = ax.imshow(masked, cmap=cmap, vmin=0, vmax=d_cap, aspect="auto")
 
-    cbar = plt.colorbar(im, ax=ax, fraction=0.030, pad=0.04)
-    cbar.set_label("|Cohen's d|", fontsize=13)
-    cbar.ax.yaxis.set_ticks_position("left")
-    cbar.ax.yaxis.set_label_position("left")
-    cbar.ax.tick_params(labelsize=11)
+        ax.set_title(METRIC_LABELS[j], fontsize=15, fontweight="bold", pad=10)
+        ax.set_xticks(range(n))
+        ax.set_yticks(range(n))
+        ax.set_xticklabels(names, fontsize=9.5, rotation=45, ha="right")
+        ax.set_yticklabels(names if j == 0 else [], fontsize=9.5)
+        ax.tick_params(length=0)
+        for s in ax.spines.values():
+            s.set_visible(False)
+        ax.set_xticks(np.arange(-0.5, n, 1), minor=True)
+        ax.set_yticks(np.arange(-0.5, n, 1), minor=True)
+        ax.grid(which="minor", color="white", linewidth=2)
+
+        for ia, ib in combos:
+            val  = mat[ib, ia]
+            star = "*" if sg[ib, ia] else ""
+            if np.isnan(val):
+                ax.add_patch(Rectangle((ia - 0.5, ib - 0.5), 1, 1,
+                                       facecolor="#eeeeee", edgecolor="white",
+                                       linewidth=2, zorder=2))
+                ax.text(ia, ib, "–", ha="center", va="center",
+                        fontsize=9, color="#bbbbbb", zorder=3)
+            else:
+                col = "white" if val > d_cap * 0.6 else "#222222"
+                ax.text(ia, ib, f"{val:.2f}{star}", ha="center", va="center",
+                        fontsize=8, color=col, fontweight="bold", zorder=3)
+
+    cax = fig.add_subplot(inner[2, :])
+    cb  = fig.colorbar(im, cax=cax, orientation="horizontal")
+    cb.set_label(
+        "|Cohen's d|     ( * = significant after Holm–Bonferroni   ·   – = n/a, seed-frozen pair )",
+        fontsize=12,
+    )
+    cb.ax.tick_params(labelsize=11)
     for threshold, lbl in [(0.2, "small"), (0.5, "medium"), (0.8, "large")]:
         if threshold <= d_cap:
-            frac = threshold / d_cap
-            cbar.ax.axhline(y=frac, color="black", linewidth=0.9,
-                            linestyle="--", alpha=0.55)
-            cbar.ax.text(1.3, frac, lbl, va="center", ha="left", fontsize=10,
-                         color="#444444", transform=cbar.ax.transAxes)
+            cb.ax.axvline(threshold, color="black", linewidth=0.9,
+                          linestyle="--", alpha=0.5)
+            cb.ax.text(threshold / d_cap, 1.6, lbl, transform=cb.ax.transAxes,
+                       ha="center", va="bottom", fontsize=10, color="#555555")
+
+
+def plot_topology_scatter(ax, points, stat, k, role_label):
+    if not points:
+        ax.axis("off")
+        ax.text(0.5, 0.5, "topology data unavailable",
+                ha="center", va="center", fontsize=12, color="#888888")
+        return
+
+    plotted  = {p[0] for p in points}
+    excluded = [m for m in MORPHOLOGY_MODES if m not in plotted]
+
+    xs = np.array([p[1] for p in points])
+    ys = np.array([p[2] for p in points])
+
+    if len(xs) >= 2:
+        slope, intercept = np.polyfit(xs, ys, 1)
+        xline = np.linspace(xs.min(), xs.max(), 100)
+        ax.plot(xline, slope * xline + intercept, linestyle="--",
+                color="#888888", linewidth=1.6, zorder=2)
+
+    for name, x, y in points:
+        ax.scatter(x, y, s=150, color=NAMED_COLORS.get(name, "#888888"),
+                   edgecolor="white", linewidth=1.4, zorder=3)
+    ax.margins(x=0.10, y=0.12)
+
+    ax.set_xlabel(r"Algebraic connectivity  $\lambda_2$", fontsize=14)
+    ax.set_ylabel("Merit Scaled (mean)", fontsize=14)
+    ax.set_title(f"Topology vs merit  ·  {role_label}  (k={k})",
+                 fontsize=13.5, fontweight="bold")
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.grid(True, alpha=0.22, linestyle="--")
+    ax.tick_params(labelsize=12)
+
+    if len(xs) >= 3:
+        r, p = pearson_r(xs, ys)
+        n = len(xs)
+        passes = abs(r) >= CORRELATION_THRESHOLD and p < 0.05
+        if passes:
+            verdict = "significant"
+        elif abs(r) >= CORRELATION_THRESHOLD:
+            verdict = "exceeds |r| threshold but not significant"
+        else:
+            verdict = "not significant"
+        if stat is not None and (abs(stat["r"] - r) > 0.01 or stat["n"] != n):
+            print("[plot_sensitivity] WARNING: topology_correlation.csv "
+                  f"(r={stat['r']:.3f}, N={stat['n']}) diverges from the plotted "
+                  f"points (r={r:.3f}, N={n}); showing values recomputed from the "
+                  "plotted points.")
+        txt = (f"Pearson r = {r:.2f}    p = {p:.3f}    (N = {n})\n"
+               f"{verdict}\n"
+               f"threshold |r| ≥ {CORRELATION_THRESHOLD:.3f} and p < 0.05")
+        if excluded:
+            names = ", ".join(m.capitalize() for m in excluded)
+            txt += f"\n{names} excluded: graph disconnected at k={k}"
+        ax.text(0.97, 0.97, txt, transform=ax.transAxes, ha="right", va="top",
+                fontsize=8.5, color="#222222", linespacing=1.4,
+                bbox=dict(boxstyle="round,pad=0.4", facecolor="#f5f5f5",
+                          edgecolor="#cccccc"))
+
+
+def place_matched_legend(fig, ref_ax, legend_ax, handles, labels):
+    fig.canvas.draw()
+    fig.set_layout_engine("none")
+    renderer = fig.canvas.get_renderer()
+    ref = ref_ax.get_position()
+    anchor = legend_ax.get_position()
+    target_h = ref.height
+    top_y = ref.y1
+    x0 = anchor.x0
+
+    def draw_legend(label_spacing):
+        leg = fig.legend(
+            handles, labels, loc="upper left",
+            bbox_to_anchor=(x0, top_y), bbox_transform=fig.transFigure,
+            ncol=1, fontsize=12, frameon=True, framealpha=0.9,
+            handlelength=1.6, handletextpad=0.6, labelspacing=label_spacing,
+            borderpad=0.9, title="Morphologies", title_fontsize=13,
+        )
+        fig.canvas.draw()
+        height = leg.get_window_extent(renderer).height / fig.bbox.height
+        return leg, height
+
+    leg_low, h_low = draw_legend(0.4)
+    leg_low.remove()
+    leg_high, h_high = draw_legend(2.8)
+    leg_high.remove()
+    if abs(h_high - h_low) < 1e-9:
+        label_spacing = 0.9
+    else:
+        label_spacing = 0.4 + (target_h - h_low) * (2.8 - 0.4) / (h_high - h_low)
+    label_spacing = max(0.2, min(label_spacing, 6.0))
+    draw_legend(label_spacing)
 
 
 def plot():
@@ -257,57 +447,66 @@ def plot():
     seed_summary = load_multi_seed_summary(output_path("multi_seed_summary.csv"))
     raw_data     = load_multi_seed_raw(output_path("multi_seed_raw.csv"))
     d_matrix, sig_matrix = load_inference_summary(output_path("inference_summary.csv"))
+    topo_summary_path = output_path("graph_topology_summary.csv")
+    topo_corr_path    = output_path("topology_correlation.csv")
+    topo_points_primary = load_topology_points(topo_summary_path, TOPOLOGY_PRIMARY_K)
+    topo_points_fav     = load_topology_points(topo_summary_path, TOPOLOGY_FAVORABLE_K)
+    topo_stat_primary   = load_topology_stat(topo_corr_path, TOPOLOGY_FOCUS_HYP, TOPOLOGY_PRIMARY_K)
+    topo_stat_fav       = load_topology_stat(topo_corr_path, TOPOLOGY_FOCUS_HYP, TOPOLOGY_FAVORABLE_K)
     has_inference = not np.all(np.isnan(d_matrix))
     has_raw       = any(len(raw_data[m]["Merit_Scaled"]) > 0 for m in MORPHOLOGY_MODES)
 
-    fig = plt.figure(figsize=(22, 13))
+    full = has_inference and has_raw
 
-    if has_inference and has_raw:
-        gs = gridspec.GridSpec(
-            2, 3, figure=fig,
-            height_ratios=[1.0, 1.0],
-            hspace=0.46, wspace=0.26,
-        )
-        ax_merit     = fig.add_subplot(gs[0, 0])
-        ax_coherence = fig.add_subplot(gs[0, 1])
-        ax_peak      = fig.add_subplot(gs[0, 2])
-        ax_box       = fig.add_subplot(gs[1, 0])
-        ax_heatmap   = fig.add_subplot(gs[1, 1:])
-
-        for show_leg, (ax, key, label) in zip(
-            [True, False, False],
-            [
-                (ax_merit,     "Merit_Scaled",    "Merit Scaled"),
-                (ax_coherence, "Coherence_Ratio", "Coherence Ratio"),
-                (ax_peak,      "Peak_AF",         "Peak AF"),
-            ],
-        ):
-            plot_curve_panel(ax, mode_data, seed_summary, key, label, show_leg)
-
-        plot_boxplots(ax_box, raw_data)
-        plot_inference_heatmap(ax_heatmap, d_matrix, sig_matrix)
-
-        fig.text(
-            0.5, 0.005,
-            "Top row: single representative run (seed 42).  "
-            "Shaded bands: ±1 SD of per-seed means across N=30 independent seeds.  "
-            "Bottom right: Welch t-test corrected for 30 simultaneous comparisons (Holm-Bonferroni).",
-            ha="center", fontsize=11, color="#666666", style="italic",
-        )
+    if full:
+        fig = plt.figure(figsize=(16, 21.0), layout="constrained")
+        outer = fig.add_gridspec(4, 1, height_ratios=[5.5, 3.0, 3.6, 6.8])
     else:
-        gs = gridspec.GridSpec(1, 3, figure=fig, wspace=0.26)
-        for idx, (key, label) in enumerate([
-            ("Merit_Scaled",    "Merit Scaled"),
-            ("Coherence_Ratio", "Coherence Ratio"),
-            ("Peak_AF",         "Peak AF"),
-        ]):
-            ax = fig.add_subplot(gs[0, idx])
-            plot_curve_panel(ax, mode_data, seed_summary, key, label, idx == 0)
+        fig = plt.figure(figsize=(16, 5.0), layout="constrained")
+        outer = fig.add_gridspec(1, 1, height_ratios=[4.2])
+    fig.get_layout_engine().set(h_pad=0.09, w_pad=0.03, hspace=0.07, wspace=0.06)
+
+    gs_curves = outer[0].subgridspec(1, 4, width_ratios=[0.5, 1, 1, 1], wspace=0.14)
+    ax_legend    = fig.add_subplot(gs_curves[0, 0])
+    ax_legend.axis("off")
+    ax_merit     = fig.add_subplot(gs_curves[0, 1])
+    ax_coherence = fig.add_subplot(gs_curves[0, 2])
+    ax_peak      = fig.add_subplot(gs_curves[0, 3])
+    for ax, key, label in [
+        (ax_merit,     "Merit_Scaled",    "Merit Scaled"),
+        (ax_coherence, "Coherence_Ratio", "Coherence Ratio"),
+        (ax_peak,      "Peak_AF",         "Peak AF"),
+    ]:
+        plot_curve_panel(ax, mode_data, seed_summary, key, label, False)
+
+    legend_handles, legend_labels = ax_merit.get_legend_handles_labels()
+
+    if full:
+        ax_box = fig.add_subplot(outer[1])
+        plot_boxplots(ax_box, raw_data)
+
+        gs_topo = outer[2].subgridspec(1, 2, wspace=0.16)
+        ax_topo_primary = fig.add_subplot(gs_topo[0, 0])
+        plot_topology_scatter(ax_topo_primary, topo_points_primary, topo_stat_primary,
+                              TOPOLOGY_PRIMARY_K, "primary resolution")
+        ax_topo_fav = fig.add_subplot(gs_topo[0, 1])
+        plot_topology_scatter(ax_topo_fav, topo_points_fav, topo_stat_fav,
+                              TOPOLOGY_FAVORABLE_K, "robustness check")
+
+        plot_inference_matrices(fig, outer[3], d_matrix, sig_matrix)
+
+    fig.supxlabel(
+        "Single representative run (seed 42); shaded bands ±1 SD of per-seed means across "
+        "N=30 seeds · Welch t-test with Holm-Bonferroni across the valid pairs per metric.",
+        fontsize=12, color="#666666",
+    )
 
     fig.suptitle(
-        "Biotic Hardware Synthesis  ·  Morphological Benchmark  ·  v1.2.6",
-        fontsize=24, fontweight="bold", y=1.02,
+        f"Biotic Hardware Synthesis  ·  Morphological Benchmark  ·  v{PIPELINE_VERSION}",
+        fontsize=26, fontweight="bold",
     )
+
+    place_matched_legend(fig, ax_merit, ax_legend, legend_handles, legend_labels)
 
     ensure_output_dir()
     out_png  = output_path("sensitivity_analysis.png")

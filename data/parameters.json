@@ -1,6 +1,6 @@
 {
   "author": "Santi López Puiggené",
-  "source_document": "Computational parameter specification — v1.2.6. Parameter values define the abstract simulation space. They are not derived from or validated against HFSS, CST, or any other professional electromagnetic simulation tool.",
+  "source_document": "Computational parameter specification — v1.3.0. Parameter values define the abstract simulation space. They are not derived from or validated against HFSS, CST, or any other professional electromagnetic simulation tool.",
   "IV_network_performance_metrics": {
     "individual_q_factor": 0.8,
     "individual_q_factor_note": "Q < 1 places the model in the overdamped regime. Coherence and merit metrics remain valid as comparative structural indicators across morphologies."
@@ -58,13 +58,32 @@
     "q_reference": 0.785
   },
   "VIII_pipeline": {
-    "version": "1.2.6",
+    "version": "1.3.0",
     "morphologies": [
       "fractal",
       "botanical",
       "random",
       "fibonacci",
-      "voronoi"
-    ]
+      "voronoi",
+      "hexagonal",
+      "dla",
+      "clusters",
+      "concentric",
+      "reticulate"
+    ],
+    "morphologies_note": "Ten morphologies in v1.3.0. fractal, fibonacci and hexagonal are geometrically deterministic (seed-frozen, cosmetic jitter only); botanical, random, voronoi, dla, clusters, concentric and reticulate carry genuine between-seed geometric variance. Single source of truth — read by run.py, multi_seed_inference.py, inference_analysis.py, topology_analysis.py, plot_sensitivity.py and the integrity tests."
+  },
+  "IX_topology_parameters": {
+    "k_primary": 6,
+    "k_primary_note": "Primary neighbour count for the union k-NN graph in graph_topology.py. Spectral and clustering metrics reported in the main analysis use this k.",
+    "k_robustness": [
+      3,
+      10,
+      15
+    ],
+    "k_robustness_note": "Additional neighbour counts swept by topology_analysis.py to check that any morphology-to-merit correlation is not an artefact of a single graph resolution.",
+    "correlation_threshold": 0.632,
+    "correlation_threshold_note": "Critical absolute Pearson r for N=10 morphologies (df=8, two-tailed alpha=0.05). A correlation between a topology metric and merit at the morphology level is flagged as passing only when |r| exceeds this value. Single source of truth for topology_analysis.py.",
+    "metrics_note": "H1 tests eigenratio R = lambda_max / lambda_2 against scaled merit; H2 tests algebraic connectivity lambda_2 against scaled merit; H3 tests the average clustering coefficient against scaled merit. All three are reported honestly with no pre-registration."
   }
 }

@@ -125,6 +125,94 @@ def bootstrap_ci(a, b, n_bootstrap=10000, ci=0.95, seed=0):
     return lower, upper
 
 
+def pearson_r(x, y):
+    """Compute the Pearson correlation coefficient and its two-tailed p-value.
+
+    Parameters
+    ----------
+    x, y : sequence of float
+        Paired observations of equal length.
+
+    Returns
+    -------
+    tuple of float
+        The correlation coefficient r and its two-tailed p-value. Both are NaN
+        when fewer than three finite pairs remain or when either variable has
+        zero variance.
+    """
+    x = np.asarray(x, dtype=float)
+    y = np.asarray(y, dtype=float)
+    mask = np.isfinite(x) & np.isfinite(y)
+    x, y = x[mask], y[mask]
+    n = len(x)
+    if n < 3:
+        return float("nan"), float("nan")
+    sx, sy = np.std(x), np.std(y)
+    if sx < 1e-12 or sy < 1e-12:
+        return float("nan"), float("nan")
+    r = float(np.corrcoef(x, y)[0, 1])
+    r = float(np.clip(r, -1.0, 1.0))
+    if abs(r) >= 1.0:
+        return r, 0.0
+    df = n - 2
+    t_stat = r * np.sqrt(df / (1.0 - r * r))
+    p = float(2.0 * t_dist.sf(abs(t_stat), df))
+    return r, p
+
+
+def loocv_pearson(x, y):
+    """Estimate leave-one-out stability of a Pearson correlation.
+
+    Recomputes the correlation n times, each time omitting one observation, and
+    summarises how stable the coefficient is. A correlation driven by a single
+    influential morphology shows a wide spread or a sign flip across folds.
+
+    Parameters
+    ----------
+    x, y : sequence of float
+        Paired observations of equal length.
+
+    Returns
+    -------
+    dict
+        Keys: 'mean' (mean leave-one-out r), 'min', 'max', 'std', and
+        'sign_stable' (True when every fold keeps the sign of the full-sample
+        r). Numeric values are NaN when fewer than four finite pairs remain.
+    """
+    x = np.asarray(x, dtype=float)
+    y = np.asarray(y, dtype=float)
+    mask = np.isfinite(x) & np.isfinite(y)
+    x, y = x[mask], y[mask]
+    n = len(x)
+    nan_result = {
+        "mean": float("nan"),
+        "min": float("nan"),
+        "max": float("nan"),
+        "std": float("nan"),
+        "sign_stable": False,
+    }
+    if n < 4:
+        return nan_result
+    full_r, _ = pearson_r(x, y)
+    folds = []
+    for i in range(n):
+        keep = np.ones(n, dtype=bool)
+        keep[i] = False
+        r_i, _ = pearson_r(x[keep], y[keep])
+        if np.isnan(r_i):
+            return nan_result
+        folds.append(r_i)
+    folds = np.array(folds)
+    sign_stable = bool(np.all(np.sign(folds) == np.sign(full_r))) if not np.isnan(full_r) else False
+    return {
+        "mean": float(np.mean(folds)),
+        "min": float(np.min(folds)),
+        "max": float(np.max(folds)),
+        "std": float(np.std(folds)),
+        "sign_stable": sign_stable,
+    }
+
+
 def power_from_d(d, n, alpha=0.05):
     """Compute post-hoc statistical power for a two-sample t-test.
 

@@ -7,6 +7,8 @@ from data.stats_utils import (
     holm_correction,
     bootstrap_ci,
     power_from_d,
+    pearson_r,
+    loocv_pearson,
 )
 
 
@@ -101,3 +103,61 @@ def test_power_from_d_increases_with_effect_size():
 def test_power_from_d_nan_guards():
     assert np.isnan(power_from_d(float("nan"), 30))
     assert np.isnan(power_from_d(0.5, 1))
+
+
+def test_pearson_r_perfect_positive():
+    x = [1.0, 2.0, 3.0, 4.0, 5.0]
+    y = [2.0, 4.0, 6.0, 8.0, 10.0]
+    r, p = pearson_r(x, y)
+    assert abs(r - 1.0) < 1e-9
+    assert p < 1e-9
+
+
+def test_pearson_r_perfect_negative():
+    x = [1.0, 2.0, 3.0, 4.0, 5.0]
+    y = [10.0, 8.0, 6.0, 4.0, 2.0]
+    r, p = pearson_r(x, y)
+    assert abs(r + 1.0) < 1e-9
+
+
+def test_pearson_r_matches_scipy():
+    from scipy.stats import pearsonr
+    rng = np.random.default_rng(3)
+    x = rng.normal(size=12)
+    y = 0.7 * x + rng.normal(size=12)
+    r, p = pearson_r(x, y)
+    r_ref, p_ref = pearsonr(x, y)
+    assert abs(r - r_ref) < 1e-9
+    assert abs(p - p_ref) < 1e-9
+
+
+def test_pearson_r_threshold_n10():
+    rng = np.random.default_rng(11)
+    x = rng.normal(size=10)
+    y = rng.normal(size=10)
+    r, p = pearson_r(x, y)
+    assert -1.0 <= r <= 1.0
+    assert 0.0 <= p <= 1.0
+
+
+def test_pearson_r_guards():
+    r, p = pearson_r([1.0, 2.0], [1.0, 2.0])
+    assert np.isnan(r) and np.isnan(p)
+    r, p = pearson_r([5.0, 5.0, 5.0, 5.0], [1.0, 2.0, 3.0, 4.0])
+    assert np.isnan(r) and np.isnan(p)
+
+
+def test_loocv_pearson_stable_for_strong_signal():
+    rng = np.random.default_rng(5)
+    x = np.linspace(0, 1, 10)
+    y = 3.0 * x + rng.normal(0, 0.02, 10)
+    loo = loocv_pearson(x, y)
+    assert loo["sign_stable"] is True
+    assert loo["min"] > 0.9
+    assert loo["std"] < 0.1
+
+
+def test_loocv_pearson_guard_small_n():
+    loo = loocv_pearson([1.0, 2.0, 3.0], [1.0, 2.0, 3.0])
+    assert np.isnan(loo["mean"])
+    assert loo["sign_stable"] is False
