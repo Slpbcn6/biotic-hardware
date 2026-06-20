@@ -67,7 +67,7 @@ def run_topology_analysis(raw_file=None, summary_file=None, correlation_file=Non
     H3 the clustering coefficient. Each correlation is reported with its Pearson
     r, two-tailed p-value, leave-one-out stability and a pass flag against the
     critical |r| threshold for N=10. Results are exploratory and not
-    pre-specified.
+    pre-registered.
 
     Parameters
     ----------
