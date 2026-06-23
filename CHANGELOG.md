@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.4.1] - 2026-06-23
+
+Documentation-only patch over the v1.4.0 pipeline. No code, parameters, computational results, or pipeline behaviour change in this release — `data/parameters.json` and the run outputs still report pipeline version `1.4.0`, because the science of v1.4.0 is unchanged and was not re-run. This patch corrects imprecise wording in the project documentation only.
+
+### Fixed
+
+- **Phase-robustness wording (`README.md`, `OVERVIEW.md`).** The earlier statement that the sector and continuous phase rules "do not even agree on the direction of any residual difference" was inaccurate against `phase_robustness.csv`. On Merit_Scaled and Peak_AF both rules place botanical *above* random and Voronoi — the signs agree. The rules differ in significance and magnitude, not direction: non-significant under the primary sector rule (d ≈ +0.6–0.7) and significantly above under the continuous rule (botanical vs random d = +0.98 / +1.00, vs Voronoi d = +1.13 / +1.16; p_holm ≈ 0.002–0.015). The continuous-rule effect, previously described as botanical sitting "slightly above," is restated as significant. Neither rule reproduces the retracted v1.3.0 *below*-control direction, so the v1.4.0 retraction stands unchanged.
+- **Scope of the null headline (`README.md`, `OVERVIEW.md`, `CITATION.cff`).** The statement that botanical is "statistically indistinguishable from every genuine stochastic control" on Merit_Scaled and Peak_AF is now explicitly scoped to the pre-specified primary (sector) phase rule, consistent with the phase-robustness cross-check.
+- **Release banner (`assets/`).** Version label refreshed to `v1.4.1` (`readme1-4-0.svg` → `readme1-4-1.svg`); the README image reference is updated to match.
+
 ## [1.4.0] - 2026-06-23
 
 Methodological-correction / honest-null release. v1.4.0 retracts the central v1.3.0 finding after identifying a confound in how node phases were assigned, and reports the corrected result in full — a null on the central metrics (Merit_Scaled, Peak_AF), together with one robust secondary difference on the coherence ratio.

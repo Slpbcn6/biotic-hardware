@@ -7,7 +7,7 @@ authors:
     orcid: "https://orcid.org/0009-0002-9922-1235"
 
 title: "Biotic Hardware Synthesis"
-version: 1.4.0
+version: 1.4.1
 date-released: 2026-06-23
 
 identifiers:
@@ -37,13 +37,14 @@ abstract: >
   Assigning each node's phase by its spatial sector about the point-set centroid, rather
   than by the node's index in the generator output, removes a confound in which the array
   factor depended on the arbitrary order a generator emitted its nodes. Under the
-  corrected phase rule, with Holm-Bonferroni pooled across all 135 valid pairs, botanical
-  is statistically indistinguishable from every genuine stochastic control on Merit_Scaled
-  and Peak_AF (vs random d=+0.67/+0.69, vs Voronoi d=+0.61/+0.64, both non-significant; vs
+  corrected primary (sector) phase rule, with Holm-Bonferroni pooled across all 135 valid
+  pairs, botanical is statistically indistinguishable from every genuine stochastic control
+  on Merit_Scaled and Peak_AF (vs random d=+0.67/+0.69, vs Voronoi d=+0.61/+0.64, both non-significant; vs
   DLA and reticulate non-significant); it separates only from the regular geometric
   controls (clusters, concentric) and the deterministic references (fractal, Fibonacci,
   hexagonal). A continuous-phase robustness rule agrees the v1.3.0 Merit_Scaled/Peak_AF
-  below-control signature is absent (12/12 comparisons); on the coherence ratio, however,
+  below-control signature is absent (12/12 comparisons; under that continuous rule botanical
+  instead sits significantly above random and Voronoi on these two metrics, never below); on the coherence ratio, however,
   botanical sits robustly below the Voronoi control under both phase rules, a secondary
   structural observation rather than a performance claim. The retracted signature holds in
   only 500 of 3750 parametric grid×seed cells (13%). The topology-vs-merit correlations are

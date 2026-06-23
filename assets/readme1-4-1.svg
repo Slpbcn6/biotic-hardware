@@ -40,7 +40,7 @@
       <animate attributeName="stroke-dashoffset" from="8" to="0" dur="3s" repeatCount="indefinite"/>
     </line>
 
-    <text x="0" y="46" font-size="12" fill="#888888">v1.4.0 · methodological correction</text>
+    <text x="0" y="46" font-size="12" fill="#888888">v1.4.1 · methodological correction</text>
 
     <text x="0" y="80" font-size="19" font-weight="bold" letter-spacing="-0.5" fill="#FFFFFF" fill-opacity="0.95">Biotic Hardware</text>
     <text x="0" y="105" font-size="19" font-weight="bold" letter-spacing="-0.5" fill="#FFFFFF" fill-opacity="0.95">Synthesis</text>
