@@ -403,7 +403,8 @@ def load_morphology(mode="fractal", n_nodes=64, seed=42):
     Parameters
     ----------
     mode : str
-        One of: 'fractal', 'botanical', 'random', 'fibonacci', 'voronoi'.
+        One of: 'fractal', 'botanical', 'random', 'fibonacci', 'voronoi',
+        'hexagonal', 'dla', 'clusters', 'concentric', 'reticulate'.
     n_nodes : int
         Number of nodes to generate.
     seed : int

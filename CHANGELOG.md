@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.4.0] - 2026-06-22
+## [1.4.0] - 2026-06-23
 
 Methodological-correction / honest-null release. v1.4.0 retracts the central v1.3.0 finding after identifying a confound in how node phases were assigned, and reports the corrected result in full — a null on the central metrics (Merit_Scaled, Peak_AF), together with one robust secondary difference on the coherence ratio.
 

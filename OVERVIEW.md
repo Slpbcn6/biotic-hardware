@@ -65,7 +65,7 @@ One `outputs/af_tensors_<morphology>.npz` per morphology, for the same ten morph
 
 ### Statistical Outputs
 
-- `outputs/curve_separation_summary.csv` — Welch t-test + Cohen's d curve-separation descriptors across 3 metrics × 10 morphology pairs on autocorrelated sweep steps (descriptive only, not independent-sample tests).
+- `outputs/curve_separation_summary.csv` — Welch t-test + Cohen's d curve-separation descriptors across 3 metrics × 45 morphology pairs on autocorrelated sweep steps (descriptive only, not independent-sample tests).
 - `outputs/multi_seed_summary.csv` — per-morphology mean ± std across N=30 seeds (seeds 42–71).
 - `outputs/multi_seed_raw.csv` — per-seed means per morphology × metric; raw input to the inference step.
 - `outputs/inference_summary.csv` — classical inference over N=30 per-seed means: Welch t-test, Cohen's d, Hedges' g, bootstrap CI, Holm-corrected p (pooled across all valid pairs), post-hoc power. Any seed-frozen morphology would be reported as n/a (variance collapse); under the geometry-referenced phase rule none are, so 0 pairs are n/a.
