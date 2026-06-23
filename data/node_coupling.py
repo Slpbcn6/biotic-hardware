@@ -6,12 +6,30 @@ from data.config import load_parameters, ensure_output_dir
 from data.topology_validator import validate_topology
 
 
-def compute_array_factor(positions, Q, k0_base, k_mod_coeff, q_ref):
+def compute_array_factor(positions, Q, k0_base, k_mod_coeff, q_ref, phase_rule="sector"):
     """Compute the complex-valued array factor over the full angular domain [0, 2π].
 
-    Each node is assigned a base phase from the repeating sequence
-    [0, π/2, π, 3π/2]. The spatial contribution is modulated by the
-    Q-dependent wave number k = k0_base * (1 + k_mod_coeff * (Q - q_ref)).
+    Each node is assigned a phase from its spatial position relative to the
+    point-set centroid, so the array factor depends only on geometry and not on
+    the arbitrary order in which a generator emits its nodes. Under the default
+    "sector" rule the centroid-relative angle is quantised into four quadrants
+    mapped to the base phases [0, π/2, π, 3π/2]; under "continuous" the
+    centroid-relative angle itself is used as the phase. The spatial
+    contribution is modulated by the Q-dependent wave number
+    k = k0_base * (1 + k_mod_coeff * (Q - q_ref)).
+
+    Parameters
+    ----------
+    positions : ndarray, shape (n_nodes, 2)
+        Node coordinates.
+    Q : float
+        Effective quality factor at this sweep step.
+    k0_base, k_mod_coeff, q_ref : float
+        Array-factor wave-number parameters.
+    phase_rule : {"sector", "continuous"}
+        Geometry-driven phase assignment. "sector" quantises the
+        centroid-relative angle into four quadrants; "continuous" uses the angle
+        directly. Both are invariant to node ordering.
 
     Returns
     -------
@@ -27,8 +45,15 @@ def compute_array_factor(positions, Q, k0_base, k_mod_coeff, q_ref):
     theta = np.linspace(0, 2 * np.pi, 200)
     k = k0_base * (1 + k_mod_coeff * (Q - q_ref))
 
-    base_phases = np.array([0, np.pi / 2, np.pi, 3 * np.pi / 2])
-    phases = base_phases[np.arange(len(positions)) % 4]
+    centroid_x = positions[:, 0].mean()
+    centroid_y = positions[:, 1].mean()
+    angle = np.arctan2(positions[:, 1] - centroid_y, positions[:, 0] - centroid_x)
+    if phase_rule == "continuous":
+        phases = angle
+    else:
+        base_phases = np.array([0, np.pi / 2, np.pi, 3 * np.pi / 2])
+        sector = np.floor(np.mod(angle, 2 * np.pi) / (np.pi / 2)).astype(int) % 4
+        phases = base_phases[sector]
 
     cos_t = np.cos(theta)
     sin_t = np.sin(theta)
@@ -43,7 +68,7 @@ def compute_array_factor(positions, Q, k0_base, k_mod_coeff, q_ref):
     return peak, coherence, mean, magnitude
 
 
-def run_sweep(mode, output_file, tensor_file, seed_override=None):
+def run_sweep(mode, output_file, tensor_file, seed_override=None, phase_rule="sector"):
     """Run the full distance sweep for a single morphology mode.
 
     Parameters
@@ -58,6 +83,10 @@ def run_sweep(mode, output_file, tensor_file, seed_override=None):
         When set, overrides the seed from parameters.json. Used by
         multi_seed_analysis.py to iterate across seeds without mutating the
         config file.
+    phase_rule : {"sector", "continuous"}
+        Phase-assignment rule forwarded to compute_array_factor. "sector" is the
+        primary geometry-driven rule; "continuous" backs the phase-robustness
+        check.
 
     Returns
     -------
@@ -113,7 +142,7 @@ def run_sweep(mode, output_file, tensor_file, seed_override=None):
             Q_eff = Q0 * (1 - beta * (i / len(distances)))
 
             peak, coherence, mean, magnitude = compute_array_factor(
-                positions, Q_eff, k0_base, k_mod_coeff, q_ref
+                positions, Q_eff, k0_base, k_mod_coeff, q_ref, phase_rule=phase_rule
             )
 
             merit = peak * coherence

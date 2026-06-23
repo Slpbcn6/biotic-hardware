@@ -1,5 +1,34 @@
 # Changelog
 
+## [1.4.0] - 2026-06-22
+
+Methodological-correction / honest-null release. v1.4.0 retracts the central v1.3.0 finding after identifying a confound in how node phases were assigned, and reports the corrected result in full — a null on the central metrics (Merit_Scaled, Peak_AF), together with one robust secondary difference on the coherence ratio.
+
+### Changed
+
+- **`data/node_coupling.py`** — `compute_array_factor` now assigns each node's phase from its angular sector around the point-set centroid (the plane split into four quadrants, each carrying one of the base phases `[0, 90, 180, 270]`) instead of from the node's index in the generator output (`base_phases[i % 4]`). The previous index rule made the array factor — and every metric derived from it — depend on the arbitrary order a generator emitted its nodes; re-ordering the same point set changed the result. The new rule is geometry-referenced and invariant to node ordering. Its NumPy docstring documents the rule.
+- **Central finding retracted.** Under the corrected phase rule the v1.3.0 claim that botanical "sits below the high-merit stochastic controls (Voronoi, reticulate)" does not reproduce. With Holm-Bonferroni pooled across all valid pairs, botanical is statistically indistinguishable from every genuine stochastic control on Merit_Scaled and Peak_AF: vs random d = +0.67 / +0.69 (p_holm = 0.51 / 0.44), vs Voronoi d = +0.61 / +0.64 (p_holm = 0.93 / 0.68), and vs DLA and reticulate non-significant. The botanical-vs-Voronoi effect reverses sign (v1.3.0 d = -1.05 → v1.4.0 d = +0.61) and is non-significant. Botanical's only Holm-significant Merit_Scaled and Peak_AF separations are from the regular geometric controls (clusters d ≈ +0.93, concentric d ≈ +2.16 / +2.20) and the deterministic references (fractal, Fibonacci, hexagonal). On the coherence ratio, by contrast, botanical sits robustly below the Voronoi control under both phase rules (sector d ≈ −1.12, continuous d ≈ −1.56) — a restrained secondary observation, not a performance claim and not a revival of the retracted finding.
+- **`data/stats_utils.py`** — the near-zero-variance test is unified into a single authority, `near_zero_variance` (an absolute floor combined with a fraction-of-reference test). `cohens_d` now calls it instead of carrying its own separate `1e-4` magic threshold, so the Cohen's d guard and the inference's seed-frozen detection can never disagree. Verified to leave all non-degenerate (valid-pair) results unchanged.
+- **`data/inference_analysis.py` / Holm correction** — documented and applied as a single pooled family across all valid pairs (135 = 45 × 3 metrics), not per metric. Under the geometry-referenced phase rule the formerly seed-frozen morphologies (fractal, Fibonacci, hexagonal) acquire genuine per-seed variance — the positional noise shifts nodes across sector boundaries — so none fall below the degeneracy threshold and 0 pairs are reported as `n/a` this release.
+- **`data/parametric_sweep.py`** — the 125-point k0 × beta × Q grid is now swept across all 30 seeds (3750 grid×seed cells). `robustness_matrix.csv` gains a `seed` column, and `finding_holds` is documented correctly as the conjunction "botanical separates below both the random and Voronoi controls" at that cell. The v1.3.0 below-both signature holds in only 500 of 3750 cells (13%).
+- **`data/plot_sensitivity.py`** — narrative and annotations rewritten for the null result; the topology panels report the pre-specified primary k = 6 (null) and the non-primary k = 3 (crossing only there), with the false "below Voronoi" claims removed.
+- **`data/parameters.json`** — `version` bumped to `1.4.0`; adds `phase_rule = "sector"` with an explanatory note, the absolute `variance_floor`, and the multi-seed grid configuration.
+- **`run.py`** — `TOTAL_STEPS` is now `len(MORPHOLOGY_MODES) + 7 = 17` with the new phase-robustness step.
+- **`tests/test_integrity.py`** — asserts version `1.4.0` and the presence of `phase_robustness.csv`.
+- **`README.md`, `OVERVIEW.md`, `CITATION.cff`, `results/README.md`, `docs/Morpho-Topological Framework and Parameter Space.md`, `assets/readme1-4-0.svg`** — updated to the v1.4.0 honest-null narrative.
+
+### Added
+
+- **`data/phase_robustness.py`** (new module): recomputes the botanical-vs-control inference under a continuous centroid-referenced phase and compares it against the primary spatial-sector rule, writing `outputs/phase_robustness.csv` (Cohen's d, Holm-corrected p, and verdict under each rule, plus a `signature_absent_both` flag) for all three metrics — 18 botanical-vs-control comparisons. For Merit_Scaled and Peak_AF the v1.3.0 below-control signature is absent under both rules (12 / 12); on Coherence_Ratio botanical reads below Voronoi (and concentric) under both rules, reported as a secondary observation. Wired into `run.py` as a pipeline step.
+- **`tests/test_stats_utils.py`** — adds a test for `near_zero_variance` covering the absolute-floor and relative-fraction branches and their intersection on a degenerate series.
+- **`outputs/phase_robustness.csv`** (new output), also committed under `results/`.
+- **`assets/readme1-4-0.svg`** (new banner): the honest-null README header (the confound, the two-rule robustness agreement, and the null inference).
+
+### Note on framing
+
+- No claim in this release was pre-registered; `parameters.json` records the topology layer as pre-specified, not pre-registered, and the documentation uses "pre-specified" throughout.
+
+
 ## [1.3.0] - 2026-06-19
 
 ### Added

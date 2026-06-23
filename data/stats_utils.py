@@ -1,6 +1,8 @@
 import numpy as np
 from scipy.stats import nct, t as t_dist
 
+DEFAULT_VARIANCE_FLOOR = 1e-4
+
 
 def cohens_d(a, b):
     """Compute Cohen's d effect size between two samples.
@@ -10,9 +12,9 @@ def cohens_d(a, b):
     Returns
     -------
     float
-        Cohen's d, or NaN when the degrees of freedom fall below 1 or the
-        pooled standard deviation collapses below 1e-4 (near-zero variance
-        guard).
+        Cohen's d, or NaN when the degrees of freedom fall below 1 or the pooled
+        standard deviation is near-zero according to the shared
+        near_zero_variance guard (absolute floor DEFAULT_VARIANCE_FLOOR).
     """
     a, b = np.array(a, dtype=float), np.array(b, dtype=float)
     n_a, n_b = len(a), len(b)
@@ -20,7 +22,7 @@ def cohens_d(a, b):
     if df < 1:
         return float("nan")
     pooled = np.sqrt(((n_a - 1) * np.std(a, ddof=1) ** 2 + (n_b - 1) * np.std(b, ddof=1) ** 2) / df)
-    if pooled < 1e-4:
+    if near_zero_variance(pooled):
         return float("nan")
     return float((np.mean(a) - np.mean(b)) / pooled)
 
@@ -47,18 +49,36 @@ def hedges_g(a, b):
     return float(d * correction)
 
 
-def near_zero_variance(group_std, reference_std, fraction=0.1):
-    """Test whether a group's variance is negligible against a reference.
+def near_zero_variance(group_std, reference_std=None, fraction=0.15, floor=DEFAULT_VARIANCE_FLOOR):
+    """Single near-zero-variance authority shared by every effect-size guard.
 
-    Returns True when group_std is below `fraction` of reference_std, or when
-    the reference standard deviation is non-positive. Used to flag seed-frozen
-    groups whose effect sizes would otherwise be spurious.
+    A standard deviation is treated as near-zero when it falls below an absolute
+    floor, or (when a reference scale is supplied) below a fixed fraction of that
+    reference. This one rule backs both the pooled-standard-deviation guard in
+    cohens_d and the seed-frozen detection in the multi-seed inference, so the
+    two can never disagree about which groups are degenerate.
+
+    Parameters
+    ----------
+    group_std : float
+        Standard deviation under test.
+    reference_std : float or None
+        Cross-group reference scale (e.g. the median per-morphology std). When
+        None, only the absolute floor applies.
+    fraction : float
+        Relative threshold applied against reference_std.
+    floor : float
+        Absolute lower bound below which any standard deviation is near-zero.
 
     Returns
     -------
     bool
         True when the group variance is treated as near-zero.
     """
+    if group_std < floor:
+        return True
+    if reference_std is None:
+        return False
     if reference_std <= 0:
         return True
     return group_std < fraction * reference_std

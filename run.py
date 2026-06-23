@@ -24,7 +24,7 @@ from data.stats_utils import cohens_d
 ROOT = Path(__file__).parent
 
 MORPHOLOGY_MODES = morphologies()
-TOTAL_STEPS = len(MORPHOLOGY_MODES) + 6
+TOTAL_STEPS = len(MORPHOLOGY_MODES) + 7
 
 
 def _step(n, label, func):
@@ -180,6 +180,12 @@ def inference_step():
     return records
 
 
+def phase_robustness_step():
+    from data.phase_robustness import run_phase_robustness
+    records = run_phase_robustness()
+    return records
+
+
 def topology_step():
     from data.topology_analysis import run_topology_analysis
     results = run_topology_analysis()
@@ -254,13 +260,17 @@ def main():
 
     _step(n + 3, "Inference analysis (Welch + Holm-Bonferroni + bootstrap CI 95% + power)", inference_step)
 
-    _step(n + 4, "Graph-topology analysis (union k-NN spectra + clustering vs merit, N=10)", topology_step)
+    _step(n + 4, "Phase-robustness check (continuous angle vs sector; botanical vs stochastic controls)", phase_robustness_step)
 
-    _step(n + 5, "Sensitivity plot (curves + stat heatmaps)", lambda: run("data/plot_sensitivity.py"))
+    _step(n + 5, "Graph-topology analysis (union k-NN spectra + clustering vs merit, N=10)", topology_step)
 
-    from data.parametric_sweep import run_parametric_sweep, effective_grids
+    _step(n + 6, "Sensitivity plot (curves + stat heatmaps)", lambda: run("data/plot_sensitivity.py"))
+
+    from data.parametric_sweep import run_parametric_sweep, effective_grids, effective_seeds
     k0_grid, beta_grid, q_grid = effective_grids()
-    _step(n + 6, f"Parametric robustness sweep ({len(k0_grid)} x {len(beta_grid)} x {len(q_grid)} = {len(k0_grid) * len(beta_grid) * len(q_grid)} grid points)", run_parametric_sweep)
+    sweep_seeds = effective_seeds(params["VI_experimental_sweep_parameters"]["multi_seed_list"])
+    n_points = len(k0_grid) * len(beta_grid) * len(q_grid)
+    _step(n + 7, f"Parametric robustness sweep ({len(k0_grid)} x {len(beta_grid)} x {len(q_grid)} grid x {len(sweep_seeds)} seeds = {n_points * len(sweep_seeds)} cells)", run_parametric_sweep)
 
     out_dir = ensure_output_dir()
     artifacts = sorted(

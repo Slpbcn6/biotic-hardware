@@ -27,6 +27,7 @@ ESSENTIAL_FILES = [
     "data/topology_analysis.py",
     "data/multi_seed_analysis.py",
     "data/inference_analysis.py",
+    "data/phase_robustness.py",
     "data/parametric_sweep.py",
     "data/stats_utils.py",
 ]
@@ -183,7 +184,7 @@ def test_morphological_divergence():
         assert "pipeline_version"           in summary
         assert "experimental_configuration" in summary
         assert "multi_seed_analysis"        in summary
-        assert summary["pipeline_version"] == "1.3.0"
+        assert summary["pipeline_version"] == "1.4.0"
         assert set(summary["morphologies"]) == set(MORPHOLOGY_MODES)
 
         exp_cfg = summary["experimental_configuration"]
@@ -196,7 +197,7 @@ def test_morphological_divergence():
 
         df_rob = pd.read_csv(robustness_csv)
         required_rob_cols = [
-            "k0_base", "beta_loss_factor", "Q_individual",
+            "k0_base", "beta_loss_factor", "Q_individual", "seed",
             "curve_sep_botanical_vs_random", "curve_sep_botanical_vs_fractal",
             "curve_sep_botanical_vs_voronoi", "finding_holds",
         ]
@@ -204,14 +205,52 @@ def test_morphological_divergence():
             assert col in df_rob.columns, \
                 f"Missing column in robustness_matrix: {col}"
 
-        expected_rob_rows = 8
+        expected_rob_rows = 16
         assert len(df_rob) == expected_rob_rows, (
             f"Expected {expected_rob_rows} rows in robustness_matrix (subprocess forces "
-            f"PIPELINE_FAST=1, a 2x2x2 grid), got {len(df_rob)}"
+            f"PIPELINE_FAST=1, a 2x2x2 grid x 2 seeds), got {len(df_rob)}"
         )
-        n_holds = df_rob["finding_holds"].sum()
-        assert n_holds / len(df_rob) >= 0.5, (
-            f"Botanical separation holds in <50% of grid ({n_holds}/{len(df_rob)})"
+        n_holds = int(df_rob["finding_holds"].sum())
+        assert n_holds / len(df_rob) < 0.5, (
+            f"v1.4.0 corrected phase model must not reproduce the v1.3.0 'botanical below "
+            f"both controls' signature across the grid; held in {n_holds}/{len(df_rob)} cells"
+        )
+
+        pr_csv       = tmp_path / "outputs/phase_robustness.csv"
+        cont_inf_csv = tmp_path / "outputs/inference_continuous.csv"
+        cont_raw_csv = tmp_path / "outputs/phase_robustness_raw_continuous.csv"
+        assert pr_csv.exists(),       "phase_robustness.csv missing"
+        assert cont_inf_csv.exists(), "inference_continuous.csv missing"
+        assert cont_raw_csv.exists(), "phase_robustness_raw_continuous.csv missing"
+
+        df_pr = pd.read_csv(pr_csv)
+        required_pr_cols = [
+            "Metric", "Pair",
+            "Cohens_d_sector", "p_holm_sector", "verdict_sector",
+            "Cohens_d_continuous", "p_holm_continuous", "verdict_continuous",
+            "signature_absent_both",
+        ]
+        for col in required_pr_cols:
+            assert col in df_pr.columns, f"Missing column in phase_robustness: {col}"
+        assert len(df_pr) == 18, (
+            f"Expected 18 phase-robustness comparisons (3 metrics x 6 controls), "
+            f"got {len(df_pr)}"
+        )
+        df_v13 = df_pr[df_pr["Metric"].isin(["Merit_Scaled", "Peak_AF"])]
+        assert len(df_v13) == 12, (
+            f"Expected 12 Merit_Scaled/Peak_AF comparisons, got {len(df_v13)}"
+        )
+        assert df_v13["signature_absent_both"].all(), (
+            "v1.4.0 retracts the Merit_Scaled/Peak_AF claim: that below-control signature "
+            "must be absent under both phase rules for every Merit_Scaled/Peak_AF comparison"
+        )
+        assert (df_v13["verdict_sector"] != "below").all(), \
+            "No Merit_Scaled/Peak_AF pair may read 'below' under the primary sector phase"
+        assert (df_v13["verdict_continuous"] != "below").all(), \
+            "No Merit_Scaled/Peak_AF pair may read 'below' under the continuous phase"
+        df_coh = df_pr[df_pr["Metric"] == "Coherence_Ratio"]
+        assert len(df_coh) == 6, (
+            f"Expected 6 Coherence_Ratio botanical-vs-control comparisons, got {len(df_coh)}"
         )
 
 
@@ -277,6 +316,7 @@ def test_determinism():
         first_rob      = (tmp_path / "outputs/robustness_matrix.csv").read_text()
         first_raw      = (tmp_path / "outputs/multi_seed_raw.csv").read_text()
         first_inf      = (tmp_path / "outputs/inference_summary.csv").read_text()
+        first_pr       = (tmp_path / "outputs/phase_robustness.csv").read_text()
 
         _run()
         for mode in MORPHOLOGY_MODES:
@@ -292,3 +332,5 @@ def test_determinism():
             "Non-deterministic multi_seed_raw.csv"
         assert (tmp_path / "outputs/inference_summary.csv").read_text() == first_inf, \
             "Non-deterministic inference_summary.csv"
+        assert (tmp_path / "outputs/phase_robustness.csv").read_text() == first_pr, \
+            "Non-deterministic phase_robustness.csv"

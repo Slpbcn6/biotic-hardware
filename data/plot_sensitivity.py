@@ -1,6 +1,7 @@
 import sys
 import csv
 import os
+import textwrap
 from itertools import combinations
 from pathlib import Path
 
@@ -172,6 +173,55 @@ def load_topology_stat(filepath, hypothesis, k):
                 }
             except (ValueError, KeyError, TypeError):
                 continue
+    return None
+
+
+def load_robustness_fraction(filepath):
+    total = 0
+    held = 0
+    if not os.path.exists(filepath):
+        return None
+    with open(filepath, "r") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            total += 1
+            if str(row.get("finding_holds", "")).strip().lower() == "true":
+                held += 1
+    if total == 0:
+        return None
+    return held, total
+
+
+def load_phase_agreement(filepath):
+    rows = 0
+    absent = 0
+    if not os.path.exists(filepath):
+        return None
+    with open(filepath, "r") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            if row.get("Metric") not in ("Merit_Scaled", "Peak_AF"):
+                continue
+            rows += 1
+            if str(row.get("signature_absent_both", "")).strip().lower() == "true":
+                absent += 1
+    if rows == 0:
+        return None
+    return absent, rows
+
+
+def load_coherence_observation(filepath):
+    if not os.path.exists(filepath):
+        return None
+    with open(filepath, "r") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            if (row.get("Metric") == "Coherence_Ratio"
+                    and row.get("Pair") == "Botanical vs Voronoi"):
+                if (row.get("verdict_sector") == "below"
+                        and row.get("verdict_continuous") == "below"):
+                    return float(row["Cohens_d_sector"]), float(row["Cohens_d_continuous"])
+                return None
     return None
 
 
@@ -453,6 +503,9 @@ def plot():
     topo_points_fav     = load_topology_points(topo_summary_path, TOPOLOGY_FAVORABLE_K)
     topo_stat_primary   = load_topology_stat(topo_corr_path, TOPOLOGY_FOCUS_HYP, TOPOLOGY_PRIMARY_K)
     topo_stat_fav       = load_topology_stat(topo_corr_path, TOPOLOGY_FOCUS_HYP, TOPOLOGY_FAVORABLE_K)
+    robustness_fraction = load_robustness_fraction(output_path("robustness_matrix.csv"))
+    phase_agreement     = load_phase_agreement(output_path("phase_robustness.csv"))
+    coherence_obs       = load_coherence_observation(output_path("phase_robustness.csv"))
     has_inference = not np.all(np.isnan(d_matrix))
     has_raw       = any(len(raw_data[m]["Merit_Scaled"]) > 0 for m in MORPHOLOGY_MODES)
 
@@ -495,15 +548,38 @@ def plot():
 
         plot_inference_matrices(fig, outer[3], d_matrix, sig_matrix)
 
-    fig.supxlabel(
+    footer_parts = [
         "Single representative run (seed 42); shaded bands ±1 SD of per-seed means across "
-        "N=30 seeds · Welch t-test with Holm-Bonferroni across the valid pairs per metric.",
-        fontsize=12, color="#666666",
-    )
+        "N=30 seeds · Welch t-test with Holm-Bonferroni pooled across all valid pairs (single family) · "
+        "spatial-sector phase assignment (primary rule)."
+    ]
+    if robustness_fraction is not None:
+        held, total = robustness_fraction
+        pct = 100.0 * held / total
+        footer_parts.append(
+            f"The v1.3 separation holds in only {held}/{total} ({pct:.0f}%) of grid×seed cells."
+        )
+    if phase_agreement is not None:
+        absent, rows = phase_agreement
+        footer_parts.append(
+            f"Spatial-sector and continuous phase rules agree the original signature is absent "
+            f"in {absent}/{rows} botanical-vs-control comparisons."
+        )
+    if coherence_obs is not None:
+        d_sec, d_cont = coherence_obs
+        footer_parts.append(
+            f"On the coherence ratio (secondary metric) botanical sits below Voronoi under "
+            f"both rules (d = {d_sec:.2f} / {d_cont:.2f})."
+        )
+
+    footer = textwrap.fill(" ".join(footer_parts), width=165)
+    fig.supxlabel(footer, fontsize=12, color="#666666")
 
     fig.suptitle(
-        f"Biotic Hardware Synthesis  ·  Morphological Benchmark  ·  v{PIPELINE_VERSION}",
-        fontsize=26, fontweight="bold",
+        f"Biotic Hardware Synthesis  ·  Morphological Benchmark  ·  v{PIPELINE_VERSION}\n"
+        "Methodological correction — the v1.3 botanical signature\n"
+        "does not survive a centroid-referenced phase assignment",
+        fontsize=21, fontweight="bold",
     )
 
     place_matched_legend(fig, ax_merit, ax_legend, legend_handles, legend_labels)

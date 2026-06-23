@@ -9,7 +9,7 @@ from data.config import load_parameters, ensure_output_dir, output_path
 METRICS = ["Merit_Scaled", "Coherence_Ratio", "Peak_AF"]
 
 
-def run_multi_seed(output_file=None, raw_output_file=None):
+def run_multi_seed(output_file=None, raw_output_file=None, phase_rule="sector"):
     ensure_output_dir()
     if output_file is None:
         output_file = output_path("multi_seed_summary.csv")
@@ -32,7 +32,7 @@ def run_multi_seed(output_file=None, raw_output_file=None):
             tmp_csv = output_path(f"_tmp_{mode}_{seed}.csv")
             tmp_npz = output_path(f"_tmp_{mode}_{seed}.npz")
 
-            coupling.run_sweep(mode, tmp_csv, tmp_npz, seed_override=seed)
+            coupling.run_sweep(mode, tmp_csv, tmp_npz, seed_override=seed, phase_rule=phase_rule)
 
             with open(tmp_csv) as f:
                 rows = list(csv.DictReader(f))

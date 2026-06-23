@@ -7,8 +7,8 @@ authors:
     orcid: "https://orcid.org/0009-0002-9922-1235"
 
 title: "Biotic Hardware Synthesis"
-version: 1.3.0
-date-released: 2026-06-19
+version: 1.4.0
+date-released: 2026-06-22
 
 identifiers:
   - type: doi
@@ -25,20 +25,31 @@ abstract: >
   coupling, coherence analysis, and a composite merit metric, with multi-seed
   sensitivity analysis (N=30 seeds, 42-71) and formal statistical inference (Welch
   t-test on per-seed means, Cohen's d, Hedges' g, bootstrap 95% CI, Holm-Bonferroni
-  correction, post-hoc power). A variance-collapse guard flags seed-frozen
-  morphologies (fractal, Fibonacci, hexagonal) as n/a, so inflated effect sizes from
-  near-zero variance are never reported. A graph-topology layer builds k-nearest-neighbour
+  correction pooled across all valid pairs, post-hoc power). A single near-zero-variance
+  guard would flag any seed-frozen morphology as n/a so inflated effect sizes from
+  near-zero variance are never reported; under the geometry-referenced phase rule all ten
+  morphologies carry genuine per-seed variance, so 0 pairs are n/a this release. A
+  graph-topology layer builds k-nearest-neighbour
   graphs per morphology and tests whether spectral descriptors (algebraic connectivity
   lambda_2, eigenratio R, clustering coefficient) predict the merit metric across the
   ten morphologies via Pearson correlation with leave-one-out cross-validation.
-  Principal finding: under the heavier ten-morphology Holm burden (21 valid pairs per
-  metric), botanical retains a Holm-significant separation on Merit_Scaled and Peak_AF,
-  sitting below the high-merit stochastic controls (Voronoi d=-1.05/-1.19, reticulate
-  d=-1.04/-1.22) and above the low-merit regular controls (clusters, concentric), with
-  post-hoc power 0.98-1.0. The topology-vs-merit correlations are exploratory and none
-  cross the pre-specified significance threshold at the available sample size. All
-  electromagnetic terminology (ELF, phased array, array factor) is used as a
-  computational analogy; no physical system is modeled.
+  Principal finding (methodological correction): v1.4.0 retracts the v1.3.0 result.
+  Assigning each node's phase by its spatial sector about the point-set centroid, rather
+  than by the node's index in the generator output, removes a confound in which the array
+  factor depended on the arbitrary order a generator emitted its nodes. Under the
+  corrected phase rule, with Holm-Bonferroni pooled across all 135 valid pairs, botanical
+  is statistically indistinguishable from every genuine stochastic control on Merit_Scaled
+  and Peak_AF (vs random d=+0.67/+0.69, vs Voronoi d=+0.61/+0.64, both non-significant; vs
+  DLA and reticulate non-significant); it separates only from the regular geometric
+  controls (clusters, concentric) and the deterministic references (fractal, Fibonacci,
+  hexagonal). A continuous-phase robustness rule agrees the v1.3.0 Merit_Scaled/Peak_AF
+  below-control signature is absent (12/12 comparisons); on the coherence ratio, however,
+  botanical sits robustly below the Voronoi control under both phase rules, a secondary
+  structural observation rather than a performance claim. The retracted signature holds in
+  only 500 of 3750 parametric grid×seed cells (13%). The topology-vs-merit correlations are
+  exploratory and the pre-specified primary test (k=6) is null. All electromagnetic
+  terminology (ELF, phased array, array factor) is used as a computational analogy; no
+  physical system is modeled.
 
 keywords:
   - Coupled oscillator networks

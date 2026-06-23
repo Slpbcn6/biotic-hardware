@@ -60,6 +60,25 @@ def test_near_zero_variance():
     assert near_zero_variance(0.5, 0.0)
 
 
+def test_near_zero_variance_absolute_floor_without_reference():
+    assert near_zero_variance(1e-6)
+    assert not near_zero_variance(1.0)
+    assert near_zero_variance(1e-6, reference_std=None)
+    assert not near_zero_variance(1.0, reference_std=None)
+
+
+def test_near_zero_variance_floor_and_relative_intersection():
+    assert near_zero_variance(0.05, reference_std=1.0, fraction=0.15)
+    assert not near_zero_variance(0.2, reference_std=1.0, fraction=0.15)
+    assert near_zero_variance(1e-6, reference_std=1.0, fraction=0.15)
+
+
+def test_cohens_d_uses_shared_floor_for_tiny_nonzero_variance():
+    a = [1.0, 1.0, 1.00001, 1.0]
+    b = [1.0, 1.00001, 1.0, 1.0]
+    assert np.isnan(cohens_d(a, b))
+
+
 def test_holm_correction_monotone_and_bounded():
     p = [0.01, 0.02, 0.03, 0.04]
     corrected = holm_correction(p)

@@ -1,0 +1,171 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 440" fill="none">
+  <defs>
+    <radialGradient id="bgGradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#0a0a0a"/>
+      <stop offset="100%" stop-color="#020202"/>
+    </radialGradient>
+    <filter id="digitalGrain" x="0%" y="0%" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.95" numOctaves="4" result="noise"/>
+      <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.04 0" result="coloredNoise"/>
+      <feComposite operator="in" in="coloredNoise" in2="SourceGraphic" result="monoNoise"/>
+      <feBlend mode="screen" in="SourceGraphic" in2="monoNoise"/>
+    </filter>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect x="0" y="0" width="1120" height="440" fill="url(#bgGradient)" filter="url(#digitalGrain)"/>
+
+  <line x1="0" y1="0" x2="1120" y2="0" stroke="#00FF00" stroke-width="0.5" stroke-opacity="0.08">
+    <animate attributeName="y1" from="0" to="440" dur="7s" repeatCount="indefinite"/>
+    <animate attributeName="y2" from="0" to="440" dur="7s" repeatCount="indefinite"/>
+  </line>
+
+  <g transform="translate(50, 40)" font-family="Courier New, monospace" opacity="0">
+    <animate attributeName="opacity" to="1" dur="0.5s" begin="0s" fill="freeze"/>
+
+    <circle cx="-20" cy="9" r="4" fill="#00FF00" filter="url(#glow)">
+      <animate attributeName="opacity" values="1;0;0" keyTimes="0;0.375;1" dur="4s" repeatCount="indefinite" begin="0s"/>
+    </circle>
+    <circle cx="-20" cy="9" fill="none" stroke="#00FF00" filter="url(#glow)">
+      <animate attributeName="r" values="0;40;0;0" keyTimes="0;0.375;0.376;1" dur="4s" repeatCount="indefinite" begin="0s"/>
+      <animate attributeName="opacity" values="0.4;0;0;0" keyTimes="0;0.375;0.376;1" dur="4s" repeatCount="indefinite" begin="0s"/>
+      <animate attributeName="stroke-width" values="0.4;0.05;0;0" keyTimes="0;0.375;0.376;1" dur="4s" repeatCount="indefinite" begin="0s"/>
+    </circle>
+
+    <text x="0" y="14" font-size="14" fill="#00FF00" font-weight="bold" letter-spacing="1.5">01 / PIPELINE</text>
+    <line x1="0" y1="26" x2="225" y2="26" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1" stroke-dasharray="4,4">
+      <animate attributeName="stroke-dashoffset" from="8" to="0" dur="3s" repeatCount="indefinite"/>
+    </line>
+
+    <text x="0" y="46" font-size="12" fill="#888888">v1.4.0 · methodological correction</text>
+
+    <text x="0" y="80" font-size="19" font-weight="bold" letter-spacing="-0.5" fill="#FFFFFF" fill-opacity="0.95">Biotic Hardware</text>
+    <text x="0" y="105" font-size="19" font-weight="bold" letter-spacing="-0.5" fill="#FFFFFF" fill-opacity="0.95">Synthesis</text>
+
+    <text x="0" y="155" font-size="15" fill="#FFFFFF" fill-opacity="0.75">Does botanical branching</text>
+    <text x="0" y="175" font-size="15" fill="#FFFFFF" fill-opacity="0.75">produce a measurable</text>
+    <text x="0" y="195" font-size="15" fill="#FFFFFF" fill-opacity="0.75">topological signature?</text>
+
+    <text x="0" y="250" font-size="15" fill="#00FF41">10 morphologies · 45 pairs</text>
+    <text x="0" y="270" font-size="15" fill="#00FF41">3 metrics · seeds 42–71</text>
+    <text x="0" y="290" font-size="15" fill="#00FF41">64 nodes · 17-step pipeline</text>
+
+    <text x="0" y="360" font-size="11" fill="#888888">Welch t · Cohen's d · pooled Holm</text>
+  </g>
+
+  <g transform="translate(315, 40)" font-family="Courier New, monospace" opacity="0">
+    <animate attributeName="opacity" to="1" dur="0.5s" begin="1s" fill="freeze"/>
+
+    <circle cx="-20" cy="9" r="4" fill="#00FF00" filter="url(#glow)">
+      <animate attributeName="opacity" values="1;0;0" keyTimes="0;0.375;1" dur="4s" repeatCount="indefinite" begin="1s"/>
+    </circle>
+    <circle cx="-20" cy="9" fill="none" stroke="#00FF00" filter="url(#glow)">
+      <animate attributeName="r" values="0;40;0;0" keyTimes="0;0.375;0.376;1" dur="4s" repeatCount="indefinite" begin="1s"/>
+      <animate attributeName="opacity" values="0.4;0;0;0" keyTimes="0;0.375;0.376;1" dur="4s" repeatCount="indefinite" begin="1s"/>
+      <animate attributeName="stroke-width" values="0.4;0.05;0;0" keyTimes="0;0.375;0.376;1" dur="4s" repeatCount="indefinite" begin="1s"/>
+    </circle>
+
+    <text x="0" y="14" font-size="14" fill="#00FF00" font-weight="bold" letter-spacing="1.5">02 / THE CONFOUND</text>
+    <line x1="0" y1="26" x2="225" y2="26" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1" stroke-dasharray="4,4">
+      <animate attributeName="stroke-dashoffset" from="8" to="0" dur="3s" repeatCount="indefinite"/>
+    </line>
+
+    <text x="0" y="46" font-size="12" fill="#888888">phase assignment rule</text>
+
+    <text x="0" y="92" font-size="12" fill="#FF6B6B" fill-opacity="0.9">v1.3 — by node index</text>
+    <text x="0" y="110" font-size="11" fill="#888888">phase = base[i mod 4]</text>
+    <text x="0" y="126" font-size="11" fill="#888888">depends on generator order</text>
+
+    <line x1="0" y1="150" x2="225" y2="150" stroke="#333333" stroke-width="0.5"/>
+
+    <text x="0" y="178" font-size="12" fill="#00FF41" fill-opacity="0.95">v1.4 — by spatial sector</text>
+    <text x="0" y="196" font-size="11" fill="#888888">phase = angle about centroid</text>
+    <text x="0" y="212" font-size="11" fill="#888888">invariant to node ordering</text>
+
+    <text x="0" y="264" font-size="13" font-weight="bold" fill="#FFFFFF" fill-opacity="0.9">Result</text>
+    <text x="0" y="286" font-size="13" fill="#FF6B6B" fill-opacity="0.95">the v1.3 botanical</text>
+    <text x="0" y="304" font-size="13" fill="#FF6B6B" fill-opacity="0.95">signature does not survive</text>
+
+    <text x="0" y="360" font-size="11" fill="#888888">honest null · reported in full</text>
+  </g>
+
+  <g transform="translate(580, 40)" font-family="Courier New, monospace" opacity="0">
+    <animate attributeName="opacity" to="1" dur="0.5s" begin="2s" fill="freeze"/>
+
+    <circle cx="-20" cy="9" r="4" fill="#00FF00" filter="url(#glow)">
+      <animate attributeName="opacity" values="1;0;0" keyTimes="0;0.375;1" dur="4s" repeatCount="indefinite" begin="2s"/>
+    </circle>
+    <circle cx="-20" cy="9" fill="none" stroke="#00FF00" filter="url(#glow)">
+      <animate attributeName="r" values="0;40;0;0" keyTimes="0;0.375;0.376;1" dur="4s" repeatCount="indefinite" begin="2s"/>
+      <animate attributeName="opacity" values="0.4;0;0;0" keyTimes="0;0.375;0.376;1" dur="4s" repeatCount="indefinite" begin="2s"/>
+      <animate attributeName="stroke-width" values="0.4;0.05;0;0" keyTimes="0;0.375;0.376;1" dur="4s" repeatCount="indefinite" begin="2s"/>
+    </circle>
+
+    <text x="0" y="14" font-size="14" fill="#00FF00" font-weight="bold" letter-spacing="1.5">03 / ROBUSTNESS</text>
+    <line x1="0" y1="26" x2="225" y2="26" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1" stroke-dasharray="4,4"/>
+
+    <text x="0" y="46" font-size="12" fill="#888888">two phase rules agree</text>
+    <text x="0" y="60" font-size="12" fill="#888888">sector + continuous</text>
+
+    <text x="0" y="140" font-size="34" font-weight="bold" fill="#00FF00">12 / 12</text>
+    <text x="0" y="162" font-size="13" fill="#FFFFFF" fill-opacity="0.85">pairs · signature absent</text>
+
+    <text x="0" y="235" font-size="20" font-weight="bold" fill="#FFFFFF" fill-opacity="0.7">500 / 3750</text>
+    <text x="0" y="255" font-size="12" fill="#888888">grid cells hold (13%)</text>
+    <text x="0" y="271" font-size="11" fill="#888888">125 grid × 30 seeds</text>
+
+    <text x="0" y="360" font-size="11" fill="#00FF41">below-control signature does not hold</text>
+  </g>
+
+  <g transform="translate(845, 40)" font-family="Courier New, monospace" opacity="0">
+    <animate attributeName="opacity" to="1" dur="0.5s" begin="3s" fill="freeze"/>
+
+    <circle cx="-20" cy="9" r="4" fill="#00FF00" filter="url(#glow)">
+      <animate attributeName="opacity" values="1;0;0" keyTimes="0;0.375;1" dur="4s" repeatCount="indefinite" begin="3s"/>
+    </circle>
+    <circle cx="-20" cy="9" fill="none" stroke="#00FF00" filter="url(#glow)">
+      <animate attributeName="r" values="0;40;0;0" keyTimes="0;0.375;0.376;1" dur="4s" repeatCount="indefinite" begin="3s"/>
+      <animate attributeName="opacity" values="0.4;0;0;0" keyTimes="0;0.375;0.376;1" dur="4s" repeatCount="indefinite" begin="3s"/>
+      <animate attributeName="stroke-width" values="0.4;0.05;0;0" keyTimes="0;0.375;0.376;1" dur="4s" repeatCount="indefinite" begin="3s"/>
+    </circle>
+
+    <text x="0" y="14" fill="#00FF00" font-weight="bold" letter-spacing="1.5" font-size="14">04 / HONEST NULL</text>
+    <line x1="0" y1="26" x2="225" y2="26" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1" stroke-dasharray="4,4">
+      <animate attributeName="stroke-dashoffset" from="8" to="0" dur="3s" repeatCount="indefinite"/>
+    </line>
+
+    <text x="0" y="42" font-size="11" fill="#888888">N=30 seeds · pooled Holm (135)</text>
+
+    <text x="0" y="68" font-size="11" font-weight="bold" fill="#FFFFFF" letter-spacing="1">MERIT &amp; PEAK AF</text>
+
+    <text x="0" y="90" font-size="12" fill="#FFFFFF" fill-opacity="0.9">Bot vs random</text>
+    <text x="0" y="104" font-size="11" fill="#888888">n.s. · d ≈ +0.67</text>
+
+    <text x="0" y="124" font-size="12" fill="#FFFFFF" fill-opacity="0.9">Bot vs Voronoi</text>
+    <text x="0" y="138" font-size="11" fill="#888888">n.s. · d ≈ +0.61</text>
+
+    <text x="0" y="158" font-size="12" fill="#FFFFFF" fill-opacity="0.9">Bot vs DLA</text>
+    <text x="0" y="172" font-size="11" fill="#888888">n.s. · d ≈ −0.38</text>
+
+    <text x="0" y="192" font-size="12" fill="#FFFFFF" fill-opacity="0.9">Bot vs reticulate</text>
+    <text x="0" y="206" font-size="11" fill="#888888">n.s. · d ≈ −0.38</text>
+
+    <line x1="0" y1="218" x2="225" y2="218" stroke="#333333" stroke-width="0.5"/>
+
+    <text x="0" y="238" font-size="11" fill="#00FF41">separates only from regular</text>
+    <text x="0" y="252" font-size="11" fill="#00FF41">controls (clusters, concentric)</text>
+
+    <line x1="0" y1="266" x2="225" y2="266" stroke="#333333" stroke-width="0.5"/>
+
+    <text x="0" y="286" font-size="11" fill="#FFFFFF" fill-opacity="0.85">topology k=6 (primary)</text>
+    <text x="0" y="300" font-size="11" fill="#888888">r = −0.35 · n.s. (N=10)</text>
+
+    <line x1="0" y1="318" x2="225" y2="318" stroke="#333333" stroke-width="0.5"/>
+
+    <text x="0" y="346" font-size="11" fill="#FF6B6B" fill-opacity="0.9">retracted from v1.3:</text>
+    <text x="0" y="360" font-size="11" fill="#FF6B6B" fill-opacity="0.9">"botanical below Voronoi"</text>
+  </g>
+</svg>

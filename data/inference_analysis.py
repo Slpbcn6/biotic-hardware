@@ -27,6 +27,9 @@ def run_inference(raw_file=None, output_file=None):
     variance_fraction = float(
         params["VI_experimental_sweep_parameters"].get("variance_collapse_fraction", 0.15)
     )
+    variance_floor = float(
+        params["VI_experimental_sweep_parameters"].get("variance_floor", 1e-4)
+    )
 
     per_seed = {mode: {m: [] for m in METRICS} for mode in modes}
 
@@ -45,7 +48,7 @@ def run_inference(raw_file=None, output_file=None):
         reference_std[metric] = float(np.median(list(group_std[metric].values())))
         for mode in modes:
             if near_zero_variance(
-                group_std[metric][mode], reference_std[metric], variance_fraction
+                group_std[metric][mode], reference_std[metric], variance_fraction, variance_floor
             ):
                 degenerate[metric].add(mode)
 

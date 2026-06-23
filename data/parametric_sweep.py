@@ -19,6 +19,12 @@ def effective_grids():
     return K0_GRID, BETA_GRID, Q_GRID
 
 
+def effective_seeds(seeds):
+    if os.environ.get("PIPELINE_FAST") == "1":
+        return list(seeds)[:2]
+    return list(seeds)
+
+
 GENERATORS = {
     "botanical": input_generator.generate_botanical_graph,
     "random":    input_generator.generate_random_control,
@@ -53,6 +59,23 @@ def _curve_separation(reference, other):
 
 
 def run_parametric_sweep(output_file=None):
+    """Sweep the array-factor parameter grid across every multi-seed replicate.
+
+    For each (k0, beta, Q) grid point and each seed, the botanical merit curve is
+    compared against the random and Voronoi stochastic controls. A point-by-seed
+    cell counts as holding the v1.3.0 signature only when botanical sits *below*
+    both controls by at least the curve-separation threshold (a signed test, not
+    a magnitude test). The fraction of cells that hold quantifies how much of the
+    joint parameter-and-seed space supports the original directional claim under
+    the corrected geometry-driven phase rule.
+
+    Returns
+    -------
+    rows_out : list
+        One row per (grid point, seed) cell.
+    frac_pct : float
+        Percentage of cells in which botanical sits below both controls.
+    """
     if output_file is None:
         output_file = output_path("robustness_matrix.csv")
 
@@ -61,55 +84,56 @@ def run_parametric_sweep(output_file=None):
     af_cfg    = params["VII_array_factor_parameters"]
 
     n_nodes     = int(sweep_cfg["n_nodes"])
-    seed        = int(sweep_cfg["seed"])
     noise_level = float(sweep_cfg.get("noise_level", 0.15))
     threshold   = float(sweep_cfg.get("curve_separation_threshold", 0.10))
+    seeds       = effective_seeds(sweep_cfg["multi_seed_list"])
     k_mod_coeff = float(af_cfg["k_modulation_coeff"])
     q_ref       = float(af_cfg["q_reference"])
 
     k0_grid, beta_grid, q_grid = effective_grids()
 
     rows_out = []
-    total = len(k0_grid) * len(beta_grid) * len(q_grid)
+    total = len(k0_grid) * len(beta_grid) * len(q_grid) * len(seeds)
 
     for k0 in k0_grid:
         for beta in beta_grid:
             for Q0 in q_grid:
-                bot = _merit_scaled_series(
-                    "botanical", n_nodes, seed, noise_level,
-                    k0, beta, Q0, k_mod_coeff, q_ref,
-                )
-                rnd = _merit_scaled_series(
-                    "random", n_nodes, seed, noise_level,
-                    k0, beta, Q0, k_mod_coeff, q_ref,
-                )
-                frac = _merit_scaled_series(
-                    "fractal", n_nodes, seed, noise_level,
-                    k0, beta, Q0, k_mod_coeff, q_ref,
-                )
-                vor = _merit_scaled_series(
-                    "voronoi", n_nodes, seed, noise_level,
-                    k0, beta, Q0, k_mod_coeff, q_ref,
-                )
-                sep_vs_random = _curve_separation(bot, rnd)
-                sep_vs_fractal = _curve_separation(bot, frac)
-                sep_vs_voronoi = _curve_separation(bot, vor)
-                holds = bool(
-                    abs(sep_vs_random) >= threshold and abs(sep_vs_voronoi) >= threshold
-                )
-                rows_out.append([
-                    k0, beta, Q0,
-                    round(sep_vs_random, 4),
-                    round(sep_vs_fractal, 4),
-                    round(sep_vs_voronoi, 4),
-                    holds,
-                ])
+                for seed in seeds:
+                    bot = _merit_scaled_series(
+                        "botanical", n_nodes, seed, noise_level,
+                        k0, beta, Q0, k_mod_coeff, q_ref,
+                    )
+                    rnd = _merit_scaled_series(
+                        "random", n_nodes, seed, noise_level,
+                        k0, beta, Q0, k_mod_coeff, q_ref,
+                    )
+                    frac = _merit_scaled_series(
+                        "fractal", n_nodes, seed, noise_level,
+                        k0, beta, Q0, k_mod_coeff, q_ref,
+                    )
+                    vor = _merit_scaled_series(
+                        "voronoi", n_nodes, seed, noise_level,
+                        k0, beta, Q0, k_mod_coeff, q_ref,
+                    )
+                    sep_vs_random = _curve_separation(bot, rnd)
+                    sep_vs_fractal = _curve_separation(bot, frac)
+                    sep_vs_voronoi = _curve_separation(bot, vor)
+                    holds = bool(
+                        sep_vs_random <= -threshold and sep_vs_voronoi <= -threshold
+                    )
+                    rows_out.append([
+                        k0, beta, Q0, seed,
+                        round(sep_vs_random, 4),
+                        round(sep_vs_fractal, 4),
+                        round(sep_vs_voronoi, 4),
+                        holds,
+                    ])
 
     ensure_output_dir()
     with open(output_file, "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow([
-            "k0_base", "beta_loss_factor", "Q_individual",
+            "k0_base", "beta_loss_factor", "Q_individual", "seed",
             "curve_sep_botanical_vs_random",
             "curve_sep_botanical_vs_fractal",
             "curve_sep_botanical_vs_voronoi",
@@ -117,12 +141,12 @@ def run_parametric_sweep(output_file=None):
         ])
         writer.writerows(rows_out)
 
-    n_holds = sum(1 for r in rows_out if r[6])
+    n_holds = sum(1 for r in rows_out if r[7])
     frac_pct = n_holds / total * 100
     print(
-        f"      Robustness: {n_holds}/{total} grid points — "
-        f"botanical separates from both stochastic controls (|curve_sep| >= {threshold} "
-        f"vs random and vs voronoi) in {frac_pct:.1f}% of parameter space"
+        f"      Robustness: botanical sits below BOTH stochastic controls "
+        f"(curve_sep <= -{threshold} vs random and vs voronoi) in "
+        f"{n_holds}/{total} point-by-seed cells ({frac_pct:.1f}%)"
     )
     print(f"      Written: {rel(output_file)}")
 
