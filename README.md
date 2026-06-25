@@ -11,8 +11,9 @@
 
 ![Biotic Hardware Synthesis](assets/readme1-4-1.svg)
 
+A deterministic benchmark that scores 2D point-cloud morphologies with a complex phasor-sum descriptor over the node positions (a non-uniform DFT-style directional spectrum) and compares them by statistical inference. "Phased array", "array factor", k0, and the broader ELF/NFMI terminology are analogical labels for these operations - no physical electromagnetic system is modeled.
 
-> **v1.4.1** is a documentation-only patch over the **v1.4.0** pipeline: it refines wording in this README, `OVERVIEW.md`, and `CITATION.cff`. The code, parameters, and every numerical result are identical to v1.4.0 and were not re-run.
+> **v1.4.1** is a documentation-only patch over the **v1.4.0** pipeline: it refines wording in this README, `OVERVIEW.md`, and `CITATION.cff`. The code, parameters, and every numerical result are identical to v1.4.0 and were not re-run. A retraction note for the v1.3.0 central finding is available here: [RETRACTION.md](https://github.com/Slpbcn6/biotic-hardware/blob/main/RETRACTION.md)
 
 This repository provides a reproducible computational framework for simulating structured network dynamics inspired by morphological datasets. It implements a full pipeline for parameter-driven simulation of coherence metrics, phase-based interference behavior (complex-valued phasor summation), sensitivity analysis under parametric variation, and formal statistical separation testing — producing numerical outputs, statistical artifacts, and visualization from a single executable workflow.
 
